@@ -17,11 +17,12 @@
 
 Download at [releases](https://github.com/cubewhy/celestial/releases)
 
-## Requirements
 
-1. Java 17 (For booting Celestial and LunarClient)
-2. 4GB memory (recommend, For running LunarClient)
-3. AN x86_64 cpu with less 2.6Ghz (recommend, For running LunarClient)
+## Donate
+
+> There **might** some ads in the Launcher, but you are allowed to turn them off (permanent)
+
+Donate at [lunarclient.top](https://www.lunarclient.top/donate) (CNY only/仅支持中国元)
 
 ## Translation
 
