@@ -40,8 +40,8 @@ public class Celestial {
             run(args);
         } catch (Exception e) {
             String trace = TextUtils.dumpTrace(e);
+            log.error(trace);
             JOptionPane.showMessageDialog(null, trace, "Oops, Celestial crashed", JOptionPane.ERROR_MESSAGE);
-            log.trace(trace);
             System.exit(1);
         }
     }
@@ -131,7 +131,7 @@ public class Celestial {
                 .initValue("vm-args", new JsonArray())
                 .initValue("program-args", new JsonArray())
                 .initValue("javaagents", new JsonObject())
-                .initValue("theme", "dark"); // dark, light, unset, <custom>.json
+                .initValue("theme", "dark"); // dark, light, unset, custom.
     }
 
     public static void initTheme() throws IOException {
