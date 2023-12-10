@@ -6,7 +6,6 @@ import com.formdev.flatlaf.IntelliJTheme;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +89,7 @@ public class Celestial {
             }
             System.exit(0);
         }
+        checkJava();
         launcherData = new LauncherData(config.getValue("api").getAsString());
         while (true) {
             try {
@@ -119,6 +119,16 @@ public class Celestial {
         launcherFrame = new GuiLauncher();
         launcherFrame.setVisible(true);
         launcherFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+    }
+
+    private static void checkJava() {
+        log.info("Checking jre...");
+        String javaVersion = System.getProperty("java.specification.version");
+        log.info("Java " + javaVersion);
+        if (!javaVersion.equals("17 ")) {
+            log.warn("Compatibility warning: The Java you are currently using may not be able to start LunarClient properly (Java 17 is recommended)");
+            JOptionPane.showMessageDialog(null, f.getString("compatibility.warn.message"), f.getString("compatibility.warn.title"), JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     public static void initLauncher() throws IOException {

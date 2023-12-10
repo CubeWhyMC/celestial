@@ -1,5 +1,8 @@
 package org.cubewhy.celestial.gui;
 
+import org.cubewhy.celestial.gui.pages.GuiAbout;
+import org.cubewhy.celestial.gui.pages.GuiNews;
+import org.cubewhy.celestial.gui.pages.GuiSettings;
 import org.cubewhy.celestial.utils.FileUtils;
 
 import javax.swing.*;
@@ -49,7 +52,11 @@ public class GuiLauncher extends JFrame {
         final CardLayout layout = new CardLayout();
         mainPanel.setLayout(layout);
         // TODO: add enabled pages (from metadata)
+        // add pages
         mainPanel.add("version", new GuiVersionSelect());
+        mainPanel.add("news", new GuiNews());
+        mainPanel.add("settings", new GuiSettings());
+        mainPanel.add("about", new GuiAbout());
 
         // bind buttons
         btnPrevious.addActionListener(e -> {
