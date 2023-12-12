@@ -10,9 +10,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class LauncherData {
     public final URI api;
@@ -59,13 +57,38 @@ public class LauncherData {
      */
     public JsonObject metadata() throws IOException {
         // do request with fake system info
-        try (Response response = RequestUtils.get(api + "/launcher/metadata" + "?os=linux" + "&arch=x64" + "&launcher_version=114.514.191").execute()) {
+        // TODO fix the launcher_version
+        try (Response response = RequestUtils.get(api + "/launcher/metadata" + "?os=linux" + "&arch=x64" + "&launcher_version=3.1.4").execute()) {
             assert response.code() == 200 : "Code = " + response.code(); // check success
             assert response.body() != null : "ResponseBody was null";
             return JsonParser.parseString(response.body().string()).getAsJsonObject();
         }
     }
 
+    /**
+     * Get alert message
+     *
+     * @param metadata metadata from api
+     * @return a map of the alert (title, message)
+     * */
+    public static Map<String, String> getAlert(JsonObject metadata) {
+        if (metadata.has("alert")) {
+            JsonObject alert = metadata.getAsJsonObject("alert");
+            Map<String, String> map = new HashMap<>();
+            map.put("title", alert.get("name").getAsString());
+            map.put("message", alert.get("text").getAsString());
+            return map;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Get blog posts
+     *
+     * @param metadata metadata from api
+     * @return a list of blog posts
+     */
     public static JsonArray getBlogPosts(JsonObject metadata) {
         return metadata.getAsJsonArray("blogPosts");
     }
