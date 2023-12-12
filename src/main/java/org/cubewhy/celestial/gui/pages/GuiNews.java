@@ -3,10 +3,9 @@ package org.cubewhy.celestial.gui.pages;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import lombok.extern.slf4j.Slf4j;
-import org.cubewhy.celestial.utils.LauncherData;
+import org.cubewhy.celestial.utils.lunar.LauncherData;
 
 import javax.swing.*;
-import java.awt.*;
 
 import static org.cubewhy.celestial.Celestial.metadata;
 
