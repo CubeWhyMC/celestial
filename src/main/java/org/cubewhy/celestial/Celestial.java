@@ -135,6 +135,7 @@ public class Celestial {
         metadata = launcherData.metadata();
         if (metadata.has("error")) {
             // trouble here
+            log.error("Metadata info: " + metadata);
             throw new IllegalStateException("metadata API Error!");
         }
     }
