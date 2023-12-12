@@ -137,10 +137,10 @@ public class Celestial {
 
     private static void initConfig() {
         config.initValue("jre", "") // leave empty if you want to use the default one
-                .initValue("api", "https://api.lunarclientprod.com")
-                .initValue("vm-args", new JsonArray())
-                .initValue("program-args", new JsonArray())
-                .initValue("javaagents", new JsonObject())
+                .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
+                .initValue("vm-args", new JsonArray()) // custom jvm args
+                .initValue("program-args", new JsonArray()) // args of the game
+                .initValue("javaagents", new JsonObject()) // lc addon
                 .initValue("theme", "dark"); // dark, light, unset, custom.
     }
 
