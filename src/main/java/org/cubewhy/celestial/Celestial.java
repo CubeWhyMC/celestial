@@ -125,14 +125,18 @@ public class Celestial {
         log.info("Checking jre...");
         String javaVersion = System.getProperty("java.specification.version");
         log.info("Java " + javaVersion);
-        if (!javaVersion.equals("17 ")) {
+        if (!javaVersion.equals("17")) {
             log.warn("Compatibility warning: The Java you are currently using may not be able to start LunarClient properly (Java 17 is recommended)");
             JOptionPane.showMessageDialog(null, f.getString("compatibility.warn.message"), f.getString("compatibility.warn.title"), JOptionPane.WARNING_MESSAGE);
         }
     }
 
     public static void initLauncher() throws IOException {
-        metadata = JsonParser.parseString(launcherData.metadata()).getAsJsonObject();
+        metadata = launcherData.metadata();
+        if (metadata.has("error")) {
+            // trouble here
+            throw new IllegalStateException("metadata API Error!");
+        }
     }
 
     private static void initConfig() {
