@@ -57,13 +57,17 @@ public class LauncherData {
      *
      * @return Launcher Metadata
      */
-    public String metadata() throws IOException {
+    public JsonObject metadata() throws IOException {
         // do request with fake system info
         try (Response response = RequestUtils.get(api + "/launcher/metadata" + "?os=linux" + "&arch=x64" + "&launcher_version=2.15.2").execute()) {
             assert response.code() == 200 : "Code = " + response.code(); // check success
             assert response.body() != null : "ResponseBody was null";
-            return response.body().string();
+            return JsonParser.parseString(response.body().string()).getAsJsonObject();
         }
+    }
+
+    public JsonArray getBlogPosts(JsonObject metadata) {
+        return metadata.getAsJsonArray("blogPosts");
     }
 
     public JsonElement getVersion(String version, String branch, String module) throws IOException {
