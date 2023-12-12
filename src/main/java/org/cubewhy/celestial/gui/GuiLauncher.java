@@ -5,7 +5,7 @@ import org.cubewhy.celestial.gui.pages.GuiAbout;
 import org.cubewhy.celestial.gui.pages.GuiNews;
 import org.cubewhy.celestial.gui.pages.GuiSettings;
 import org.cubewhy.celestial.utils.FileUtils;
-import org.cubewhy.celestial.utils.LauncherData;
+import org.cubewhy.celestial.utils.lunar.LauncherData;
 
 import javax.swing.*;
 import java.awt.*;

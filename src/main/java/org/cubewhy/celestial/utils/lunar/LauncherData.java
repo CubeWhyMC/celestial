@@ -1,7 +1,9 @@
-package org.cubewhy.celestial.utils;
+package org.cubewhy.celestial.utils.lunar;
 
 import com.google.gson.*;
 import okhttp3.Response;
+import org.cubewhy.celestial.utils.OSEnum;
+import org.cubewhy.celestial.utils.RequestUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,7 +14,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
-public class LauncherData {
+public final class LauncherData {
     public final URI api;
 
     /**
@@ -58,7 +60,7 @@ public class LauncherData {
     public JsonObject metadata() throws IOException {
         // do request with fake system info
         // TODO fix the launcher_version
-        try (Response response = RequestUtils.get(api + "/launcher/metadata" + "?os=linux" + "&arch=x64" + "&launcher_version=3.1.4").execute()) {
+        try (Response response = RequestUtils.get(api + "/launcher/metadata" + "?os=linux" + "&arch=x64" + "&launcher_version=v3.1.3-master").execute()) {
             assert response.code() == 200 : "Code = " + response.code(); // check success
             assert response.body() != null : "ResponseBody was null";
             return JsonParser.parseString(response.body().string()).getAsJsonObject();

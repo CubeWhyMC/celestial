@@ -5,13 +5,12 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.files.ConfigFile;
 import org.cubewhy.celestial.gui.GuiLauncher;
-import org.cubewhy.celestial.utils.LauncherData;
+import org.cubewhy.celestial.utils.lunar.LauncherData;
 import org.cubewhy.celestial.utils.TextUtils;
 
 import javax.swing.*;
