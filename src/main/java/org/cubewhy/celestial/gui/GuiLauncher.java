@@ -1,17 +1,22 @@
 package org.cubewhy.celestial.gui;
 
+import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.gui.pages.GuiAbout;
 import org.cubewhy.celestial.gui.pages.GuiNews;
 import org.cubewhy.celestial.gui.pages.GuiSettings;
 import org.cubewhy.celestial.utils.FileUtils;
+import org.cubewhy.celestial.utils.LauncherData;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
 
 import static org.cubewhy.celestial.Celestial.f;
+import static org.cubewhy.celestial.Celestial.metadata;
 
+@Slf4j
 public class GuiLauncher extends JFrame {
     public GuiLauncher() throws IOException {
         this.setBounds(100, 100, 1200, 700);
@@ -20,6 +25,14 @@ public class GuiLauncher extends JFrame {
         this.setIconImage(new ImageIcon(FileUtils.readBytes(FileUtils.inputStreamFromClassPath("/images/icon.png"))).getImage());
 
         this.initGui();
+        // show alert
+        Map<String, String> alert = LauncherData.getAlert(metadata);
+        if (alert != null) {
+            String title = alert.get("title");
+            String message = alert.get("message");
+            log.info(title + ": " + message);
+            JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     /**
