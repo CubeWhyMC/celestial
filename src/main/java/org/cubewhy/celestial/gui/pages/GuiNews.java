@@ -1,15 +1,34 @@
 package org.cubewhy.celestial.gui.pages;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.utils.LauncherData;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class GuiNews extends JPanel {
+import static org.cubewhy.celestial.Celestial.metadata;
+
+@Slf4j
+public class GuiNews extends JScrollPane {
+    private static final JPanel panel = new JPanel();
+    private final JsonArray blogPosts;
+
     public GuiNews() {
-        this.setLayout(new GridLayout(3, 3, 5, 5));
+        super(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        blogPosts = LauncherData.getBlogPosts(metadata);
         this.initGui();
     }
 
     private void initGui() {
-        this.add(new JLabel("test"));
+        // render blogPosts
+        log.info("Loading blogPosts (gui)");
+        for (JsonElement blogPost : blogPosts) {
+            String excerpt = blogPost.getAsJsonObject().get("excerpt").getAsString();
+            log.debug("Excerpt: " + excerpt);
+            panel.add(new JLabel());
+        }
     }
 }

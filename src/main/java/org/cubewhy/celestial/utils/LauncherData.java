@@ -59,14 +59,14 @@ public class LauncherData {
      */
     public JsonObject metadata() throws IOException {
         // do request with fake system info
-        try (Response response = RequestUtils.get(api + "/launcher/metadata" + "?os=linux" + "&arch=x64" + "&launcher_version=2.15.2").execute()) {
+        try (Response response = RequestUtils.get(api + "/launcher/metadata" + "?os=linux" + "&arch=x64" + "&launcher_version=114.514.191").execute()) {
             assert response.code() == 200 : "Code = " + response.code(); // check success
             assert response.body() != null : "ResponseBody was null";
             return JsonParser.parseString(response.body().string()).getAsJsonObject();
         }
     }
 
-    public JsonArray getBlogPosts(JsonObject metadata) {
+    public static JsonArray getBlogPosts(JsonObject metadata) {
         return metadata.getAsJsonArray("blogPosts");
     }
 
