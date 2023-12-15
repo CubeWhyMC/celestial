@@ -5,11 +5,13 @@ import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.files.ConfigFile;
 import org.cubewhy.celestial.gui.GuiLauncher;
+import org.cubewhy.celestial.utils.GitUtils;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
 import org.cubewhy.celestial.utils.TextUtils;
 
@@ -21,12 +23,12 @@ import java.util.ResourceBundle;
 
 @Slf4j
 public class Celestial {
-    public static Locale locale = Locale.getDefault();
-    public static String userLanguage = locale.getLanguage();
-    public static ResourceBundle f = ResourceBundle.getBundle("launcher", locale);
 
 
     public static final ConfigFile config = new ConfigFile(new File(System.getProperty("user.home"), ".cubewhy/lunarcn/celestial.json"));
+    public static Locale locale;
+    public static String userLanguage;
+    public static ResourceBundle f;
 
     public static LauncherData launcherData;
     public static JsonObject metadata;
@@ -34,11 +36,16 @@ public class Celestial {
     public static boolean themed = true;
 
     public static void main(String[] args) {
+        log.info("Celestial v" + GitUtils.getBuildVersion() + " build by " + GitUtils.getBuildUser());
         try {
+            System.setProperty("file.encoding", "UTF-8");
             run(args);
         } catch (Exception e) {
             String trace = TextUtils.dumpTrace(e);
             log.error(trace);
+            if (config.getConfig().has("data-sharing") && config.getValue("data-sharing").getAsBoolean()) {
+                log.info("Uploading crash report");
+            }
             JOptionPane.showMessageDialog(null, trace, "Oops, Celestial crashed", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
@@ -69,6 +76,8 @@ public class Celestial {
             System.exit(0);
         } else if (options.has("game")) {
             // launch game
+            log.info("Celestial - CommandLine");
+            log.warn("Command line startup is experimental. If any problems occur, please provide rational feedback.");
             launcherData = new LauncherData((String) options.valueOf("api"));
             String[] game = ((String) options.valueOf("game")).split(":");
             if (game.length != 3) {
@@ -88,6 +97,7 @@ public class Celestial {
             }
             System.exit(0);
         }
+        log.info("Language: " + userLanguage);
         checkJava();
         launcherData = new LauncherData(config.getValue("api").getAsString());
         while (true) {
@@ -98,11 +108,9 @@ public class Celestial {
                 log.info("connected");
                 break; // success
             } catch (Exception e) {
-                StringWriter sw = new StringWriter();
-                PrintWriter s = new PrintWriter(sw);
-                e.printStackTrace(s);
-                log.error(sw.toString());
-                // may switch api?
+                String trace = TextUtils.dumpTrace(e);
+                log.error(trace);
+                // shell we switch a api?
                 String input = JOptionPane.showInputDialog(f.getString("api.unreachable"), config.getValue("api").getAsString());
                 if (input == null) {
                     System.exit(1);
@@ -121,9 +129,9 @@ public class Celestial {
     }
 
     private static void checkJava() {
-        log.info("Checking jre...");
         String javaVersion = System.getProperty("java.specification.version");
-        log.info("Java " + javaVersion);
+        log.info("Celestial is running on Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"));
+
         if (!javaVersion.equals("17")) {
             log.warn("Compatibility warning: The Java you are currently using may not be able to start LunarClient properly (Java 17 is recommended)");
             JOptionPane.showMessageDialog(null, f.getString("compatibility.warn.message"), f.getString("compatibility.warn.title"), JOptionPane.WARNING_MESSAGE);
@@ -141,11 +149,21 @@ public class Celestial {
 
     private static void initConfig() {
         config.initValue("jre", "") // leave empty if you want to use the default one
+                .initValue("language", "zh") // en, zh
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
                 .initValue("vm-args", new JsonArray()) // custom jvm args
                 .initValue("program-args", new JsonArray()) // args of the game
                 .initValue("javaagents", new JsonObject()) // lc addon
                 .initValue("theme", "dark"); // dark, light, unset, custom.
+        // init language
+        locale = Locale.forLanguageTag(config.getValue("language").getAsString());
+        userLanguage = locale.getLanguage();
+        f = ResourceBundle.getBundle("launcher", locale);
+
+        if (!config.getConfig().has("data-sharing")) {
+            boolean b = JOptionPane.showConfirmDialog(null, f.getString("data-sharing.confirm.message"), f.getString("data-sharing.confirm.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION;
+            config.initValue("data-sharing", new JsonPrimitive(b));
+        }
     }
 
     public static void initTheme() throws IOException {

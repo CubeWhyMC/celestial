@@ -10,6 +10,7 @@ import org.cubewhy.celestial.utils.lunar.LauncherData;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class GuiLauncher extends JFrame {
     /**
      * Init Celestial Launcher (gui)
      */
-    private void initGui() {
+    private void initGui() throws MalformedURLException {
         // menu
         Panel menu = new Panel();
         Button btnPrevious = new Button("previous");
