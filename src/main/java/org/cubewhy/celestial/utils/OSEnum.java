@@ -48,4 +48,8 @@ public enum OSEnum {
         }
         return null;
     }
+
+    public static OSEnum getCurrent() {
+        return find(System.getProperty("os.name"));
+    }
 }

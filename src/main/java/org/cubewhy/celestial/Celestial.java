@@ -13,17 +13,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.files.ConfigFile;
 import org.cubewhy.celestial.game.GameArgs;
 import org.cubewhy.celestial.game.GameArgsResult;
+import org.cubewhy.celestial.game.JavaAgent;
 import org.cubewhy.celestial.gui.GuiLauncher;
+import org.cubewhy.celestial.utils.FileUtils;
 import org.cubewhy.celestial.utils.GitUtils;
-import org.cubewhy.celestial.utils.lunar.LauncherData;
+import org.cubewhy.celestial.utils.OSEnum;
 import org.cubewhy.celestial.utils.TextUtils;
+import org.cubewhy.celestial.utils.lunar.LauncherData;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 @Slf4j
 public class Celestial {
@@ -38,6 +47,7 @@ public class Celestial {
     public static JsonObject metadata;
     public static GuiLauncher launcherFrame;
     public static boolean themed = true;
+    public static final boolean isDevelopMode = System.getProperties().containsKey("dev-mode");
 
     public static void main(String[] args) {
         log.info("Celestial v" + GitUtils.getBuildVersion() + " build by " + GitUtils.getBuildUser());
@@ -154,12 +164,15 @@ public class Celestial {
     private static void initConfig() {
         config.initValue("jre", "") // leave empty if you want to use the default one
                 .initValue("language", "zh") // en, zh
+                .initValue("installation-dir", new File(System.getProperty("user.home"), ".cubewhy/lunarcn/game").getPath())
+                .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
                 .initValue("vm-args", new JsonArray()) // custom jvm args
                 .initValue("program-args", new JsonArray()) // args of the game
                 .initValue("javaagents", new JsonObject()) // lc addon
                 .initValue("theme", "dark"); // dark, light, unset, custom.
         // init language
+        log.info("Initializing language manager");
         locale = Locale.forLanguageTag(config.getValue("language").getAsString());
         userLanguage = locale.getLanguage();
         f = ResourceBundle.getBundle("launcher", locale);
@@ -168,6 +181,20 @@ public class Celestial {
             boolean b = JOptionPane.showConfirmDialog(null, f.getString("data-sharing.confirm.message"), f.getString("data-sharing.confirm.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION;
             config.initValue("data-sharing", new JsonPrimitive(b));
         }
+    }
+
+    /**
+     * Get the default .minecraft folder
+     * <p></p>
+     * Windows: %APPDATA%/.minecraft
+     * Linux/MacOS: ~/.minecraft
+     */
+    private static File getMinecraftFolder() {
+        OSEnum os = OSEnum.getCurrent();
+        if (os.equals(OSEnum.Windows)) {
+            return new File(System.getenv("APPDATA"), ".minecraft");
+        }
+        return new File(System.getProperty("user.home", ".minecraft"));
     }
 
     public static void initTheme() throws IOException {
@@ -221,6 +248,11 @@ public class Celestial {
         }
         // === default vm args ===
         args.addAll(LauncherData.getDefaultJvmArgs(json, installation));
+        // === javaagents ===
+        List<JavaAgent> javaAgents = JavaAgent.findAll();
+        for (JavaAgent agent : javaAgents) {
+            args.add(agent.getJvmArg());
+        }
         // === custom vm args ===
         List<String> customVMArgs = new ArrayList<>();
         for (JsonElement jsonElement : config.getValue("vm-args").getAsJsonArray()) {
@@ -238,7 +270,7 @@ public class Celestial {
                         .getAsJsonArray("artifacts")) {
             if (artifact.getAsJsonObject().get("type").getAsString().equals("CLASS_PATH")) {
                 // is ClassPath
-                classpath.add("\"" +  new File(installation, artifact.getAsJsonObject().get("name").getAsString()).getPath() + "\"");
+                classpath.add("\"" + new File(installation, artifact.getAsJsonObject().get("name").getAsString()).getPath() + "\"");
             } else if (artifact.getAsJsonObject().get("type").getAsString().equals("EXTERNAL_FILE")) {
                 // is external file
                 ichorPath.add("\"" + new File(artifact.getAsJsonObject().get("name").getAsString()).getPath() + "\"");
@@ -289,8 +321,32 @@ public class Celestial {
      * @param module  LunarClient module
      * @param branch  Git branch (LunarClient)
      */
-    public static void launch(String version, String module, String branch) {
+    @Nullable
+    public static String launch(String version, String module, String branch) throws IOException {
+        File installationDir = new File(config.getValue("installation-dir").getAsString());
+        File argsDump = new File("");
 
+        log.info(String.format("Launching (%s, %s, %s)", version, module, branch));
+        log.info("Checking update");
+        checkUpdate(version, module, branch);
+        log.info("Generating launch params");
+        GameArgs gameArgs = new GameArgs(540, 320, new File(config.getValue("game-dir").getAsString()), new File(System.getProperty("user.home"), ".cubewhy/lunarcn/textures"));
+        Celestial.launcherData = new LauncherData("https://api.lunarclientprod.com");
+        GameArgsResult argsResult = Celestial.getArgs(version, module, branch, installationDir, gameArgs);
+        List<String> args = argsResult.args();
+        File natives = argsResult.natives();
+        log.info("Args was dumped to " + argsDump);
+        log.info("Natives file: " + natives);
+        log.info("Unzipping natives...");
+        try {
+            FileUtils.unzipNatives(natives, installationDir);
+        } catch (Exception e) {
+            String trace = TextUtils.dumpTrace(e);
+            log.error("Is game launched? Failed to unzip natives.");
+            log.error(trace);
+            return f.getString("trace.unzip-natives");
+        }
+        return null; // success
     }
 
     /**
@@ -300,7 +356,7 @@ public class Celestial {
      * @param module  LunarClient module
      * @param branch  Git branch (LunarClient)
      */
-    public static void checkUpdate(String version, String module, String branch) {
+    public static void checkUpdate(String version, String module, String branch) throws IOException {
 
     }
 }
