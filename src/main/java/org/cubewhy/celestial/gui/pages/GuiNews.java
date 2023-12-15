@@ -9,10 +9,13 @@ import org.cubewhy.celestial.gui.LauncherNews;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 
+import java.awt.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static org.cubewhy.celestial.Celestial.f;
 import static org.cubewhy.celestial.Celestial.metadata;
 
 @Slf4j
@@ -22,6 +25,7 @@ public class GuiNews extends JScrollPane {
 
     public GuiNews() throws MalformedURLException {
         super(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        this.setBorder(new TitledBorder(null, f.getString("gui.news.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         blogPosts = LauncherData.getBlogPosts(metadata);
         this.initGui();

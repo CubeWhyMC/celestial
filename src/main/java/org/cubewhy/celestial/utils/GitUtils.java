@@ -41,4 +41,17 @@ public final class GitUtils {
     public static String getBuildUser() {
         return info.getProperty("git.build.user.name");
     }
+
+    public static String getBuildUserEmail() {
+        return info.getProperty("git.build.user.email");
+    }
+
+    public static String getCommitMessage() {
+        return info.getProperty("git.commit.message.full");
+    }
+
+    public static String getCommitTime() {
+        return info.getProperty("git.commit.time");
+    }
+
 }

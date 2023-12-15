@@ -4,8 +4,11 @@ import com.google.gson.JsonObject;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.io.File;
 
+import static org.cubewhy.celestial.Celestial.f;
 import static org.cubewhy.celestial.files.DownloadManager.cachesDir;
 
 public class LauncherNews extends JPanel {
