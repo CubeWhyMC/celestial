@@ -43,11 +43,11 @@ public final class SiteData {
         return metadata.get("alert").getAsString();
     }
 
-    public int getPLayersInGame(JsonObject metadata) {
+    public int getPlayersInGame(JsonObject metadata) {
         return metadata.getAsJsonObject("statistics").get("game").getAsInt();
     }
 
-    public int getPLayersInLauncher(JsonObject metadata) {
+    public int getPlayersInLauncher(JsonObject metadata) {
         return metadata.getAsJsonObject("statistics").get("launcher").getAsInt();
     }
 }
