@@ -24,10 +24,11 @@ public class GuiNews extends JScrollPane {
     private void initGui() {
         // render blogPosts
         log.info("Loading blogPosts (gui)");
+        log.info(String.valueOf(blogPosts));
         for (JsonElement blogPost : blogPosts) {
             String excerpt = blogPost.getAsJsonObject().get("excerpt").getAsString();
             log.debug("Excerpt: " + excerpt);
-            panel.add(new JLabel());
+            panel.add(new JLabel(excerpt));
         }
     }
 }
