@@ -39,7 +39,7 @@ public class GuiLauncher extends JFrame {
     /**
      * Init Celestial Launcher (gui)
      */
-    private void initGui() throws MalformedURLException {
+    private void initGui() throws IOException {
         // menu
         Panel menu = new Panel();
         JButton btnPrevious = new JButton("previous");
