@@ -30,11 +30,11 @@ public final class DownloadManager {
      * @return status (true=success, false=failure)
      * */
     public static boolean cache(URL url, String name, boolean override) throws IOException {
-        log.info("Caching " + name + " (from " + url.toString() + ")");
         File file = new File(cachesDir, name);
-        if (file.exists() && override) {
+        if (file.exists() && !override) {
             return true;
         }
+        log.info("Caching " + name + " (from " + url.toString() + ")");
         // download
         return download(url, file);
     }
