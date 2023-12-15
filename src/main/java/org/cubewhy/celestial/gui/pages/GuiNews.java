@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -23,7 +24,7 @@ public class GuiNews extends JScrollPane {
     private static final JPanel panel = new JPanel();
     private final JsonArray blogPosts;
 
-    public GuiNews() throws MalformedURLException {
+    public GuiNews() throws IOException {
         super(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         this.setBorder(new TitledBorder(null, f.getString("gui.news.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -31,7 +32,7 @@ public class GuiNews extends JScrollPane {
         this.initGui();
     }
 
-    private void initGui() throws MalformedURLException {
+    private void initGui() throws IOException {
         // render blogPosts
         log.info("Loading blogPosts (gui)");
         log.info(String.valueOf(blogPosts));
@@ -40,7 +41,7 @@ public class GuiNews extends JScrollPane {
             JsonObject json = blogPost.getAsJsonObject();
             String imageURL = json.get("image").getAsString();
             String title = json.get("title").getAsString();
-            if (DownloadManager.cache(new URL(imageURL), title, false)) {
+            if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
                 // load
                 panel.add(new LauncherNews(json));
             }

@@ -2,16 +2,23 @@ package org.cubewhy.celestial.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import lombok.SneakyThrows;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.net.URL;
 
 public final class RequestUtils {
     public static final OkHttpClient httpClient = new OkHttpClient();
     public static final MediaType JSON = MediaType.get("application/json");
 
 
+    @SneakyThrows
     public static Call get(String url) {
+        return get(new URL(url));
+    }
+
+    public static Call get(URL url) {
         Request request = new Request.Builder()
                 .url(url)
                 .build();

@@ -36,6 +36,7 @@ dependencies {
     include 'com.google.code.gson:gson:2.10.1'
     include 'net.sf.jopt-simple:jopt-simple:6.0-alpha-3'
     include 'com.formdev:flatlaf:3.3-SNAPSHOT'
+    include 'commons-io:commons-io:2.15.1'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'

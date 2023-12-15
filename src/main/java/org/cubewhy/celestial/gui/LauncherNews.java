@@ -18,7 +18,7 @@ public class LauncherNews extends JPanel {
 
     public LauncherNews(JsonObject json) {
         this.json = json;
-        this.image = new File(cachesDir, json.get("title").getAsString());
+        this.image = new File(cachesDir, json.get("title").getAsString() + ".png");
 
         this.initGui();
     }
