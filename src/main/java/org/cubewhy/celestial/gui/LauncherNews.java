@@ -1,12 +1,13 @@
 package org.cubewhy.celestial.gui;
 
 import com.google.gson.JsonObject;
-import org.cubewhy.celestial.utils.lunar.LauncherData;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 
 import static org.cubewhy.celestial.Celestial.f;
 import static org.cubewhy.celestial.files.DownloadManager.cachesDir;
@@ -19,14 +20,29 @@ public class LauncherNews extends JPanel {
     public LauncherNews(JsonObject json) {
         this.json = json;
         this.image = new File(cachesDir, "news/" + json.get("title").getAsString() + ".png");
-
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBorder(new TitledBorder(null, json.get("title").getAsString(), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         this.initGui();
     }
 
     private void initGui() {
-        this.add(new JLabel(json.get("excerpt").getAsString()));
+        final JLabel textLabel = new JLabel(json.get("excerpt").getAsString() + " - " + this.json.get("author").getAsString());
+        this.add(textLabel);
 
-        final JLabel imageLabel = new JLabel(new ImageIcon(this.image.getPath()), SwingConstants.CENTER);
+        ImageIcon image = new ImageIcon(this.image.getPath());
+        final JLabel imageLabel = new JLabel(new ImageIcon(image.getImage().getScaledInstance(400, 200, Image.SCALE_DEFAULT)), SwingConstants.CENTER);
         this.add(imageLabel);
+
+        JButton button = new JButton(this.json.get("button_text").getAsString());
+        button.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().browse(URI.create(this.json.get("link").getAsString()));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        this.add(button);
+
+        textLabel.setLabelFor(imageLabel);
     }
 }
