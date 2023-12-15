@@ -74,7 +74,7 @@ public final class LauncherData {
      * @return a map of the alert (title, message)
      * */
     public static Map<String, String> getAlert(JsonObject metadata) {
-        if (metadata.has("alert")) {
+        if (metadata.has("alert") && !metadata.get("alert").isJsonNull()) {
             JsonObject alert = metadata.getAsJsonObject("alert");
             Map<String, String> map = new HashMap<>();
             map.put("title", alert.get("name").getAsString());

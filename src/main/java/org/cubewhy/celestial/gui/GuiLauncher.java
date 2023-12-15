@@ -13,16 +13,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
 
-import static org.cubewhy.celestial.Celestial.f;
-import static org.cubewhy.celestial.Celestial.metadata;
+import static org.cubewhy.celestial.Celestial.*;
 
 @Slf4j
 public class GuiLauncher extends JFrame {
     public GuiLauncher() throws IOException {
         this.setBounds(100, 100, 1200, 700);
-//        this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
         this.setTitle(f.getString("gui.launcher.title"));
-        this.setIconImage(new ImageIcon(FileUtils.readBytes(FileUtils.inputStreamFromClassPath("/images/icon.png"))).getImage());
+
+        // init icon
+        this.resetIcon();
 
         this.initGui();
         // show alert
@@ -66,8 +66,8 @@ public class GuiLauncher extends JFrame {
         mainPanel.setLayout(layout);
         // TODO: add enabled pages (from metadata)
         // add pages
-        mainPanel.add("version", new GuiVersionSelect());
         mainPanel.add("news", new GuiNews());
+        mainPanel.add("version", new GuiVersionSelect());
         mainPanel.add("settings", new GuiSettings());
         mainPanel.add("about", new GuiAbout());
 
@@ -79,5 +79,29 @@ public class GuiLauncher extends JFrame {
             layout.next(mainPanel);
         });
         this.add(mainPanel); // add MainPanel
+    }
+
+    /**
+     * Load icon image from /images/icons
+     *
+     * @param name file name
+     * */
+    public void setIconImage(String name) throws IOException {
+        this.setIconImage(new ImageIcon(FileUtils.readBytes(FileUtils.inputStreamFromClassPath("/images/icons/" + name + ".png"))).getImage());
+    }
+
+    /**
+     * Reset the icon
+     * */
+    public void resetIcon() throws IOException {
+        String themeType = config.getValue("theme").getAsString();
+        switch (themeType) {
+            case "dark":
+                this.setIconImage("icon-light");
+                break;
+            case "light":
+            default:
+                this.setIconImage("icon-dark");
+        }
     }
 }
