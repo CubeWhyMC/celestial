@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -50,6 +51,33 @@ public final class LauncherData {
      */
     public LauncherData(@NotNull URL api) throws URISyntaxException {
         this(api.toURI());
+    }
+
+    /**
+     * Get LunarClient main-class (online)
+     *
+     * @param json Json of the special LunarClient instance
+     * @return main class of the LunarClient instance
+     */
+    public static String getMainClass(@NotNull JsonObject json) {
+        return json
+                .getAsJsonObject("launchTypeData")
+                .get("mainClass").getAsString();
+    }
+
+    /**
+     * Get ICHOR state
+     *
+     * @return true (always)
+     */
+    public static boolean getIchorState(JsonObject json) throws IOException {
+        if (json.getAsJsonObject("launchTypeData").has("ichor")) {
+            return json
+                    .getAsJsonObject("launchTypeData")
+                    .get("ichor").getAsBoolean();
+        } else {
+            return true; // force enable ichor in the latest api version
+        }
     }
 
     /**
@@ -98,7 +126,7 @@ public final class LauncherData {
     public JsonObject getVersion(String version, String branch, String module) throws IOException {
         JsonObject json = new JsonObject();
         json.addProperty("hwid", "HWID-PUBLIC");
-        json.addProperty("installation_id", "INSTALLATION_ID");
+        json.addProperty("installation_id", new UUID(100, 0).toString()); // fake uuid
         json.addProperty("os", Objects.requireNonNull(OSEnum.find(System.getProperty("os.name"))).jsName); // shit js
         json.addProperty("arch", "x64"); // example: x64
         json.addProperty("os_release", "19045.3086");
@@ -112,6 +140,21 @@ public final class LauncherData {
             assert response.body() != null : "ResponseBody was null";
             return JsonParser.parseString(response.body().string()).getAsJsonObject();
         }
+    }
+
+    public static List<String> getDefaultJvmArgs(JsonObject json, File installation) {
+        List<String> out = new ArrayList<>();
+        for (JsonElement arg : json
+                .getAsJsonObject("jre")
+                .getAsJsonArray("extraArguments")) {
+            if (arg.getAsString().equals("-Djna.boot.library.path=natives")) {
+                out.add("-Djna.boot.library.path=\"" + installation + "/" + "natives\"");
+                continue;
+            }
+            out.add(arg.getAsString());
+        }
+        out.add("-Djava.library.path=\"" + installation + "/" + "natives\"");
+        return out;
     }
 
     /**

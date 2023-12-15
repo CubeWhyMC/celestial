@@ -54,8 +54,8 @@ public class ConfigFile {
         return this.initValue(key, new JsonPrimitive(value));
     }
 
-    public JsonPrimitive getValue(String key) {
-        return this.config.getAsJsonPrimitive(key);
+    public JsonElement getValue(String key) {
+        return this.config.get(key);
     }
 
     public ConfigFile save() {

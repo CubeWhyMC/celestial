@@ -4,22 +4,26 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.IntelliJTheme;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.files.ConfigFile;
+import org.cubewhy.celestial.game.GameArgs;
+import org.cubewhy.celestial.game.GameArgsResult;
 import org.cubewhy.celestial.gui.GuiLauncher;
 import org.cubewhy.celestial.utils.GitUtils;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
 import org.cubewhy.celestial.utils.TextUtils;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 
 @Slf4j
 public class Celestial {
@@ -198,6 +202,84 @@ public class Celestial {
      */
     public static void launch() {
 
+    }
+
+    /**
+     * Get args
+     */
+    @NotNull
+    @Contract("_, _, _, _ -> new")
+    public static GameArgsResult getArgs(String version, String branch, String module, File installation, GameArgs gameArgs) throws IOException {
+        List<String> args = new ArrayList<>();
+        JsonObject json = launcherData.getVersion(version, branch, module);
+        // === JRE ===
+        String customJre = config.getValue("jre").getAsString();
+        if (customJre.isEmpty()) {
+            args.add(System.getProperty("java.home") + "/bin/java"); // Note: Java may not be found through this method on some non-Windows computers. You can manually specify the Java executable file.
+        } else {
+            args.add(customJre);
+        }
+        // === default vm args ===
+        args.addAll(LauncherData.getDefaultJvmArgs(json, installation));
+        // === custom vm args ===
+        List<String> customVMArgs = new ArrayList<>();
+        for (JsonElement jsonElement : config.getValue("vm-args").getAsJsonArray()) {
+            customVMArgs.add(jsonElement.getAsString());
+        }
+        args.addAll(customVMArgs);
+        // === classpath ===
+        List<String> classpath = new ArrayList<>();
+        List<String> ichorPath = new ArrayList<>();
+        File natives = null;
+        args.add("-cp");
+        for (JsonElement artifact :
+                json
+                        .getAsJsonObject("launchTypeData")
+                        .getAsJsonArray("artifacts")) {
+            if (artifact.getAsJsonObject().get("type").getAsString().equals("CLASS_PATH")) {
+                // is ClassPath
+                classpath.add("\"" +  new File(installation, artifact.getAsJsonObject().get("name").getAsString()).getPath() + "\"");
+            } else if (artifact.getAsJsonObject().get("type").getAsString().equals("EXTERNAL_FILE")) {
+                // is external file
+                ichorPath.add("\"" + new File(artifact.getAsJsonObject().get("name").getAsString()).getPath() + "\"");
+            } else if (artifact.getAsJsonObject().get("type").getAsString().equals("NATIVES")) {
+                // natives
+                natives = new File(installation, artifact.getAsJsonObject().get("name").getAsString());
+            }
+        }
+        args.add(String.join(";", classpath));
+        // === main class ===
+        args.add(LauncherData.getMainClass(json));
+        // === game args ===
+        boolean ichorEnabled = LauncherData.getIchorState(json);
+        args.add("--version " + version); // what version will lunarClient inject
+        args.add("--accessToken 0");
+        args.add("--userProperties {}");
+        args.add("--launcherVersion 2.15.1");
+        args.add("--hwid PUBLIC-HWID");
+        args.add("--installationId INSTALLATION-ID");
+        args.add("--workingDirectory " + installation);
+        args.add("--classpathDir " + installation);
+        args.add("--width " + gameArgs.getWidth());
+        args.add("--height " + gameArgs.getHeight());
+        args.add("--gameDir " + gameArgs.getGameDir());
+        args.add("--texturesDir " + gameArgs.getTexturesDir());
+        if (gameArgs.getServer() != null) {
+            args.add("--server " + gameArgs.getServer()); // Join server after launch
+        }
+        args.add("--assetIndex " + version.substring(0, version.lastIndexOf(".")));
+        if (ichorEnabled) {
+            args.add("--ichorClassPath");
+            args.add(String.join(",", classpath));
+            args.add("--ichorExternalFiles");
+            args.add(String.join(",", ichorPath));
+        }
+        // === custom game args ===
+        for (JsonElement arg : config.getValue("program-args").getAsJsonArray()) {
+            args.add(arg.getAsString());
+        }
+        // === finish ===
+        return new GameArgsResult(args, natives);
     }
 
     /**
