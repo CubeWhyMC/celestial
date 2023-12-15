@@ -96,12 +96,12 @@ public class GuiLauncher extends JFrame {
     public void resetIcon() throws IOException {
         String themeType = config.getValue("theme").getAsString();
         switch (themeType) {
+            case "light":
+                this.setIconImage("icon-dark");
             case "dark":
+            default:
                 this.setIconImage("icon-light");
                 break;
-            case "light":
-            default:
-                this.setIconImage("icon-dark");
         }
     }
 }
