@@ -23,7 +23,7 @@ public class FileUtils {
         return inputStream.readAllBytes();
     }
 
-    public static void unzipNatives(File nativesZip, String baseDir) throws IOException {
+    public static void unzipNatives(File nativesZip, File baseDir) throws IOException {
         File dir = new File(baseDir, "natives");
         if (!dir.exists()) {
             dir.mkdirs();
@@ -51,5 +51,6 @@ public class FileUtils {
                 }
             }
         }
+        zipfile.close();
     }
 }

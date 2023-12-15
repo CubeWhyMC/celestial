@@ -5,9 +5,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 
+@Slf4j
 public class ConfigFile {
     @Getter
     private JsonObject config;
@@ -45,6 +47,7 @@ public class ConfigFile {
 
     public ConfigFile initValue(String key, JsonElement value) {
         if (!this.config.has(key)) {
+            log.info("Init value " + key +" -> " + value);
             this.config.add(key, value);
         }
         return this.save();
