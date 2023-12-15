@@ -42,13 +42,13 @@ public class GuiLauncher extends JFrame {
     private void initGui() throws MalformedURLException {
         // menu
         Panel menu = new Panel();
-        Button btnPrevious = new Button("previous");
-        Button btnNext = new Button("next");
+        JButton btnPrevious = new JButton("previous");
+        JButton btnNext = new JButton("next");
         // For developers: It is not recommended to remove the Donate button in Celestial Launcher's derivative versions
         // 不建议在衍生版本中删除赞助按钮
         // Celestial 是免费开源的启动器, 请赞助来帮助我们走得更远 (收入会全部用于开发) , 若你不想再次看到这个按钮, 可以在config.json中关闭
         // Celestial is a opensource launcher, please donate to let us go further (All money will be used for development), If you don't want to see this button again, you can turn it off in config.json
-        Button btnDonate = new Button(f.getString("gui.donate"));
+        JButton btnDonate = new JButton(f.getString("gui.donate"));
         btnDonate.addActionListener(e -> {
             try {
                 Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/donate"));
@@ -86,14 +86,14 @@ public class GuiLauncher extends JFrame {
      * Load icon image from /images/icons
      *
      * @param name file name
-     * */
+     */
     public void setIconImage(String name) throws IOException {
         this.setIconImage(new ImageIcon(FileUtils.readBytes(FileUtils.inputStreamFromClassPath("/images/icons/" + name + ".png"))).getImage());
     }
 
     /**
      * Reset the icon
-     * */
+     */
     public void resetIcon() throws IOException {
         String themeType = config.getValue("theme").getAsString();
         switch (themeType) {
