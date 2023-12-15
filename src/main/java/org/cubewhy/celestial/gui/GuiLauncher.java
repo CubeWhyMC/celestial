@@ -1,6 +1,7 @@
 package org.cubewhy.celestial.gui;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.gui.dialogs.LanguageSelectDialog;
 import org.cubewhy.celestial.gui.pages.GuiAbout;
 import org.cubewhy.celestial.gui.pages.GuiNews;
 import org.cubewhy.celestial.gui.pages.GuiSettings;
@@ -49,15 +50,22 @@ public class GuiLauncher extends JFrame {
         // Celestial 是免费开源的启动器, 请赞助来帮助我们走得更远 (收入会全部用于开发) , 若你不想再次看到这个按钮, 可以在config.json中关闭
         // Celestial is a opensource launcher, please donate to let us go further (All money will be used for development), If you don't want to see this button again, you can turn it off in config.json
         JButton btnDonate = new JButton(f.getString("gui.donate"));
+        JButton btnLanguage = new JButton("Language"); // Do not translate this button :)
         btnDonate.addActionListener(e -> {
             try {
                 Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/donate"));
             } catch (IOException ignored) {
             }
         });
+
+        btnLanguage.addActionListener(e ->{
+            // show language selection dialog
+            new LanguageSelectDialog(this).setVisible(true);
+        });
         menu.add(btnPrevious);
         menu.add(btnNext);
         menu.add(btnDonate);
+        menu.add(btnLanguage);
         menu.setSize(100, 20);
 
         this.add(menu, BorderLayout.NORTH);

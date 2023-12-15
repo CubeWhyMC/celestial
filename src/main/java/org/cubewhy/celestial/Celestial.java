@@ -175,7 +175,7 @@ public class Celestial {
         log.info("Initializing language manager");
         locale = Locale.forLanguageTag(config.getValue("language").getAsString());
         userLanguage = locale.getLanguage();
-        f = ResourceBundle.getBundle("launcher", locale);
+        f = ResourceBundle.getBundle("languages/launcher", locale);
 
         if (!config.getConfig().has("data-sharing")) {
             boolean b = JOptionPane.showConfirmDialog(null, f.getString("data-sharing.confirm.message"), f.getString("data-sharing.confirm.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.OK_OPTION;
