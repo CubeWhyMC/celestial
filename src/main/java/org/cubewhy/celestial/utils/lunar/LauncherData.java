@@ -95,7 +95,7 @@ public final class LauncherData {
         return metadata.getAsJsonArray("blogPosts");
     }
 
-    public JsonElement getVersion(String version, String branch, String module) throws IOException {
+    public JsonObject getVersion(String version, String branch, String module) throws IOException {
         JsonObject json = new JsonObject();
         json.addProperty("hwid", "HWID-PUBLIC");
         json.addProperty("installation_id", "INSTALLATION_ID");
@@ -110,7 +110,7 @@ public final class LauncherData {
 
         try (Response response = RequestUtils.post(api + "/launcher/launch", new Gson().toJson(json)).execute()) {
             assert response.body() != null : "ResponseBody was null";
-            return JsonParser.parseString(response.body().string());
+            return JsonParser.parseString(response.body().string()).getAsJsonObject();
         }
     }
 
@@ -159,7 +159,7 @@ public final class LauncherData {
     /**
      * Get support addons
      *
-     * @param metadata LC metadta
+     * @param metadata LC metadata
      * @param version  Minecraft version
      * @return Module List
      */
@@ -181,23 +181,23 @@ public final class LauncherData {
      * @return artifact list
      */
 
-    public static JsonObject getArtifacts(JsonElement version) throws IOException {
-        JsonObject out = new JsonObject();
+    public static Map<String, Map<String, String>> getArtifacts(JsonElement version) throws IOException {
+        Map<String, Map<String, String>> out = new HashMap<>();
 
         JsonObject versionJson = Objects.requireNonNull(version).getAsJsonObject();
         JsonObject launchTypeData = versionJson.getAsJsonObject("launchTypeData");
         JsonArray artifacts = launchTypeData.getAsJsonArray("artifacts");
 
         for (JsonElement artifact : artifacts) {
-            JsonObject info = new JsonObject();
+            Map<String, String> info = new HashMap<>();
             String key = artifact.getAsJsonObject().get("name").getAsString();
-            JsonElement url = artifact.getAsJsonObject().get("url");
-            JsonElement sha1 = artifact.getAsJsonObject().get("sha1");
-            JsonElement type = artifact.getAsJsonObject().get("type");
-            info.add("url", url);
-            info.add("sha1", sha1);
-            info.add("type", type);
-            out.add(key, info);
+            String url = artifact.getAsJsonObject().get("url").getAsString();
+            String sha1 = artifact.getAsJsonObject().get("sha1").getAsString();
+            String type = artifact.getAsJsonObject().get("type").getAsString();
+            info.put("url", url);
+            info.put("sha1", sha1);
+            info.put("type", type);
+            out.put(key, info);
         }
 
         return out;

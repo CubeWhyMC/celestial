@@ -44,20 +44,4 @@ public final class RequestUtils {
         String realJson = gson.toJson(json);
         return post(url, realJson);
     }
-
-
-    /**
-     * Download
-     *
-     * @param url target url
-     * @return bytes
-     */
-    public static byte[] download(String url) throws IOException {
-        try (Response response = get(url).execute()) {
-            if (response.body() != null) {
-                return response.body().bytes();
-            }
-        }
-        return null;
-    }
 }
