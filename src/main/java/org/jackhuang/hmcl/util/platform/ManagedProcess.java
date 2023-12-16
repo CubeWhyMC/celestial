@@ -11,7 +11,6 @@ import java.util.function.Predicate;
  * The managed process.
  *
  * @author huangyuhui
- * @see org.jackhuang.hmcl.launch.StreamPump
  */
 public class ManagedProcess {
 
