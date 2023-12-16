@@ -9,8 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
-import static org.cubewhy.celestial.Celestial.f;
-import static org.cubewhy.celestial.files.DownloadManager.cachesDir;
+import static org.cubewhy.celestial.files.DownloadManager.cacheDir;
 
 public class LauncherNews extends JPanel {
 
@@ -19,7 +18,7 @@ public class LauncherNews extends JPanel {
 
     public LauncherNews(JsonObject json) {
         this.json = json;
-        this.image = new File(cachesDir, "news/" + json.get("title").getAsString() + ".png");
+        this.image = new File(cacheDir, "news/" + json.get("title").getAsString() + ".png");
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBorder(new TitledBorder(null, json.get("title").getAsString(), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         this.initGui();

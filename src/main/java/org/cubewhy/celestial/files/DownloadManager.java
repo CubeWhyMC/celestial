@@ -9,13 +9,15 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import static org.cubewhy.celestial.Celestial.configDir;
+
 @Slf4j
 public final class DownloadManager {
-    public static final File cachesDir = new File(System.getProperty("user.home"), ".cubewhy/lunarcn/caches");
+    public static final File cacheDir = new File(configDir, "cache");
 
     static {
-        if (!cachesDir.exists()) {
-            cachesDir.mkdirs();
+        if (!cacheDir.exists()) {
+            cacheDir.mkdirs();
         }
     }
 
@@ -30,7 +32,7 @@ public final class DownloadManager {
      * @return status (true=success, false=failure)
      * */
     public static boolean cache(URL url, String name, boolean override) throws IOException {
-        File file = new File(cachesDir, name);
+        File file = new File(cacheDir, name);
         if (file.exists() && !override) {
             return true;
         }
