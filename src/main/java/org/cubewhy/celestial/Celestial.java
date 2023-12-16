@@ -248,9 +248,9 @@ public class Celestial {
         // === JRE ===
         String customJre = config.getValue("jre").getAsString();
         if (customJre.isEmpty()) {
-            args.add(System.getProperty("java.home") + "/bin/java"); // Note: Java may not be found through this method on some non-Windows computers. You can manually specify the Java executable file.
+            args.add("\"" + System.getProperty("java.home") + "/bin/java\""); // Note: Java may not be found through this method on some non-Windows computers. You can manually specify the Java executable file.
         } else {
-            args.add(customJre);
+            args.add("\"" + customJre + "\"");
         }
         // === default vm args ===
         args.addAll(LauncherData.getDefaultJvmArgs(json, installation));
