@@ -141,6 +141,7 @@ public class Celestial {
                 }
             }
         }
+
         // start gui launcher
         initTheme(); // init theme
 
@@ -174,10 +175,11 @@ public class Celestial {
                 .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
+                .initValue("theme", "dark") // dark, light, unset, custom.
                 .initValue("vm-args", new JsonArray()) // custom jvm args
+                .initValue("wrapper", "") // like optirun on linux
                 .initValue("program-args", new JsonArray()) // args of the game
-                .initValue("javaagents", new JsonObject()) // lc addon
-                .initValue("theme", "dark"); // dark, light, unset, custom.
+                .initValue("javaagents", new JsonObject()); // lc addon
         // init language
         log.info("Initializing language manager");
         locale = Locale.forLanguageTag(config.getValue("language").getAsString());
@@ -234,8 +236,15 @@ public class Celestial {
     /**
      * Launch LunarClient offline
      */
-    public static void launch() {
-
+    public static void launch() throws IOException {
+        // wrapper was applied in the script
+        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
+            // Windows
+            Runtime.getRuntime().exec("cmd.exe /C " + launchScript);
+        } else {
+            // others
+            Runtime.getRuntime().exec("bash " + launchScript);
+        }
     }
 
     /**
@@ -246,7 +255,12 @@ public class Celestial {
         List<String> args = new ArrayList<>();
         JsonObject json = launcherData.getVersion(version, branch, module);
         // === JRE ===
+        String wrapper = config.getValue("wrapper").getAsString();
         String customJre = config.getValue("jre").getAsString();
+        if (!wrapper.isBlank()) {
+            log.warn("Launch the game via the wrapper: " + wrapper);
+            args.add(wrapper);
+        }
         if (customJre.isEmpty()) {
             args.add("\"" + System.getProperty("java.home") + "/bin/java\""); // Note: Java may not be found through this method on some non-Windows computers. You can manually specify the Java executable file.
         } else {
@@ -329,7 +343,7 @@ public class Celestial {
      * @return error message
      */
     @Nullable
-    public static String launch(String version, String module, String branch) throws IOException {
+    public static String launch(String version, String branch, String module) throws IOException {
         File installationDir = new File(config.getValue("installation-dir").getAsString());
 
         log.info(String.format("Launching (%s, %s, %s)", version, module, branch));
@@ -338,7 +352,7 @@ public class Celestial {
         log.info("Generating launch params");
         GameArgs gameArgs = new GameArgs(540, 320, new File(config.getValue("game-dir").getAsString()), new File(configDir, "game/textures"));
         Celestial.launcherData = new LauncherData("https://api.lunarclientprod.com");
-        GameArgsResult argsResult = Celestial.getArgs(version, module, branch, installationDir, gameArgs);
+        GameArgsResult argsResult = Celestial.getArgs(version, branch, module, installationDir, gameArgs);
         List<String> args = argsResult.args();
         String argsString = String.join(" ", args);
         File natives = argsResult.natives();
@@ -375,6 +389,13 @@ public class Celestial {
             log.error("Is game launched? Failed to unzip natives.");
             log.error(trace);
             return f.getString("trace.unzip-natives");
+        }
+        // exec, run
+        log.info("Everything is OK, starting game...");
+        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
+            Runtime.getRuntime().exec(argsString);
+        } else {
+            Runtime.getRuntime().exec("bash -c \"" + argsString + "\"");
         }
         return null; // success
     }
