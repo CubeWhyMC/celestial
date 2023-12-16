@@ -20,7 +20,6 @@ import org.cubewhy.celestial.utils.GitUtils;
 import org.cubewhy.celestial.utils.OSEnum;
 import org.cubewhy.celestial.utils.TextUtils;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +37,8 @@ import java.util.ResourceBundle;
 public class Celestial {
 
 
-    public static final ConfigFile config = new ConfigFile(new File(System.getProperty("user.home"), ".cubewhy/lunarcn/celestial.json"));
+    public static final File configDir = new File(System.getProperty("user.home"), ".cubewhy/lunarcn");
+    public static final ConfigFile config = new ConfigFile(new File(configDir, "celestial.json"));
     public static Locale locale;
     public static String userLanguage;
     public static ResourceBundle f;
@@ -47,6 +47,8 @@ public class Celestial {
     public static JsonObject metadata;
     public static GuiLauncher launcherFrame;
     public static boolean themed = true;
+    public static String os = System.getProperty("os.name");
+    public static final File launchScript = new File(configDir, (os.contains("Windows")) ? "launch.bat" : "launch.sh");
     public static final boolean isDevelopMode = System.getProperties().containsKey("dev-mode");
 
     public static void main(String[] args) {
@@ -164,7 +166,7 @@ public class Celestial {
     private static void initConfig() {
         config.initValue("jre", "") // leave empty if you want to use the default one
                 .initValue("language", "zh") // en, zh
-                .initValue("installation-dir", new File(System.getProperty("user.home"), ".cubewhy/lunarcn/game").getPath())
+                .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
                 .initValue("vm-args", new JsonArray()) // custom jvm args
@@ -212,7 +214,7 @@ public class Celestial {
                 themed = false;
             }
             default -> {
-                File themeFile = new File(System.getProperty("user.home"), ".cubewhy/lunarcn/themes/" + themeType);
+                File themeFile = new File(configDir, "themes/" + themeType);
                 if (!themeFile.exists()) {
                     // cannot load custom theme without theme.json
                     JOptionPane.showMessageDialog(null, f.getString("theme.custom.notfound.message"), f.getString("theme.custom.notfound.title"), JOptionPane.WARNING_MESSAGE);
@@ -319,22 +321,22 @@ public class Celestial {
      * @param version Minecraft version
      * @param module  LunarClient module
      * @param branch  Git branch (LunarClient)
+     * @return error message
      */
     @Nullable
     public static String launch(String version, String module, String branch) throws IOException {
         File installationDir = new File(config.getValue("installation-dir").getAsString());
-        File argsDump = new File("");
 
         log.info(String.format("Launching (%s, %s, %s)", version, module, branch));
         log.info("Checking update");
         checkUpdate(version, module, branch);
         log.info("Generating launch params");
-        GameArgs gameArgs = new GameArgs(540, 320, new File(config.getValue("game-dir").getAsString()), new File(System.getProperty("user.home"), ".cubewhy/lunarcn/textures"));
+        GameArgs gameArgs = new GameArgs(540, 320, new File(config.getValue("game-dir").getAsString()), new File(configDir, "game/textures"));
         Celestial.launcherData = new LauncherData("https://api.lunarclientprod.com");
         GameArgsResult argsResult = Celestial.getArgs(version, module, branch, installationDir, gameArgs);
         List<String> args = argsResult.args();
         File natives = argsResult.natives();
-        log.info("Args was dumped to " + argsDump);
+        log.info("Args was dumped to " + launchScript);
         log.info("Natives file: " + natives);
         log.info("Unzipping natives...");
         try {

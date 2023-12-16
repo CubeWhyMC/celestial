@@ -12,11 +12,12 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.cubewhy.celestial.Celestial.config;
+import static org.cubewhy.celestial.Celestial.configDir;
 
 @Getter
 @Slf4j
 public class JavaAgent {
-    public static final File javaAgentFolder = new File(System.getProperty("user.home"), ".cubewhy/lunarcn/javaagents"); // share with LunarCN Launcher
+    public static final File javaAgentFolder = new File(configDir, "javaagents"); // share with LunarCN Launcher
 
     static {
         if (!javaAgentFolder.exists()) {
