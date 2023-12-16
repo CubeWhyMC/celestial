@@ -58,7 +58,7 @@ public class Celestial {
             StringBuffer message = new StringBuffer("Celestial Crashed");
             if (config.getConfig().has("data-sharing") && config.getValue("data-sharing").getAsBoolean()) {
                 log.info("Uploading crash report");
-                Map<String, String> map = launcherData.uploadCrashReport(trace, CrashReportType.LAUNCHER);
+                Map<String, String> map = launcherData.uploadCrashReport(trace, CrashReportType.LAUNCHER, null);
                 if (map.isEmpty()) {
                     log.info("Crash report update failed");
                 } else {
