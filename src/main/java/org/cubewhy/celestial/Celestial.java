@@ -235,7 +235,6 @@ public class Celestial {
      * Get args
      */
     @NotNull
-    @Contract("_, _, _, _ -> new")
     public static GameArgsResult getArgs(String version, String branch, String module, File installation, GameArgs gameArgs) throws IOException {
         List<String> args = new ArrayList<>();
         JsonObject json = launcherData.getVersion(version, branch, module);
