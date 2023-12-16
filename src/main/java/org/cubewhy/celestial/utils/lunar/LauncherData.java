@@ -2,6 +2,7 @@ package org.cubewhy.celestial.utils.lunar;
 
 import com.google.gson.*;
 import okhttp3.Response;
+import org.cubewhy.celestial.utils.CrashReportType;
 import org.cubewhy.celestial.utils.OSEnum;
 import org.cubewhy.celestial.utils.RequestUtils;
 import org.jetbrains.annotations.Contract;
@@ -284,4 +285,22 @@ public final class LauncherData {
     }
 
 
+    @NotNull
+    public Map<String, String> uploadCrashReport(String trace, @NotNull CrashReportType type) throws IOException {
+        Map<String, String> map = new HashMap<>();
+        // do request
+        JsonObject request = new JsonObject();
+        request.addProperty("type", type.jsonName);
+        request.addProperty("trace", trace);
+        request.add("launchScript", null);
+        try (Response response = RequestUtils.post(api + "/launcher/uploadCrashReport", request).execute()) {
+            if (response.isSuccessful() && response.body() != null) {
+                JsonObject json = JsonParser.parseString(response.body().string()).getAsJsonObject().getAsJsonObject("data");
+                map.put("id", json.get("id").getAsString());
+                map.put("message", json.get("message").getAsString());
+                map.put("url", json.get("url").getAsString());
+            }
+        };
+        return map;
+    }
 }
