@@ -44,6 +44,7 @@ public class Celestial {
     public static boolean themed = true;
     public static String os = System.getProperty("os.name");
     public static final File launchScript = new File(configDir, (os.contains("Windows")) ? "launch.bat" : "launch.sh");
+    public static final File logFile = new File(configDir, "latest.log");
     public static final boolean isDevelopMode = System.getProperties().containsKey("dev-mode");
 
     public static void main(String[] args) throws Exception {
@@ -245,8 +246,11 @@ public class Celestial {
         log.info("Launching with script");
         if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
             // Windows
+            // delete the log file
+            log.info("delete the log file");
+            logFile.delete();
             ProcessBuilder builder = new ProcessBuilder();
-            builder.command(System.getenv("WINDIR") + "/System32/cmd.exe", "/C \"" + launchScript.getPath() + " 1>>%USERPROFILE%/.cubewhy/lunarcn/latest.log 2>&1\"");
+            builder.command(System.getenv("WINDIR") + "/System32/cmd.exe", "/C \"" + launchScript.getPath() + String.format(" 1>>\"%s\" 2>&1\"", logFile.getPath()));
             return builder;
         } else {
             // others
