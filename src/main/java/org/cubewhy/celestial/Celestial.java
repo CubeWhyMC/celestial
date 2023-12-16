@@ -240,14 +240,19 @@ public class Celestial {
     /**
      * Launch LunarClient offline
      */
-    public static void launch() throws IOException {
+    public static ProcessBuilder launch() throws IOException {
         // wrapper was applied in the script
+        log.info("Launching with script");
         if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
             // Windows
-            Runtime.getRuntime().exec("cmd.exe /C " + launchScript);
+            ProcessBuilder builder = new ProcessBuilder();
+            builder.command(System.getenv("WINDIR") + "/System32/cmd.exe", "/C \"" + launchScript.getPath() + " 1>>%USERPROFILE%/.cubewhy/lunarcn/latest.log 2>&1\"");
+            return builder;
         } else {
             // others
-            Runtime.getRuntime().exec("bash " + launchScript);
+            ProcessBuilder builder = new ProcessBuilder();
+            builder.command("/bin/bash", "\"" + launchScript.getPath() + "\"");
+            return builder;
         }
     }
 

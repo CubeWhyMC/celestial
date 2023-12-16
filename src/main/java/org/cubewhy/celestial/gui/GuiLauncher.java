@@ -5,6 +5,7 @@ import org.cubewhy.celestial.gui.dialogs.LanguageSelectDialog;
 import org.cubewhy.celestial.gui.pages.GuiAbout;
 import org.cubewhy.celestial.gui.pages.GuiNews;
 import org.cubewhy.celestial.gui.pages.GuiSettings;
+import org.cubewhy.celestial.gui.pages.GuiVersion;
 import org.cubewhy.celestial.utils.FileUtils;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
 
@@ -76,7 +77,7 @@ public class GuiLauncher extends JFrame {
         // TODO: add enabled pages (from metadata)
         // add pages
         mainPanel.add("news", new GuiNews());
-        mainPanel.add("version", new GuiVersionSelect());
+        mainPanel.add("version", new GuiVersion());
         mainPanel.add("settings", new GuiSettings());
         mainPanel.add("about", new GuiAbout());
 
