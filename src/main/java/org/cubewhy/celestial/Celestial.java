@@ -17,6 +17,7 @@ import org.cubewhy.celestial.game.JavaAgent;
 import org.cubewhy.celestial.gui.GuiLauncher;
 import org.cubewhy.celestial.utils.*;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -204,6 +205,8 @@ public class Celestial {
      * Windows: %APPDATA%/.minecraft
      * Linux/MacOS: ~/.minecraft
      */
+    @NotNull
+    @Contract(" -> new")
     private static File getMinecraftFolder() {
         OSEnum os = OSEnum.getCurrent();
         if (os.equals(OSEnum.Windows)) {
@@ -242,6 +245,7 @@ public class Celestial {
     /**
      * Launch LunarClient offline
      */
+    @NotNull
     public static ProcessBuilder launch() throws IOException {
         // wrapper was applied in the script
         log.info("Launching with script");

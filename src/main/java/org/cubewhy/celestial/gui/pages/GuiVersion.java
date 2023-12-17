@@ -32,6 +32,10 @@ public class GuiVersion extends JPanel {
         this.add(btnOffline);
 
         btnOffline.addActionListener(e -> {
+            if (gamePid != 0) {
+                JOptionPane.showMessageDialog(this, f.getString("gui.version.launched.message"), f.getString("gui.version.launched.title"), JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             try {
                 ProcessBuilder process = Celestial.launch();
                 Process p = SystemUtils.callExternalProcess(process);
@@ -83,7 +87,7 @@ public class GuiVersion extends JPanel {
                             VirtualMachine java = SystemUtils.findJava(LauncherData.getMainClass(null));
                             assert java != null;
                             String id = java.id();
-                            gamePid = Integer.parseInt(id);
+                            gamePid = Long.parseLong(id);
                             java.detach();
                         } catch (Exception ex) {
                             log.error("Failed to get the real pid of the game, is Celestial launched non java program?");
