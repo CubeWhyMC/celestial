@@ -92,7 +92,6 @@ public final class LauncherData {
      */
     public JsonObject metadata() throws IOException {
         // do request with fake system info
-        // TODO fix the launcher_version
         try (Response response = RequestUtils.get(api + "/launcher/metadata" + "?os=linux" + "&arch=x64" + "&launcher_version=v3.1.3-master").execute()) {
             assert response.code() == 200 : "Code = " + response.code(); // check success
             assert response.body() != null : "ResponseBody was null";
