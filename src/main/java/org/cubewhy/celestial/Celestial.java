@@ -46,6 +46,7 @@ public class Celestial {
     public static final File launchScript = new File(configDir, (os.contains("Windows")) ? "launch.bat" : "launch.sh");
     public static final File logFile = new File(configDir, "latest.log");
     public static final boolean isDevelopMode = System.getProperties().containsKey("dev-mode");
+    public static long gamePid = 0;
 
     public static void main(String[] args) throws Exception {
         log.info("Celestial v" + GitUtils.getBuildVersion() + " build by " + GitUtils.getBuildUser());
@@ -367,7 +368,7 @@ public class Celestial {
         int width = resize.get("width").getAsInt();
         int height = resize.get("height").getAsInt();
         log.info(String.format("Resize: (%d, %d)", width, height));
-        GameArgs gameArgs = new GameArgs(width, height, new File(config.getValue("game-dir").getAsString()), new File(configDir, "game/textures"));
+        GameArgs gameArgs = new GameArgs(width, height, new File(config.getValue("game-dir").getAsString()), new File(config.getValue("game-dir").getAsString(), "textures"));
         Celestial.launcherData = new LauncherData("https://api.lunarclientprod.com");
         GameArgsResult argsResult = Celestial.getArgs(version, branch, module, installationDir, gameArgs);
         List<String> args = argsResult.args();

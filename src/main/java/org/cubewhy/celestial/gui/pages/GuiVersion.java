@@ -3,6 +3,7 @@ package org.cubewhy.celestial.gui.pages;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.cubewhy.celestial.Celestial;
+import org.cubewhy.celestial.gui.GuiLauncher;
 import org.cubewhy.celestial.utils.CrashReportType;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.cubewhy.celestial.utils.TextUtils;
@@ -34,6 +35,7 @@ public class GuiVersion extends JPanel {
                 new Thread(() -> {
                     try {
                         int code = SystemUtils.callExternalProcess(process);
+                        Celestial.gamePid = 0;
                         if (code != 0) {
                             // upload crash report
                             log.info("Client looks crashed, starting upload the log");
