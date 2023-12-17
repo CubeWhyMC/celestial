@@ -67,6 +67,10 @@ shadowJar {
 jar {
     manifestContentCharset 'utf-8'
     metadataCharset 'utf-8'
+
+    manifest.attributes(
+            "Main-Class": "org.cubewhy.celestial.Celestial"
+    )
 }
 
-shadowJar.dependsOn(jar)
+jar.dependsOn(shadowJar)
