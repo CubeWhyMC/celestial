@@ -6,6 +6,8 @@
 
 package org.cubewhy.celestial.utils;
 
+import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.Celestial;
 import org.jackhuang.hmcl.util.platform.ManagedProcess;
 
 import java.io.IOException;
@@ -13,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 // from hmcl launcher
+@Slf4j
 public final class SystemUtils {
     private SystemUtils() {}
 
@@ -28,6 +31,9 @@ public final class SystemUtils {
         ManagedProcess managedProcess = new ManagedProcess(processBuilder);
 //        managedProcess.pumpInputStream(SystemUtils::onLogLine);
 //        managedProcess.pumpErrorStream(SystemUtils::onLogLine);
-        return managedProcess.getProcess().waitFor();
+        Process p = managedProcess.getProcess();
+        Celestial.gamePid = p.pid();
+        log.info("Game pid: " + Celestial.gamePid);
+        return p.waitFor();
     }
 }
