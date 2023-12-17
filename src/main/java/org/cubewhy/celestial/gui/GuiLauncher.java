@@ -1,6 +1,10 @@
 package org.cubewhy.celestial.gui;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.event.EventManager;
+import org.cubewhy.celestial.event.EventTarget;
+import org.cubewhy.celestial.event.impl.GameStartEvent;
+import org.cubewhy.celestial.event.impl.GameTerminateEvent;
 import org.cubewhy.celestial.gui.dialogs.LanguageSelectDialog;
 import org.cubewhy.celestial.gui.pages.GuiAbout;
 import org.cubewhy.celestial.gui.pages.GuiNews;
@@ -21,6 +25,9 @@ import static org.cubewhy.celestial.Celestial.*;
 @Slf4j
 public class GuiLauncher extends JFrame {
     public GuiLauncher() throws IOException {
+        // register with EventManager
+        EventManager.register(this);
+
         this.setBounds(100, 100, 1200, 700);
         this.setTitle(f.getString("gui.launcher.title"));
 
@@ -113,5 +120,15 @@ public class GuiLauncher extends JFrame {
                 this.setIconImage("icon-light");
                 break;
         }
+    }
+
+    @EventTarget
+    public void onGameStart(GameStartEvent e) throws IOException {
+        this.setIconImage("running");
+    }
+
+    @EventTarget
+    public void onGameTerminate(GameTerminateEvent e) throws IOException {
+        this.resetIcon();
     }
 }
