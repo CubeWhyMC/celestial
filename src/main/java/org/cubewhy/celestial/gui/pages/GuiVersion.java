@@ -35,8 +35,10 @@ public class GuiVersion extends JPanel {
                 Process p = SystemUtils.callExternalProcess(process);
                 new Thread(() -> {
                     try {
+                        int code = p.waitFor();
+                        log.info("Game terminated");
                         Celestial.gamePid = 0;
-                        if (p.waitFor() != 0) {
+                        if (code != 0) {
                             // upload crash report
                             log.info("Client looks crashed, starting upload the log");
                             String trace = FileUtils.readFileToString(logFile, StandardCharsets.UTF_8);
