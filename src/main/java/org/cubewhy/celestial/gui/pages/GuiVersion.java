@@ -1,12 +1,13 @@
 package org.cubewhy.celestial.gui.pages;
 
+import com.sun.tools.attach.VirtualMachine;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.cubewhy.celestial.Celestial;
-import org.cubewhy.celestial.gui.GuiLauncher;
 import org.cubewhy.celestial.utils.CrashReportType;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.cubewhy.celestial.utils.TextUtils;
+import org.cubewhy.celestial.utils.lunar.LauncherData;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -29,14 +30,13 @@ public class GuiVersion extends JPanel {
         this.add(btnOffline);
 
         btnOffline.addActionListener(e -> {
-
             try {
                 ProcessBuilder process = Celestial.launch();
+                Process p = SystemUtils.callExternalProcess(process);
                 new Thread(() -> {
                     try {
-                        int code = SystemUtils.callExternalProcess(process);
                         Celestial.gamePid = 0;
-                        if (code != 0) {
+                        if (p.waitFor() != 0) {
                             // upload crash report
                             log.info("Client looks crashed, starting upload the log");
                             String trace = FileUtils.readFileToString(logFile, StandardCharsets.UTF_8);
@@ -50,7 +50,7 @@ public class GuiVersion extends JPanel {
                                         Crash id: %s
                                         View your crash report at %s
                                         View the log of the latest launch: %s
-                                        
+                                                                                
                                         *%s*""", id, url, logFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
                             } else {
                                 JOptionPane.showMessageDialog(this, String.format("""
@@ -65,10 +65,33 @@ public class GuiVersion extends JPanel {
                         log.error(trace);
                     }
                 }).start();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
 
+                new Thread(() -> {
+                    // find the game process
+                    try {
+                        Thread.sleep(3000); // sleep 10s
+                    } catch (InterruptedException ignored) {
+
+                    }
+                    if (p.isAlive()) {
+                        try {
+                            VirtualMachine java = SystemUtils.findJava(LauncherData.getMainClass(null));
+                            assert java != null;
+                            String id = java.id();
+                            gamePid = Integer.parseInt(id);
+                            java.detach();
+                        } catch (Exception ex) {
+                            log.error("Failed to get the real pid of the game, is Celestial launched non java program?");
+                            log.warn("process.pid() will be used to get the process id, which may not be the real PID");
+                            gamePid = p.pid();
+                        }
+                        log.info("Pid: " + gamePid);
+                    }
+                }).start();
+            } catch (IOException | InterruptedException ex) {
+                String trace = TextUtils.dumpTrace(ex);
+                log.error(trace);
+            }
         });
     }
 }
