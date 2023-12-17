@@ -1,5 +1,6 @@
 package org.cubewhy.celestial.gui.pages;
 
+import com.sun.tools.attach.AttachNotSupportedException;
 import com.sun.tools.attach.VirtualMachine;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -32,11 +33,15 @@ public class GuiVersion extends JPanel {
         this.add(btnOffline);
 
         btnOffline.addActionListener(e -> {
-            if (gamePid != 0) {
-                JOptionPane.showMessageDialog(this, f.getString("gui.version.launched.message"), f.getString("gui.version.launched.title"), JOptionPane.WARNING_MESSAGE);
-                return;
-            }
             try {
+                if (gamePid != 0) {
+                    if (SystemUtils.findJava(LauncherData.getMainClass(null)) != null) {
+                        JOptionPane.showMessageDialog(this, f.getString("gui.version.launched.message"), f.getString("gui.version.launched.title"), JOptionPane.WARNING_MESSAGE);
+                        return;
+                    } else {
+                        gamePid = 0;
+                    }
+                }
                 ProcessBuilder process = Celestial.launch();
                 Process p = SystemUtils.callExternalProcess(process);
                 new Thread(() -> {
@@ -101,6 +106,7 @@ public class GuiVersion extends JPanel {
             } catch (IOException | InterruptedException ex) {
                 String trace = TextUtils.dumpTrace(ex);
                 log.error(trace);
+            } catch (AttachNotSupportedException ignored) {
             }
         });
     }

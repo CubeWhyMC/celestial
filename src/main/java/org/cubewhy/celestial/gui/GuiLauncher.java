@@ -17,9 +17,12 @@ import org.cubewhy.celestial.utils.FileUtils;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.cubewhy.celestial.utils.TextUtils;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -165,9 +168,10 @@ public class GuiLauncher extends JFrame {
     }
 
     @EventTarget
-    public void onAuth(AuthEvent e) throws URISyntaxException, IOException {
+    public void onAuth(@NotNull AuthEvent e) throws URISyntaxException, IOException {
         log.info("Request for login");
-        Desktop.getDesktop().browse(e.authURL.toURI());
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(new StringSelection(e.authURL.toString()), null);
         String link = JOptionPane.showInputDialog(this, f.getString("gui.launcher.auth.message"), f.getString("gui.launcher.auth.title"), JOptionPane.QUESTION_MESSAGE);
         e.put(link);
     }
