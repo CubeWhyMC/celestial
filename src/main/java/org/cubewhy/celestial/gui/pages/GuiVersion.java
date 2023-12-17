@@ -49,13 +49,13 @@ public class GuiVersion extends JPanel {
                                         View your crash report at %s
                                         View the log of the latest launch: %s
                                         
-                                        *This problem usually has nothing to do with Celestial. If you believe it is a problem with Celestial, please open an issue.*""", id, url, logFile.getPath()), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                                        *%s*""", id, url, logFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
                             } else {
                                 JOptionPane.showMessageDialog(this, String.format("""
                                         Your client was crashed:
                                         View the log of the latest launch: %s
-                                        *This problem usually has nothing to do with Celestial. If you believe it is a problem with Celestial, please open an issue.*
-                                        """, logFile.getPath()));
+                                        *%s*
+                                        """, logFile.getPath(), f.getString("gui.version.crash.tip")));
                             }
                         }
                     } catch (IOException | InterruptedException ex) {
