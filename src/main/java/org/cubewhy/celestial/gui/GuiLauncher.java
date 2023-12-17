@@ -5,6 +5,7 @@ import com.sun.tools.attach.VirtualMachine;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.event.EventManager;
 import org.cubewhy.celestial.event.EventTarget;
+import org.cubewhy.celestial.event.impl.AuthEvent;
 import org.cubewhy.celestial.event.impl.GameStartEvent;
 import org.cubewhy.celestial.event.impl.GameTerminateEvent;
 import org.cubewhy.celestial.gui.dialogs.LanguageSelectDialog;
@@ -22,6 +23,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import static org.cubewhy.celestial.Celestial.*;
@@ -160,5 +162,13 @@ public class GuiLauncher extends JFrame {
     @EventTarget
     public void onGameTerminate(GameTerminateEvent e) throws IOException {
         this.resetIcon();
+    }
+
+    @EventTarget
+    public void onAuth(AuthEvent e) throws URISyntaxException, IOException {
+        log.info("Request for login");
+        Desktop.getDesktop().browse(e.authURL.toURI());
+        String link = JOptionPane.showInputDialog(this, f.getString("gui.launcher.auth.message"), f.getString("gui.launcher.auth.title"), JOptionPane.QUESTION_MESSAGE);
+        e.put(link);
     }
 }

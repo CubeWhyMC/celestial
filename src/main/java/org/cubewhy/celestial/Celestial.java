@@ -14,6 +14,7 @@ import org.cubewhy.celestial.files.ConfigFile;
 import org.cubewhy.celestial.game.GameArgs;
 import org.cubewhy.celestial.game.GameArgsResult;
 import org.cubewhy.celestial.game.JavaAgent;
+import org.cubewhy.celestial.game.AuthServer;
 import org.cubewhy.celestial.gui.GuiLauncher;
 import org.cubewhy.celestial.utils.*;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
@@ -122,6 +123,7 @@ public class Celestial {
             System.exit(0);
         }
         log.info("Language: " + userLanguage);
+        initTheme(); // init theme
         checkJava();
         launcherData = new LauncherData(config.getValue("api").getAsString());
         while (true) {
@@ -145,8 +147,10 @@ public class Celestial {
             }
         }
 
+        // start auth server
+        AuthServer.getInstance().startServer();
+
         // start gui launcher
-        initTheme(); // init theme
 
         launcherFrame = new GuiLauncher();
         launcherFrame.setVisible(true);
@@ -160,6 +164,15 @@ public class Celestial {
         if (!javaVersion.equals("17")) {
             log.warn("Compatibility warning: The Java you are currently using may not be able to start LunarClient properly (Java 17 is recommended)");
             JOptionPane.showMessageDialog(null, f.getString("compatibility.warn.message"), f.getString("compatibility.warn.title"), JOptionPane.WARNING_MESSAGE);
+        }
+
+        // detect the official launcher (Windows only)
+        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
+            File sessionFile = new File(System.getenv("APPDATA"), "launcher/sentry/session.json");
+            if (sessionFile.exists()) {
+                log.warn("Detected the official launcher");
+                JOptionPane.showMessageDialog(null, f.getString("warn.official-launcher.message"), f.getString("warn.official-launcher.title"), JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 
