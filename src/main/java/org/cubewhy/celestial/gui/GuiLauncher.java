@@ -1,5 +1,7 @@
 package org.cubewhy.celestial.gui;
 
+import com.sun.tools.attach.AttachNotSupportedException;
+import com.sun.tools.attach.VirtualMachine;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.event.EventManager;
 import org.cubewhy.celestial.event.EventTarget;
@@ -11,6 +13,8 @@ import org.cubewhy.celestial.gui.pages.GuiNews;
 import org.cubewhy.celestial.gui.pages.GuiSettings;
 import org.cubewhy.celestial.gui.pages.GuiVersion;
 import org.cubewhy.celestial.utils.FileUtils;
+import org.cubewhy.celestial.utils.SystemUtils;
+import org.cubewhy.celestial.utils.TextUtils;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
 
 import javax.swing.*;
@@ -96,7 +100,33 @@ public class GuiLauncher extends JFrame {
             layout.next(mainPanel);
         });
         this.add(mainPanel); // add MainPanel
+
+        // try to find the exist game process
+        new Thread(() ->{
+            try {
+                this.findExistGame();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
+
+    public void findExistGame() throws IOException {
+        try {
+            VirtualMachine java = SystemUtils.findJava(LauncherData.getMainClass(null));
+            if (java != null) {
+                String pid = java.id();
+                log.info("Exist game process found! Pid: " + pid);
+                gamePid = Long.parseLong(pid);
+                JOptionPane.showMessageDialog(this, String.format(f.getString("gui.launcher.game.exist.message"), pid), f.getString("gui.launcher.game.exist.title"), JOptionPane.INFORMATION_MESSAGE);
+                java.detach();
+            }
+        } catch (AttachNotSupportedException e) {
+            log.error("Failed to find the game process, is launched with the official launcher? (attach not support)");
+            log.error(TextUtils.dumpTrace(e));
+        }
+    }
+
 
     /**
      * Load icon image from /images/icons
