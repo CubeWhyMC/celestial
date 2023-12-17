@@ -2,6 +2,7 @@ package org.cubewhy.celestial.utils.lunar;
 
 import com.google.gson.*;
 import okhttp3.Response;
+import org.cubewhy.celestial.event.impl.CrashReportUploadEvent;
 import org.cubewhy.celestial.utils.CrashReportType;
 import org.cubewhy.celestial.utils.OSEnum;
 import org.cubewhy.celestial.utils.RequestUtils;
@@ -299,11 +300,14 @@ public final class LauncherData {
         try (Response response = RequestUtils.post(api + "/launcher/uploadCrashReport", request).execute()) {
             if (response.isSuccessful() && response.body() != null) {
                 JsonObject json = JsonParser.parseString(response.body().string()).getAsJsonObject().getAsJsonObject("data");
-                map.put("id", json.get("id").getAsString());
+                String id = json.get("id").getAsString();
+                String url = json.get("url").getAsString();
+                map.put("id", id);
                 map.put("message", json.get("message").getAsString());
-                map.put("url", json.get("url").getAsString());
+                map.put("url", url);
+                new CrashReportUploadEvent(id, url).call();
             }
-        };
+        }
         return map;
     }
 }

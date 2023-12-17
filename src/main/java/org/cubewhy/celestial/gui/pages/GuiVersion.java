@@ -4,6 +4,8 @@ import com.sun.tools.attach.VirtualMachine;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.cubewhy.celestial.Celestial;
+import org.cubewhy.celestial.event.impl.GameStartEvent;
+import org.cubewhy.celestial.event.impl.GameTerminateEvent;
 import org.cubewhy.celestial.utils.CrashReportType;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.cubewhy.celestial.utils.TextUtils;
@@ -38,6 +40,7 @@ public class GuiVersion extends JPanel {
                         int code = p.waitFor();
                         log.info("Game terminated");
                         Celestial.gamePid = 0;
+                        new GameTerminateEvent().call();
                         if (code != 0) {
                             // upload crash report
                             log.info("Client looks crashed, starting upload the log");
@@ -88,6 +91,7 @@ public class GuiVersion extends JPanel {
                             gamePid = p.pid();
                         }
                         log.info("Pid: " + gamePid);
+                        new GameStartEvent(gamePid).call();
                     }
                 }).start();
             } catch (IOException | InterruptedException ex) {
