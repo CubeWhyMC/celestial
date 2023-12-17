@@ -60,7 +60,10 @@ public final class LauncherData {
      * @param json Json of the special LunarClient instance
      * @return main class of the LunarClient instance
      */
-    public static String getMainClass(@NotNull JsonObject json) {
+    public static String getMainClass(JsonObject json) {
+        if (json == null) {
+            return "com.moonsworth.lunar.genesis.Genesis";
+        }
         return json
                 .getAsJsonObject("launchTypeData")
                 .get("mainClass").getAsString();
