@@ -168,7 +168,7 @@ public class GuiLauncher extends JFrame {
     }
 
     @EventTarget
-    public void onAuth(@NotNull AuthEvent e) throws URISyntaxException, IOException {
+    public void onAuth(@NotNull AuthEvent e) {
         log.info("Request for login");
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(new StringSelection(e.authURL.toString()), null);
