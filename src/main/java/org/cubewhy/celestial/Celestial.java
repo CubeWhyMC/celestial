@@ -3,10 +3,7 @@ package org.cubewhy.celestial;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.IntelliJTheme;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import lombok.extern.slf4j.Slf4j;
@@ -189,10 +186,12 @@ public class Celestial {
         JsonObject resize = new JsonObject();
         resize.addProperty("width", 854);
         resize.addProperty("height", 480);
+
         config.initValue("jre", "") // leave empty if you want to use the default one
                 .initValue("language", "zh") // en, zh
                 .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
+                .initValue("game", new JsonNull())
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
                 .initValue("theme", "dark") // dark, light, unset, custom.
                 .initValue("resize", resize) // (854, 480) for default
