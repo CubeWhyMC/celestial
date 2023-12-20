@@ -52,6 +52,7 @@ public class GuiVersionSelect extends JPanel {
                 throw new RuntimeException(ex);
             }
         });
+        refreshModuleSelect(versionSelect, moduleSelect);
     }
 
     private void refreshModuleSelect(@NotNull JComboBox<String> versionSelect, JComboBox<String> moduleSelect) throws IOException {
