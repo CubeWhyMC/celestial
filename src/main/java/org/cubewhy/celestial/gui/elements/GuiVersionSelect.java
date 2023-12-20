@@ -24,6 +24,8 @@ import static org.cubewhy.celestial.Celestial.*;
 
 @Slf4j
 public class GuiVersionSelect extends JPanel {
+    private boolean isFinishOk = false;
+
     public GuiVersionSelect() throws IOException {
         this.setBorder(new TitledBorder(null, f.getString("gui.version-select.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         this.setLayout(new GridLayout(3, 2, 5, 5));
@@ -50,14 +52,23 @@ public class GuiVersionSelect extends JPanel {
         }
         versionSelect.addActionListener((e) -> {
             try {
-                refreshModuleSelect(versionSelect, moduleSelect);
+                refreshModuleSelect(versionSelect, moduleSelect, this.isFinishOk);
+                if (this.isFinishOk) {
+                    saveVersion(versionSelect);
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
-        refreshModuleSelect(versionSelect, moduleSelect);
+        moduleSelect.addActionListener((e) -> {
+            if (this.isFinishOk) {
+                saveModule(moduleSelect);
+            }
+        });
+        refreshModuleSelect(versionSelect, moduleSelect, false);
         // get is first launch
         if (config.getValue("game").isJsonNull()) {
+            log.info("Init ");
             JsonObject game = new JsonObject();
             game.addProperty("version", (String) versionSelect.getSelectedItem());
             game.addProperty("module", (String) moduleSelect.getSelectedItem());
@@ -66,17 +77,34 @@ public class GuiVersionSelect extends JPanel {
             versionSelect.setSelectedItem(map.get("default"));
         }
         initInput(versionSelect, moduleSelect, branchInput);
+        isFinishOk = true;
     }
 
-    private void initInput(JComboBox<String> versionSelect, JComboBox<String> moduleSelect, JTextField branchInput) {
+    private void initInput(@NotNull JComboBox<String> versionSelect, @NotNull JComboBox<String> moduleSelect, @NotNull JTextField branchInput) {
         JsonObject game = config.getValue("game").getAsJsonObject();
         versionSelect.setSelectedItem(game.get("version").getAsString());
         moduleSelect.setSelectedItem(game.get("module").getAsString());
         branchInput.setText(game.get("branch").getAsString());
     }
 
+    private void saveVersion(@NotNull JComboBox<String> versionSelect) {
+        String version = (String) versionSelect.getSelectedItem();
+        log.info("Select version -> " + version);
+        JsonObject game = config.getValue("game").getAsJsonObject();
+        game.addProperty("version", version);
+        config.setValue("game", game);
+    }
 
-    private void refreshModuleSelect(@NotNull JComboBox<String> versionSelect, JComboBox<String> moduleSelect) throws IOException {
+    private void saveModule(@NotNull JComboBox<String> moduleSelect) {
+        String module = (String) moduleSelect.getSelectedItem();
+        log.info("Select module -> " + module);
+        JsonObject game = config.getValue("game").getAsJsonObject();
+        game.addProperty("module", module);
+        config.setValue("game", game);
+    }
+
+
+    private void refreshModuleSelect(@NotNull JComboBox<String> versionSelect, JComboBox<String> moduleSelect, boolean reset) throws IOException {
         moduleSelect.removeAllItems();
         Map<String, Object> map = LauncherData.getSupportModules(metadata, (String) versionSelect.getSelectedItem());
         List<String> modules = (ArrayList<String>) map.get("modules");
@@ -84,6 +112,8 @@ public class GuiVersionSelect extends JPanel {
         for (String module : modules) {
             moduleSelect.addItem(module);
         }
-        moduleSelect.setSelectedItem(defaultValue);
+        if (reset) {
+            moduleSelect.setSelectedItem(defaultValue);
+        }
     }
 }
