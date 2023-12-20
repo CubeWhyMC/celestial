@@ -64,8 +64,6 @@ public class GuiVersionSelect extends JPanel {
             game.addProperty("branch", "master");
             config.setValue("game", game);
             versionSelect.setSelectedItem(map.get("default"));
-        } else {
-
         }
         initInput(versionSelect, moduleSelect, branchInput);
     }
