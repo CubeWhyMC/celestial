@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.cubewhy.celestial.Celestial;
 import org.cubewhy.celestial.event.impl.GameStartEvent;
 import org.cubewhy.celestial.event.impl.GameTerminateEvent;
+import org.cubewhy.celestial.gui.elements.GuiVersionSelect;
 import org.cubewhy.celestial.utils.CrashReportType;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.cubewhy.celestial.utils.TextUtils;
@@ -23,14 +24,15 @@ import static org.cubewhy.celestial.Celestial.*;
 
 @Slf4j
 public class GuiVersion extends JPanel {
-    public GuiVersion() {
+    public GuiVersion() throws IOException {
         this.setBorder(new TitledBorder(null, f.getString("gui.version.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         this.initGui();
     }
 
-    private void initGui() {
+    private void initGui() throws IOException {
         JButton btnOffline = new JButton(f.getString("gui.version.offline"));
         this.add(btnOffline);
+        this.add(new GuiVersionSelect());
 
         btnOffline.addActionListener(e -> {
             try {
