@@ -64,8 +64,8 @@ public class GuiLauncher extends JFrame {
         JButton btnNext = new JButton("next");
         // For developers: It is not recommended to remove the Donate button in Celestial Launcher's derivative versions
         // 不建议在衍生版本中删除赞助按钮
-        // Celestial 是免费开源的启动器, 请赞助来帮助我们走得更远 (收入会全部用于开发) , 若你不想再次看到这个按钮, 可以在config.json中关闭
-        // Celestial is a opensource launcher, please donate to let us go further (All money will be used for development), If you don't want to see this button again, you can turn it off in config.json
+        // Celestial 是免费开源的启动器, 请赞助来帮助我们走得更远 (收入会全部用于开发)
+        // Celestial is a opensource launcher, please donate to let us go further (All money will be used for development)
         JButton btnDonate = new JButton(f.getString("gui.donate"));
         JButton btnLanguage = new JButton("Language"); // Do not translate this button :)
         btnDonate.addActionListener(e -> {

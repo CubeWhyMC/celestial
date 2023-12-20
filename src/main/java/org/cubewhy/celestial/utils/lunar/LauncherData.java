@@ -167,20 +167,24 @@ public final class LauncherData {
      * @param metadata LC metadata
      * @return Support versions list
      */
-    public static List<String> getSupportVersions(JsonElement metadata) throws IOException {
+    public static @NotNull Map<String, Object> getSupportVersions(JsonElement metadata) {
+        Map<String, Object> map = new HashMap<>();
         List<String> versions = new ArrayList<>();
         JsonArray versionsJson = Objects.requireNonNull(metadata).getAsJsonObject().getAsJsonArray("versions");
         for (JsonElement version : versionsJson) {
             String versionId = version.getAsJsonObject().get("id").getAsString();
             if (version.getAsJsonObject().has("subversions")) {
                 for (JsonElement subVersion : version.getAsJsonObject().get("subversions").getAsJsonArray()) {
-                    versions.add(subVersion.getAsJsonObject().get("id").getAsString());
+                    versionId = subVersion.getAsJsonObject().get("id").getAsString();
                 }
-            } else {
-                versions.add(versionId);
             }
+            if (version.getAsJsonObject().get("default").getAsBoolean()) {
+                map.put("default", versionId);
+            }
+            versions.add(versionId);
         }
-        return versions;
+        map.put("versions", versions);
+        return map;
     }
 
     /**
@@ -210,15 +214,21 @@ public final class LauncherData {
      * @param version  Minecraft version
      * @return Module List
      */
-    public static List<String> getSupportModules(JsonElement metadata, String version) throws IOException {
+    public static @NotNull Map<String, Object> getSupportModules(JsonElement metadata, String version) throws IOException {
+        Map<String, Object> map = new HashMap<>();
         List<String> modules = new ArrayList<>();
 //        boolean isSubVersion = StringUtils.count(version, '.') >= 2;
         JsonObject version1 = getVersionInMetadata(metadata, version);
         JsonArray modulesJson = Objects.requireNonNull(version1).getAsJsonArray("modules");
         for (JsonElement moduleJson : modulesJson) {
-            modules.add(moduleJson.getAsJsonObject().get("id").getAsString());
+            String id = moduleJson.getAsJsonObject().get("id").getAsString();
+            modules.add(id);
+            if (moduleJson.getAsJsonObject().get("default").getAsBoolean()) {
+                map.put("default", id);
+            }
         }
-        return modules;
+        map.put("modules", modules);
+        return map;
     }
 
     /**
