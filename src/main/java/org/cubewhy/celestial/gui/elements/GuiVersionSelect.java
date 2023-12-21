@@ -115,10 +115,10 @@ public class GuiVersionSelect extends JPanel {
     }
 
     private void beforeLaunch() throws IOException, AttachNotSupportedException {
+        Celestial.completeSession();
         if (gamePid != 0) {
             if (SystemUtils.findJava(LauncherData.getMainClass(null)) != null) {
                 JOptionPane.showMessageDialog(this, f.getString("gui.version.launched.message"), f.getString("gui.version.launched.title"), JOptionPane.WARNING_MESSAGE);
-                return;
             } else {
                 gamePid = 0;
             }
