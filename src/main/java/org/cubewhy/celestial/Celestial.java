@@ -345,7 +345,8 @@ public class Celestial {
         args.add("--width " + gameArgs.getWidth());
         args.add("--height " + gameArgs.getHeight());
         args.add("--gameDir " + gameArgs.getGameDir());
-        args.add("--texturesDir " + gameArgs.getTexturesDir());
+        args.add("--texturesDir " + new File(installation, "textures").getPath());
+        args.add("--uiDir " + new File(installation, "ui").getPath());
         if (gameArgs.getServer() != null) {
             args.add("--server " + gameArgs.getServer()); // Join server after launch
         }
@@ -356,6 +357,8 @@ public class Celestial {
             args.add("--ichorExternalFiles");
             args.add(String.join(",", ichorPath));
         }
+        args.add("--webosrDir");
+        args.add("\"" + natives.getPath() + "\"");
         // === custom game args ===
         for (JsonElement arg : config.getValue("program-args").getAsJsonArray()) {
             args.add(arg.getAsString());
@@ -382,7 +385,7 @@ public class Celestial {
         int width = resize.get("width").getAsInt();
         int height = resize.get("height").getAsInt();
         log.info(String.format("Resize: (%d, %d)", width, height));
-        GameArgs gameArgs = new GameArgs(width, height, new File(config.getValue("game-dir").getAsString()), new File(config.getValue("game-dir").getAsString(), "textures"));
+        GameArgs gameArgs = new GameArgs(width, height, new File(config.getValue("game-dir").getAsString()));
         Celestial.launcherData = new LauncherData("https://api.lunarclientprod.com");
         GameArgsResult argsResult = Celestial.getArgs(version, branch, module, installationDir, gameArgs);
         List<String> args = argsResult.args();

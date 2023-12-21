@@ -194,8 +194,8 @@ public class GuiVersionSelect extends JPanel {
 
     private void online() throws IOException, InterruptedException, AttachNotSupportedException {
         // TODO check update
-        ProcessBuilder builder = launch((String) versionSelect.getSelectedItem(), branchInput.getText(), (String) moduleSelect.getSelectedItem());
         beforeLaunch();
+        ProcessBuilder builder = launch((String) versionSelect.getSelectedItem(), branchInput.getText(), (String) moduleSelect.getSelectedItem());
         Process p = SystemUtils.callExternalProcess(builder);
         runGame(p);
     }
