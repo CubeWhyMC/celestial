@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
@@ -154,7 +155,7 @@ public class Celestial {
         launcherFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    private static void checkJava() {
+    private static void checkJava() throws IOException {
         String javaVersion = System.getProperty("java.specification.version");
         log.info("Celestial is running on Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"));
 
@@ -166,7 +167,7 @@ public class Celestial {
         // detect the official launcher (Windows only)
         if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
             File sessionFile = new File(System.getenv("APPDATA"), "launcher/sentry/session.json");
-            if (sessionFile.exists()) {
+            if (sessionFile.exists() && LunarUtils.isReallyOfficial(sessionFile)) {
                 log.warn("Detected the official launcher");
                 JOptionPane.showMessageDialog(null, f.getString("warn.official-launcher.message"), f.getString("warn.official-launcher.title"), JOptionPane.WARNING_MESSAGE);
             }
@@ -442,5 +443,23 @@ public class Celestial {
      */
     public static void checkUpdate(String version, String module, String branch) throws IOException {
 
+    }
+
+    /**
+     * Patching network disabling for LunarClient
+     */
+    public static void completeSession() throws IOException {
+        // TODO add linux support
+        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
+            File sessionFile = new File(System.getenv("APPDATA"), "launcher/sentry/session.json");
+            if (!sessionFile.exists()) {
+                log.info("Completing session.json to fix the network error for LunarClient");
+                byte[] json;
+                try (InputStream stream = FileUtils.inputStreamFromClassPath("/game/session.json")) {
+                    json = FileUtils.readBytes(stream);
+                }
+                org.apache.commons.io.FileUtils.writeStringToFile(sessionFile, String.valueOf(JsonParser.parseString(new String(json, StandardCharsets.UTF_8))), StandardCharsets.UTF_8);
+            }
+        }
     }
 }
