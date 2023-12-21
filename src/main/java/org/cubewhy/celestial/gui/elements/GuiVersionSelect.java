@@ -33,6 +33,9 @@ import static org.cubewhy.celestial.Celestial.*;
 
 @Slf4j
 public class GuiVersionSelect extends JPanel {
+    private final JComboBox<String> versionSelect = new JComboBox<>();
+    private final JComboBox<String> moduleSelect = new JComboBox<>();
+    private final JTextField branchInput = new JTextField();
     private boolean isFinishOk = false;
 
     public GuiVersionSelect() throws IOException {
@@ -43,9 +46,6 @@ public class GuiVersionSelect extends JPanel {
     }
 
     private void initGui() throws IOException {
-        JComboBox<String> versionSelect = new JComboBox<>();
-        JComboBox<String> moduleSelect = new JComboBox<>();
-        JTextField branchInput = new JTextField();
         this.add(new JLabel(f.getString("gui.version-select.label.version")));
         this.add(versionSelect);
         this.add(new JLabel(f.getString("gui.version-select.label.module")));
@@ -61,9 +61,9 @@ public class GuiVersionSelect extends JPanel {
         }
         versionSelect.addActionListener((e) -> {
             try {
-                refreshModuleSelect(versionSelect, moduleSelect, this.isFinishOk);
+                refreshModuleSelect(this.isFinishOk);
                 if (this.isFinishOk) {
-                    saveVersion(versionSelect);
+                    saveVersion();
                 }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -71,10 +71,10 @@ public class GuiVersionSelect extends JPanel {
         });
         moduleSelect.addActionListener((e) -> {
             if (this.isFinishOk) {
-                saveModule(moduleSelect);
+                saveModule();
             }
         });
-        refreshModuleSelect(versionSelect, moduleSelect, false);
+        refreshModuleSelect(false);
         // get is first launch
         if (config.getValue("game").isJsonNull()) {
             log.info("Init ");
@@ -89,6 +89,17 @@ public class GuiVersionSelect extends JPanel {
         isFinishOk = true;
 
         // add launch buttons
+        JButton btnOnline = new JButton(f.getString("gui.version.online"));
+        btnOnline.addActionListener(e -> {
+            try {
+                this.online();
+            } catch (Exception ex) {
+                String trace = TextUtils.dumpTrace(ex);
+                log.error(trace);
+            }
+        });
+        this.add(btnOnline);
+
         JButton btnOffline = new JButton(f.getString("gui.version.offline"));
         this.add(btnOffline);
         btnOffline.addActionListener(e -> {
@@ -103,7 +114,7 @@ public class GuiVersionSelect extends JPanel {
         });
     }
 
-    private void offline() throws IOException, InterruptedException, AttachNotSupportedException {
+    private void beforeLaunch() throws IOException, AttachNotSupportedException {
         if (gamePid != 0) {
             if (SystemUtils.findJava(LauncherData.getMainClass(null)) != null) {
                 JOptionPane.showMessageDialog(this, f.getString("gui.version.launched.message"), f.getString("gui.version.launched.title"), JOptionPane.WARNING_MESSAGE);
@@ -112,8 +123,9 @@ public class GuiVersionSelect extends JPanel {
                 gamePid = 0;
             }
         }
-        ProcessBuilder process = Celestial.launch();
-        Process p = SystemUtils.callExternalProcess(process);
+    }
+
+    private void runGame(Process p) {
         new Thread(() -> {
             try {
                 int code = p.waitFor();
@@ -123,28 +135,33 @@ public class GuiVersionSelect extends JPanel {
                 if (code != 0) {
                     // upload crash report
                     log.info("Client looks crashed, starting upload the log");
-                    String trace = FileUtils.readFileToString(logFile, StandardCharsets.UTF_8);
-                    String script = FileUtils.readFileToString(launchScript, StandardCharsets.UTF_8);
-                    Map<String, String> map1 = launcherData.uploadCrashReport(trace, CrashReportType.GAME, script);
-                    if (!map1.isEmpty()) {
-                        String url = map1.get("url");
-                        String id = map1.get("id");
+                    try {
+                        String trace = FileUtils.readFileToString(logFile, StandardCharsets.UTF_8);
+                        String script = FileUtils.readFileToString(launchScript, StandardCharsets.UTF_8);
+                        Map<String, String> map1 = launcherData.uploadCrashReport(trace, CrashReportType.GAME, script);
+                        if (!map1.isEmpty()) {
+                            String url = map1.get("url");
+                            String id = map1.get("id");
+                            JOptionPane.showMessageDialog(this, String.format("""
+                                Your client was crashed:
+                                Crash id: %s
+                                View your crash report at %s
+                                View the log of the latest launch: %s
+                                                                        
+                                *%s*""", id, url, logFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            throw new RuntimeException("Failed to upload crash report");
+                        }
+                    } catch (Exception e) {
                         JOptionPane.showMessageDialog(this, String.format("""
-                                        Your client was crashed:
-                                        Crash id: %s
-                                        View your crash report at %s
-                                        View the log of the latest launch: %s
-                                                                                
-                                        *%s*""", id, url, logFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        JOptionPane.showMessageDialog(this, String.format("""
-                                        Your client was crashed:
-                                        View the log of the latest launch: %s
-                                        *%s*
-                                        """, logFile.getPath(), f.getString("gui.version.crash.tip")));
+                                Your client was crashed:
+                                View the log of the latest launch: %s
+                                *%s*
+                                """, logFile.getPath(), f.getString("gui.version.crash.tip")));
+                        throw new RuntimeException(e);
                     }
                 }
-            } catch (IOException | InterruptedException ex) {
+            } catch (InterruptedException ex) {
                 String trace = TextUtils.dumpTrace(ex);
                 log.error(trace);
             }
@@ -175,6 +192,21 @@ public class GuiVersionSelect extends JPanel {
         }).start();
     }
 
+    private void online() throws IOException, InterruptedException, AttachNotSupportedException {
+        // TODO check update
+        ProcessBuilder builder = launch((String) versionSelect.getSelectedItem(), branchInput.getText(), (String) moduleSelect.getSelectedItem());
+        beforeLaunch();
+        Process p = SystemUtils.callExternalProcess(builder);
+        runGame(p);
+    }
+
+    private void offline() throws IOException, InterruptedException, AttachNotSupportedException {
+        beforeLaunch();
+        ProcessBuilder process = Celestial.launch();
+        Process p = SystemUtils.callExternalProcess(process);
+        runGame(p);
+    }
+
     private void initInput(@NotNull JComboBox<String> versionSelect, @NotNull JComboBox<String> moduleSelect, @NotNull JTextField branchInput) {
         JsonObject game = config.getValue("game").getAsJsonObject();
         versionSelect.setSelectedItem(game.get("version").getAsString());
@@ -182,7 +214,7 @@ public class GuiVersionSelect extends JPanel {
         branchInput.setText(game.get("branch").getAsString());
     }
 
-    private void saveVersion(@NotNull JComboBox<String> versionSelect) {
+    private void saveVersion() {
         String version = (String) versionSelect.getSelectedItem();
         log.info("Select version -> " + version);
         JsonObject game = config.getValue("game").getAsJsonObject();
@@ -190,7 +222,7 @@ public class GuiVersionSelect extends JPanel {
         config.setValue("game", game);
     }
 
-    private void saveModule(@NotNull JComboBox<String> moduleSelect) {
+    private void saveModule() {
         String module = (String) moduleSelect.getSelectedItem();
         log.info("Select module -> " + module);
         JsonObject game = config.getValue("game").getAsJsonObject();
@@ -199,7 +231,7 @@ public class GuiVersionSelect extends JPanel {
     }
 
 
-    private void refreshModuleSelect(@NotNull JComboBox<String> versionSelect, @NotNull JComboBox<String> moduleSelect, boolean reset) throws IOException {
+    private void refreshModuleSelect(boolean reset) throws IOException {
         moduleSelect.removeAllItems();
         Map<String, Object> map = LauncherData.getSupportModules(metadata, (String) versionSelect.getSelectedItem());
         List<String> modules = (ArrayList<String>) map.get("modules");

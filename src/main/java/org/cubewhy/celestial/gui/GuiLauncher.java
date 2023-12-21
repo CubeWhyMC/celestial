@@ -33,6 +33,7 @@ import static org.cubewhy.celestial.Celestial.*;
 
 @Slf4j
 public class GuiLauncher extends JFrame {
+
     public GuiLauncher() throws IOException {
         // register with EventManager
         EventManager.register(this);
@@ -65,7 +66,7 @@ public class GuiLauncher extends JFrame {
         // For developers: It is not recommended to remove the Donate button in Celestial Launcher's derivative versions
         // 不建议在衍生版本中删除赞助按钮
         // Celestial 是免费开源的启动器, 请赞助来帮助我们走得更远 (收入会全部用于开发)
-        // Celestial is a opensource launcher, please donate to let us go further (All money will be used for development)
+        // Celestial is an opensource launcher, please donate to let us go further (All money will be used for development)
         JButton btnDonate = new JButton(f.getString("gui.donate"));
         JButton btnLanguage = new JButton("Language"); // Do not translate this button :)
         btnDonate.addActionListener(e -> {
