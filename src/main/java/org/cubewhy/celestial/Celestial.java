@@ -8,10 +8,10 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.files.ConfigFile;
+import org.cubewhy.celestial.game.AuthServer;
 import org.cubewhy.celestial.game.GameArgs;
 import org.cubewhy.celestial.game.GameArgsResult;
 import org.cubewhy.celestial.game.JavaAgent;
-import org.cubewhy.celestial.game.AuthServer;
 import org.cubewhy.celestial.gui.GuiLauncher;
 import org.cubewhy.celestial.utils.*;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
@@ -373,12 +373,10 @@ public class Celestial {
      * @return error message
      */
     @Nullable
-    public static String launch(String version, String branch, String module) throws IOException {
+    public static ProcessBuilder launch(String version, String branch, String module) throws IOException {
         File installationDir = new File(config.getValue("installation-dir").getAsString());
 
         log.info(String.format("Launching (%s, %s, %s)", version, module, branch));
-        log.info("Checking update");
-        checkUpdate(version, module, branch);
         log.info("Generating launch params");
         JsonObject resize = config.getValue("resize").getAsJsonObject();
         int width = resize.get("width").getAsInt();
@@ -391,8 +389,11 @@ public class Celestial {
         String argsString = String.join(" ", args);
         File natives = argsResult.natives();
         // dump launch script
+        if (launchScript.delete()) {
+            log.info("Delete launch script");
+        }
         if (launchScript.createNewFile()) {
-            log.info("Launch script created");
+            log.info("Launch script was created");
         }
         try (FileWriter writer = new FileWriter(launchScript)) {
             if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
@@ -422,16 +423,11 @@ public class Celestial {
             String trace = TextUtils.dumpTrace(e);
             log.error("Is game launched? Failed to unzip natives.");
             log.error(trace);
-            return f.getString("trace.unzip-natives");
+            return null;
         }
         // exec, run
         log.info("Everything is OK, starting game...");
-        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
-            Runtime.getRuntime().exec(argsString);
-        } else {
-            Runtime.getRuntime().exec("bash -c \"" + argsString + "\"");
-        }
-        return null; // success
+        return launch(); // success
     }
 
     /**
