@@ -11,7 +11,7 @@ import java.util.List;
 public class TestLaunch {
     @Test
     public void testGetArgs() throws IOException {
-        GameArgs gameArgs = new GameArgs(540, 320, new File(System.getProperty("user.home"), "AppData/Roaming/.minecraft"), new File(System.getProperty("user.home"), ".lunarclient/textures"));
+        GameArgs gameArgs = new GameArgs(540, 320, new File(System.getProperty("user.home"), "AppData/Roaming/.minecraft"));
         Celestial.launcherData = new LauncherData("https://api.lunarclientprod.com");
         GameArgsResult argsResult = Celestial.getArgs("1.8.9", "master", "lunar", new File(System.getProperty("user.home"), ".lunarclient/offline/multiver"), gameArgs);
         List<String> args = argsResult.args();
