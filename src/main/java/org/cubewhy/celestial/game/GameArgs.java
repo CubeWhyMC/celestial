@@ -13,13 +13,11 @@ public class GameArgs {
     int width;
     int height;
     File gameDir;
-    File texturesDir;
     String server = null;
 
-    public GameArgs(int width, int height, File gameDir, File texturesDir) {
+    public GameArgs(int width, int height, File gameDir) {
         this.width = width;
         this.height = height;
         this.gameDir = gameDir;
-        this.texturesDir = texturesDir;
     }
 }
