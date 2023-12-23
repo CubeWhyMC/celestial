@@ -267,7 +267,7 @@ public final class LauncherData {
      * @return textures' index
      */
     @Nullable
-    public static JsonElement getLunarTexturesIndex(@NotNull JsonElement version) throws IOException {
+    public static Map<String, String> getLunarTexturesIndex(@NotNull JsonElement version) throws IOException {
         JsonObject versionJson = version.getAsJsonObject();
         String indexUrl = versionJson.getAsJsonObject("textures").get("indexUrl").getAsString();
         // get index json
@@ -275,21 +275,15 @@ public final class LauncherData {
         try (Response response = RequestUtils.get(indexUrl).execute()) {
             if (response.body() != null) {
                 // parse
-                JsonObject jsonObject = new JsonObject();
+                Map<String, String> map = new HashMap<>();
                 for (String s : response.body().string().split("\n")) {
                     // filename hashcode
-                    jsonObject.addProperty(baseUrl + s.split(" ")[0], s.split(" ")[1]);
+                    map.put(baseUrl + s.split(" ")[0], s.split(" ")[1]);
                 }
-                return jsonObject;
+                return map;
             }
         }
         return null;
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    public static String getTexturesBaseUrl() {
-        return "https://textures.lunarclientcdn.com/file/";
     }
 
     public static String getTexturesBaseUrl(JsonElement version) throws IOException {
