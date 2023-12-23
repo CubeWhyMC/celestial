@@ -11,19 +11,11 @@ import lombok.SneakyThrows;
 import java.io.File;
 import java.net.URL;
 
-public class Downloadable implements Runnable {
-
-    public final URL url;
-    public final File file;
-
-    public Downloadable(URL url, File file) {
-        this.url = url;
-        this.file = file;
-    }
+public record Downloadable(URL url, File file) implements Runnable {
 
     /**
      * Start download
-     * */
+     */
     @SneakyThrows
     @Override
     public void run() {
