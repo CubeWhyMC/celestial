@@ -8,6 +8,8 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.files.ConfigFile;
+import org.cubewhy.celestial.files.DownloadManager;
+import org.cubewhy.celestial.files.Downloadable;
 import org.cubewhy.celestial.game.AuthServer;
 import org.cubewhy.celestial.game.GameArgs;
 import org.cubewhy.celestial.game.GameArgsResult;
@@ -24,6 +26,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
@@ -196,7 +200,7 @@ public class Celestial {
                 .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("game", (JsonElement) null)
-                .initValue("max-threads", 32)
+                .initValue("max-threads", Runtime.getRuntime().availableProcessors())
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
                 .initValue("theme", "dark") // dark, light, unset, custom.
                 .initValue("resize", resize) // (854, 480) for default
@@ -446,6 +450,16 @@ public class Celestial {
      * @param branch  Git branch (LunarClient)
      */
     public static void checkUpdate(String version, String module, String branch) throws IOException {
+        JsonObject versionJson = launcherData.getVersion(version, branch, module);
+        // download artifacts
+        Map<String, Map<String, String>> artifacts = LauncherData.getArtifacts(versionJson);
+        artifacts.forEach((name, info) -> {
+            try {
+                DownloadManager.download(new Downloadable(new URL(info.get("url")), new File(config.getValue("installation-dir").getAsString(), name)));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     /**
