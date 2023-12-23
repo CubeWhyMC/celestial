@@ -47,13 +47,17 @@ public class ConfigFile {
 
     public ConfigFile initValue(String key, JsonElement value) {
         if (!this.config.has(key)) {
-            log.info("Init value " + key +" -> " + value);
+            log.info("Init value " + key + " -> " + value);
             this.config.add(key, value);
         }
         return this.save();
     }
 
     public ConfigFile initValue(String key, String value) {
+        return this.initValue(key, new JsonPrimitive(value));
+    }
+
+    public ConfigFile initValue(String key, int value) {
         return this.initValue(key, new JsonPrimitive(value));
     }
 
@@ -100,4 +104,5 @@ public class ConfigFile {
         }
         return this;
     }
+
 }
