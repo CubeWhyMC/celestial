@@ -1,5 +1,6 @@
 package org.cubewhy.celestial.files;
 
+import cn.hutool.crypto.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import org.apache.commons.io.FileUtils;
@@ -64,9 +65,16 @@ public final class DownloadManager {
      *
      * @param url  url to the target file (online)
      * @param file file instance of the local file
+     * @return is success
      */
-    public static boolean download(URL url, File file) throws IOException {
+    public static boolean download(URL url, @NotNull File file, String sha1) throws IOException {
         // connect
+        if (file.exists() && sha1 != null) {
+            // assert sha1
+            if (SecureUtil.sha1(file).equals(sha1)) {
+                return true;
+            }
+        }
         log.info("Downloading " + url + " to " + file);
         try (Response response = RequestUtils.get(url).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
@@ -75,8 +83,15 @@ public final class DownloadManager {
             byte[] bytes = response.body().bytes();
             FileUtils.writeByteArrayToFile(file, bytes);
         }
-        statusBar.setText("Download " + file.getName() +" success.");
+        statusBar.setText("Download " + file.getName() + " success.");
+        if (sha1 != null) {
+            return SecureUtil.sha1(file).equals(sha1);
+        }
         return true;
+    }
+
+    public static boolean download(URL url, File file) throws IOException {
+        return download(url, file, null);
     }
 
     public static void download(Downloadable downloadable) {

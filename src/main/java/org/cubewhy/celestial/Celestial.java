@@ -467,7 +467,7 @@ public class Celestial {
         Map<String, Map<String, String>> artifacts = LauncherData.getArtifacts(versionJson);
         artifacts.forEach((name, info) -> {
             try {
-                DownloadManager.download(new Downloadable(new URL(info.get("url")), new File(config.getValue("installation-dir").getAsString(), name)));
+                DownloadManager.download(new Downloadable(new URL(info.get("url")), new File(config.getValue("installation-dir").getAsString(), name), info.get("sha1")));
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
