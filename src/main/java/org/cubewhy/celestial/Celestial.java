@@ -31,9 +31,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 @Slf4j
 public class Celestial {
@@ -51,7 +48,8 @@ public class Celestial {
     public static boolean themed = true;
     public static String os = System.getProperty("os.name");
     public static final File launchScript = new File(configDir, (os.contains("Windows")) ? "launch.bat" : "launch.sh");
-    public static final File logFile = new File(configDir, "latest.log");
+    public static final File gameLogFile = new File(configDir, "logs/game.log");
+    public static final File launcherLogFile = new File(configDir, "logs/launcher.log");
     public static final boolean isDevelopMode = System.getProperties().containsKey("dev-mode");
     public static long gamePid = 0;
 
@@ -67,7 +65,8 @@ public class Celestial {
             StringBuffer message = new StringBuffer("Celestial Crashed\n");
             if (config.getConfig().has("data-sharing") && config.getValue("data-sharing").getAsBoolean()) {
                 log.info("Uploading crash report");
-                Map<String, String> map = launcherData.uploadCrashReport(trace, CrashReportType.LAUNCHER, null);
+                String logString = org.apache.commons.io.FileUtils.readFileToString(launcherLogFile, StandardCharsets.UTF_8);
+                Map<String, String> map = launcherData.uploadCrashReport(logString, CrashReportType.LAUNCHER, null);
                 if (map.isEmpty()) {
                     log.info("Crash report update failed");
                 } else {
@@ -275,9 +274,9 @@ public class Celestial {
             // Windows
             // delete the log file
             log.info("delete the log file");
-            logFile.delete();
+            gameLogFile.delete();
             ProcessBuilder builder = new ProcessBuilder();
-            builder.command(System.getenv("WINDIR") + "/System32/cmd.exe", "/C \"" + launchScript.getPath() + String.format(" 1>>\"%s\" 2>&1\"", logFile.getPath()));
+            builder.command(System.getenv("WINDIR") + "/System32/cmd.exe", "/C \"" + launchScript.getPath() + String.format(" 1>>\"%s\" 2>&1\"", gameLogFile.getPath()));
             return builder;
         } else {
             // others
