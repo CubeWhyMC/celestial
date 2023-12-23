@@ -9,6 +9,7 @@ import org.cubewhy.celestial.event.impl.AuthEvent;
 import org.cubewhy.celestial.event.impl.GameStartEvent;
 import org.cubewhy.celestial.event.impl.GameTerminateEvent;
 import org.cubewhy.celestial.gui.dialogs.LanguageSelectDialog;
+import org.cubewhy.celestial.gui.elements.StatusBar;
 import org.cubewhy.celestial.gui.pages.GuiAbout;
 import org.cubewhy.celestial.gui.pages.GuiNews;
 import org.cubewhy.celestial.gui.pages.GuiSettings;
@@ -33,6 +34,8 @@ import static org.cubewhy.celestial.Celestial.*;
 
 @Slf4j
 public class GuiLauncher extends JFrame {
+
+    public static final JLabel statusBar = new StatusBar();
 
     public GuiLauncher() throws IOException {
         // register with EventManager
@@ -59,6 +62,7 @@ public class GuiLauncher extends JFrame {
      * Init Celestial Launcher (gui)
      */
     private void initGui() throws IOException {
+        this.add(statusBar, BorderLayout.SOUTH);
         // menu
         Panel menu = new Panel();
         JButton btnPrevious = new JButton("previous");

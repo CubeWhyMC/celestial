@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.cubewhy.celestial.Celestial.*;
+import static org.cubewhy.celestial.gui.GuiLauncher.statusBar;
 
 @Slf4j
 public class GuiVersionSelect extends JPanel {
@@ -154,6 +155,7 @@ public class GuiVersionSelect extends JPanel {
                     gamePid = p[0].pid();
                 }
                 log.info("Pid: " + gamePid);
+                statusBar.setText(String.format(f.getString("status.launch.started"), gamePid));
                 new GameStartEvent(gamePid).call();
             }
         });
@@ -166,10 +168,12 @@ public class GuiVersionSelect extends JPanel {
                 threadGetId.start();
                 int code = p[0].waitFor();
                 log.info("Game terminated");
+                statusBar.setText(f.getString("status.launch.terminated"));
                 Celestial.gamePid = 0;
                 new GameTerminateEvent().call();
                 if (code != 0) {
                     // upload crash report
+                    statusBar.setText(f.getString("status.launch.crashed"));
                     log.info("Client looks crashed, starting upload the log");
                     try {
                         String trace = FileUtils.readFileToString(gameLogFile, StandardCharsets.UTF_8);
@@ -211,13 +215,18 @@ public class GuiVersionSelect extends JPanel {
         File natives = launch((String) versionSelect.getSelectedItem(), branchInput.getText(), (String) moduleSelect.getSelectedItem());
         runGame(() -> {
             try {
+                statusBar.setText(f.getString("status.launch.call-process"));
                 return SystemUtils.callExternalProcess(launch());
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }, () -> {
             try {
+                statusBar.setText(f.getString("status.launch.begin"));
+                Celestial.checkUpdate((String) versionSelect.getSelectedItem(), (String) moduleSelect.getSelectedItem(), branchInput.getText());
+                DownloadManager.waitForAll();
                 try {
+                    statusBar.setText(f.getString("status.launch.natives"));
                     org.cubewhy.celestial.utils.FileUtils.unzipNatives(natives, new File(config.getValue("installation-dir").getAsString()));
                 } catch (Exception e) {
                     String trace = TextUtils.dumpTrace(e);
@@ -225,8 +234,6 @@ public class GuiVersionSelect extends JPanel {
                     log.error(trace);
                 }
                 // exec, run
-                Celestial.checkUpdate((String) versionSelect.getSelectedItem(), (String) moduleSelect.getSelectedItem(), branchInput.getText());
-                DownloadManager.waitForAll();
                 log.info("Everything is OK, starting game...");
             } catch (Exception e) {
                 log.error("Failed to check update");
@@ -242,6 +249,7 @@ public class GuiVersionSelect extends JPanel {
         ProcessBuilder process = Celestial.launch();
         runGame(() -> {
             try {
+                statusBar.setText(f.getString("status.launch.call-process"));
                 return SystemUtils.callExternalProcess(process);
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
