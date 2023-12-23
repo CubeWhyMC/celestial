@@ -43,6 +43,7 @@ public class AuthServer {
      * Start the server
      */
     public void startServer() {
+        log.info("Starting auth server at port 28189");
         new Thread(server::start).start();
     }
 
