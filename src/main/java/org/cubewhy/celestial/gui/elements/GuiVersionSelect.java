@@ -14,6 +14,7 @@ import org.apache.commons.io.FileUtils;
 import org.cubewhy.celestial.Celestial;
 import org.cubewhy.celestial.event.impl.GameStartEvent;
 import org.cubewhy.celestial.event.impl.GameTerminateEvent;
+import org.cubewhy.celestial.files.DownloadManager;
 import org.cubewhy.celestial.utils.CrashReportType;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.cubewhy.celestial.utils.TextUtils;
@@ -23,6 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -37,6 +39,12 @@ public class GuiVersionSelect extends JPanel {
     private final JComboBox<String> moduleSelect = new JComboBox<>();
     private final JTextField branchInput = new JTextField();
     private boolean isFinishOk = false;
+    private final JButton btnOnline = new JButton(f.getString("gui.version.online"));
+    private final JButton btnOffline = new JButton(f.getString("gui.version.offline"));
+
+    private interface CreateProcess {
+        Process create() throws IOException;
+    }
 
     public GuiVersionSelect() throws IOException {
         this.setBorder(new TitledBorder(null, f.getString("gui.version-select.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
@@ -89,7 +97,6 @@ public class GuiVersionSelect extends JPanel {
         isFinishOk = true;
 
         // add launch buttons
-        JButton btnOnline = new JButton(f.getString("gui.version.online"));
         btnOnline.addActionListener(e -> {
             try {
                 this.online();
@@ -100,7 +107,6 @@ public class GuiVersionSelect extends JPanel {
         });
         this.add(btnOnline);
 
-        JButton btnOffline = new JButton(f.getString("gui.version.offline"));
         this.add(btnOffline);
         btnOffline.addActionListener(e -> {
             try {
@@ -125,10 +131,40 @@ public class GuiVersionSelect extends JPanel {
         }
     }
 
-    private void runGame(Process p) {
+    private void runGame(CreateProcess cp, Runnable run) throws IOException {
+        final Process[] p = new Process[1]; // create process
+
+        Thread threadGetId = new Thread(() -> {
+            // find the game process
+            try {
+                Thread.sleep(3000); // sleep 3s
+            } catch (InterruptedException ignored) {
+
+            }
+            if (p[0].isAlive()) {
+                try {
+                    VirtualMachine java = SystemUtils.findJava(LauncherData.getMainClass(null));
+                    assert java != null;
+                    String id = java.id();
+                    gamePid = Long.parseLong(id);
+                    java.detach();
+                } catch (Exception ex) {
+                    log.error("Failed to get the real pid of the game, is Celestial launched non java program?");
+                    log.warn("process.pid() will be used to get the process id, which may not be the real PID");
+                    gamePid = p[0].pid();
+                }
+                log.info("Pid: " + gamePid);
+                new GameStartEvent(gamePid).call();
+            }
+        });
         new Thread(() -> {
             try {
-                int code = p.waitFor();
+                if (run != null) {
+                    run.run();
+                }
+                p[0] = cp.create();
+                threadGetId.start();
+                int code = p[0].waitFor();
                 log.info("Game terminated");
                 Celestial.gamePid = 0;
                 new GameTerminateEvent().call();
@@ -143,12 +179,12 @@ public class GuiVersionSelect extends JPanel {
                             String url = map1.get("url");
                             String id = map1.get("id");
                             JOptionPane.showMessageDialog(this, String.format("""
-                                Your client was crashed:
-                                Crash id: %s
-                                View your crash report at %s
-                                View the log of the latest launch: %s
-                                                                        
-                                *%s*""", id, url, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                                    Your client was crashed:
+                                    Crash id: %s
+                                    View your crash report at %s
+                                    View the log of the latest launch: %s
+                                                                            
+                                    *%s*""", id, url, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
                         } else {
                             throw new RuntimeException("Failed to upload crash report");
                         }
@@ -164,47 +200,53 @@ public class GuiVersionSelect extends JPanel {
             } catch (InterruptedException ex) {
                 String trace = TextUtils.dumpTrace(ex);
                 log.error(trace);
-            }
-        }).start();
-
-        new Thread(() -> {
-            // find the game process
-            try {
-                Thread.sleep(3000); // sleep 10s
-            } catch (InterruptedException ignored) {
-
-            }
-            if (p.isAlive()) {
-                try {
-                    VirtualMachine java = SystemUtils.findJava(LauncherData.getMainClass(null));
-                    assert java != null;
-                    String id = java.id();
-                    gamePid = Long.parseLong(id);
-                    java.detach();
-                } catch (Exception ex) {
-                    log.error("Failed to get the real pid of the game, is Celestial launched non java program?");
-                    log.warn("process.pid() will be used to get the process id, which may not be the real PID");
-                    gamePid = p.pid();
-                }
-                log.info("Pid: " + gamePid);
-                new GameStartEvent(gamePid).call();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }).start();
     }
 
-    private void online() throws IOException, InterruptedException, AttachNotSupportedException {
-        // TODO check update
+    private void online() throws IOException, AttachNotSupportedException {
         beforeLaunch();
-        ProcessBuilder builder = launch((String) versionSelect.getSelectedItem(), branchInput.getText(), (String) moduleSelect.getSelectedItem());
-        Process p = SystemUtils.callExternalProcess(builder);
-        runGame(p);
+        File natives = launch((String) versionSelect.getSelectedItem(), branchInput.getText(), (String) moduleSelect.getSelectedItem());
+        runGame(() -> {
+            try {
+                return SystemUtils.callExternalProcess(launch());
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }, () -> {
+            try {
+                try {
+                    org.cubewhy.celestial.utils.FileUtils.unzipNatives(natives, new File(config.getValue("installation-dir").getAsString()));
+                } catch (Exception e) {
+                    String trace = TextUtils.dumpTrace(e);
+                    log.error("Is game launched? Failed to unzip natives.");
+                    log.error(trace);
+                }
+                // exec, run
+                Celestial.checkUpdate((String) versionSelect.getSelectedItem(), (String) moduleSelect.getSelectedItem(), branchInput.getText());
+                DownloadManager.waitForAll();
+                log.info("Everything is OK, starting game...");
+            } catch (Exception e) {
+                log.error("Failed to check update");
+                String trace = TextUtils.dumpTrace(e);
+                log.error(trace);
+                JOptionPane.showMessageDialog(null, f.getString("gui.check-update.error.message"), f.getString("gui.check-update.error.title"), JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
 
     private void offline() throws IOException, InterruptedException, AttachNotSupportedException {
         beforeLaunch();
         ProcessBuilder process = Celestial.launch();
-        Process p = SystemUtils.callExternalProcess(process);
-        runGame(p);
+        runGame(() -> {
+            try {
+                return SystemUtils.callExternalProcess(process);
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }, null);
     }
 
     private void initInput(@NotNull JComboBox<String> versionSelect, @NotNull JComboBox<String> moduleSelect, @NotNull JTextField branchInput) {
