@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.cubewhy.celestial.Celestial.config;
 import static org.cubewhy.celestial.Celestial.configDir;
+import static org.cubewhy.celestial.gui.GuiLauncher.statusBar;
 
 @Slf4j
 public final class DownloadManager {
@@ -34,7 +35,7 @@ public final class DownloadManager {
 
     public static void waitForAll() throws InterruptedException {
         pool.shutdown();
-        while (!pool.awaitTermination(1, TimeUnit.SECONDS)){
+        while (!pool.awaitTermination(1, TimeUnit.SECONDS)) {
             Thread.onSpinWait();
         }
     }
@@ -74,6 +75,7 @@ public final class DownloadManager {
             byte[] bytes = response.body().bytes();
             FileUtils.writeByteArrayToFile(file, bytes);
         }
+        statusBar.setText("Download " + file.getName() +" success.");
         return true;
     }
 
