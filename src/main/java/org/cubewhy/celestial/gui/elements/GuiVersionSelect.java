@@ -136,7 +136,7 @@ public class GuiVersionSelect extends JPanel {
                     // upload crash report
                     log.info("Client looks crashed, starting upload the log");
                     try {
-                        String trace = FileUtils.readFileToString(logFile, StandardCharsets.UTF_8);
+                        String trace = FileUtils.readFileToString(gameLogFile, StandardCharsets.UTF_8);
                         String script = FileUtils.readFileToString(launchScript, StandardCharsets.UTF_8);
                         Map<String, String> map1 = launcherData.uploadCrashReport(trace, CrashReportType.GAME, script);
                         if (!map1.isEmpty()) {
@@ -148,7 +148,7 @@ public class GuiVersionSelect extends JPanel {
                                 View your crash report at %s
                                 View the log of the latest launch: %s
                                                                         
-                                *%s*""", id, url, logFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                                *%s*""", id, url, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
                         } else {
                             throw new RuntimeException("Failed to upload crash report");
                         }
@@ -157,7 +157,7 @@ public class GuiVersionSelect extends JPanel {
                                 Your client was crashed:
                                 View the log of the latest launch: %s
                                 *%s*
-                                """, logFile.getPath(), f.getString("gui.version.crash.tip")));
+                                """, gameLogFile.getPath(), f.getString("gui.version.crash.tip")));
                         throw new RuntimeException(e);
                     }
                 }
