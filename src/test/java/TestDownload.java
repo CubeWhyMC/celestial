@@ -5,13 +5,11 @@
  */
 
 import lombok.SneakyThrows;
-import org.cubewhy.celestial.Celestial;
 import org.cubewhy.celestial.files.DownloadManager;
 import org.cubewhy.celestial.files.Downloadable;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class TestDownload {
