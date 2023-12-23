@@ -63,7 +63,8 @@ public class Celestial {
         } catch (Exception e) {
             String trace = TextUtils.dumpTrace(e);
             log.error(trace);
-            StringBuffer message = new StringBuffer("Celestial Crashed");
+            // please share the crash report with developers to help us solve the problems of the Celestial Launcher
+            StringBuffer message = new StringBuffer("Celestial Crashed\n");
             if (config.getConfig().has("data-sharing") && config.getValue("data-sharing").getAsBoolean()) {
                 log.info("Uploading crash report");
                 Map<String, String> map = launcherData.uploadCrashReport(trace, CrashReportType.LAUNCHER, null);
@@ -200,7 +201,7 @@ public class Celestial {
                 .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("game", (JsonElement) null)
-                .initValue("max-threads", Runtime.getRuntime().availableProcessors())
+                .initValue("max-threads", Runtime.getRuntime().availableProcessors()) // recommend: same as your CPU core
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
                 .initValue("theme", "dark") // dark, light, unset, custom.
                 .initValue("resize", resize) // (854, 480) for default
@@ -443,6 +444,28 @@ public class Celestial {
     }
 
     /**
+     * Patching network disabling for LunarClient
+     */
+    public static void completeSession() throws IOException {
+        File sessionFile;
+        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
+            // Microsoft Windows
+            sessionFile = new File(System.getenv("APPDATA"), "launcher/sentry/session.json");
+        } else {
+            // Linux, Macos... etc.
+            sessionFile = new File(System.getProperty("user.home"), ".config/launcher/sentry/session.json");
+        }
+        if (!sessionFile.exists()) {
+            log.info("Completing session.json to fix the network error for LunarClient");
+            byte[] json;
+            try (InputStream stream = FileUtils.inputStreamFromClassPath("/game/session.json")) {
+                json = FileUtils.readBytes(stream);
+            }
+            org.apache.commons.io.FileUtils.writeStringToFile(sessionFile, String.valueOf(JsonParser.parseString(new String(json, StandardCharsets.UTF_8))), StandardCharsets.UTF_8);
+        }
+    }
+
+    /**
      * Check and download updates for game
      *
      * @param version Minecraft version
@@ -460,23 +483,8 @@ public class Celestial {
                 throw new RuntimeException(e);
             }
         });
+        // TODO complete textures
+
     }
 
-    /**
-     * Patching network disabling for LunarClient
-     */
-    public static void completeSession() throws IOException {
-        // TODO add linux support
-        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
-            File sessionFile = new File(System.getenv("APPDATA"), "launcher/sentry/session.json");
-            if (!sessionFile.exists()) {
-                log.info("Completing session.json to fix the network error for LunarClient");
-                byte[] json;
-                try (InputStream stream = FileUtils.inputStreamFromClassPath("/game/session.json")) {
-                    json = FileUtils.readBytes(stream);
-                }
-                org.apache.commons.io.FileUtils.writeStringToFile(sessionFile, String.valueOf(JsonParser.parseString(new String(json, StandardCharsets.UTF_8))), StandardCharsets.UTF_8);
-            }
-        }
-    }
 }
