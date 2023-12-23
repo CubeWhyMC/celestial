@@ -1,5 +1,6 @@
 package org.cubewhy.celestial.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
+@Slf4j
 public class FileUtils {
     private FileUtils() {
     }
@@ -24,6 +26,7 @@ public class FileUtils {
     }
 
     public static void unzipNatives(File nativesZip, File baseDir) throws IOException {
+        log.info("Unzipping natives...");
         File dir = new File(baseDir, "natives");
         if (!dir.exists()) {
             dir.mkdirs();

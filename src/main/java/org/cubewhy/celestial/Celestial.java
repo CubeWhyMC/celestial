@@ -382,10 +382,10 @@ public class Celestial {
      * @param version Minecraft version
      * @param module  LunarClient module
      * @param branch  Git branch (LunarClient)
-     * @return error message
+     * @return natives file
      */
     @Nullable
-    public static ProcessBuilder launch(String version, String branch, String module) throws IOException {
+    public static File launch(String version, String branch, String module) throws IOException {
         File installationDir = new File(config.getValue("installation-dir").getAsString());
 
         log.info(String.format("Launching (%s, %s, %s)", version, module, branch));
@@ -428,18 +428,7 @@ public class Celestial {
         }
         log.info("Args was dumped to " + launchScript);
         log.info("Natives file: " + natives);
-        log.info("Unzipping natives...");
-        try {
-            FileUtils.unzipNatives(natives, installationDir);
-        } catch (Exception e) {
-            String trace = TextUtils.dumpTrace(e);
-            log.error("Is game launched? Failed to unzip natives.");
-            log.error(trace);
-            return null;
-        }
-        // exec, run
-        log.info("Everything is OK, starting game...");
-        return launch(); // success
+        return natives; // success
     }
 
     /**
@@ -471,7 +460,8 @@ public class Celestial {
      * @param module  LunarClient module
      * @param branch  Git branch (LunarClient)
      */
-    public static void checkUpdate(String version, String module, String branch) throws IOException {
+    public synchronized static void checkUpdate(String version, String module, String branch) throws IOException {
+        log.info("Checking update");
         JsonObject versionJson = launcherData.getVersion(version, branch, module);
         // download artifacts
         Map<String, Map<String, String>> artifacts = LauncherData.getArtifacts(versionJson);
@@ -483,7 +473,6 @@ public class Celestial {
             }
         });
         // TODO complete textures
-
     }
 
 }
