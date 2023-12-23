@@ -19,10 +19,10 @@ public class TestDownload {
     @SneakyThrows
     public void testDownload() {
         for (int i = 0; i < 32; i++) {
-            File file = new File(DownloadManager.cacheDir, "x" + i + ".png");
-            URL url = new URL("https://www.lunarclient.top/favicon.ico");
+            File file = new File(DownloadManager.cacheDir, "test" + i + ".bin");
+            URL url = new URL("https://singapore.downloadtestfile.com/1GB.bin");
             DownloadManager.download(new Downloadable(url, file));
         }
-        Thread.sleep(10000);
+        DownloadManager.waitForAll();
     }
 }

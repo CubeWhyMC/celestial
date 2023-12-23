@@ -235,10 +235,10 @@ public final class LauncherData {
      * Get a list of LunarClient Artifacts
      *
      * @param version artifacts json
-     * @return artifact list
+     * @return artifact map {"fileName": {url, sha1, type}}
      */
 
-    public static Map<String, Map<String, String>> getArtifacts(JsonElement version) throws IOException {
+    public static @NotNull Map<String, Map<String, String>> getArtifacts(JsonElement version) throws IOException {
         Map<String, Map<String, String>> out = new HashMap<>();
 
         JsonObject versionJson = Objects.requireNonNull(version).getAsJsonObject();

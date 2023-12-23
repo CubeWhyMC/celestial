@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.cubewhy.celestial.Celestial.config;
@@ -29,7 +30,13 @@ public final class DownloadManager {
     }
 
     private DownloadManager() {
+    }
 
+    public static void waitForAll() throws InterruptedException {
+        pool.shutdown();
+        while (!pool.awaitTermination(1, TimeUnit.SECONDS)){
+            Thread.onSpinWait();
+        }
     }
 
 
@@ -57,7 +64,7 @@ public final class DownloadManager {
      * @param url  url to the target file (online)
      * @param file file instance of the local file
      */
-    public static synchronized boolean download(URL url, File file) throws IOException {
+    public static boolean download(URL url, File file) throws IOException {
         // connect
         log.info("Downloading " + url + " to " + file);
         try (Response response = RequestUtils.get(url).execute()) {
@@ -74,7 +81,7 @@ public final class DownloadManager {
         if (pool == null) {
             pool = Executors.newFixedThreadPool(config.getValue("max-threads").getAsInt(), new DownloadThreadFactory());
         }
-        pool.execute(downloadable);
+        pool.submit(downloadable);
     }
 
     private static class DownloadThreadFactory implements ThreadFactory {
