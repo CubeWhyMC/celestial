@@ -7,11 +7,14 @@
 package org.cubewhy.celestial.game;
 
 import co.gongzh.procbridge.Server;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.event.impl.AuthEvent;
 import org.cubewhy.celestial.utils.TextUtils;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -51,9 +54,9 @@ public class AuthServer {
     @NotNull
     private Map<String, String> handleRequest(@NotNull String method, Object args) throws MalformedURLException {
         HashMap<String, String> result = new HashMap<>();
-        if (method.equals("open-window")) {
+        if (method.equals("open-window") && args instanceof JSONObject args1) {
             // Pop a token url
-            URL url = new URL("https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service::user.auth.xboxlive.com::MBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf");
+            URL url = new URL(args1.getString("url"));
             String auth = ((AuthEvent) new AuthEvent(url).call()).waitForAuth();
             if (auth.isBlank()) {
                 result.put("status", "CLOSED_WITH_NO_URL");
