@@ -195,7 +195,8 @@ public class Celestial {
                 .initValue("language", "zh") // en, zh
                 .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
-                .initValue("game", new JsonNull())
+                .initValue("game", (JsonElement) null)
+                .initValue("max-threads", 32)
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
                 .initValue("theme", "dark") // dark, light, unset, custom.
                 .initValue("resize", resize) // (854, 480) for default

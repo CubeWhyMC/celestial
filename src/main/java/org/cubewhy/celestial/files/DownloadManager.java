@@ -14,12 +14,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.cubewhy.celestial.Celestial.config;
 import static org.cubewhy.celestial.Celestial.configDir;
 
 @Slf4j
 public final class DownloadManager {
     public static final File cacheDir = new File(configDir, "cache");
-    private static final ExecutorService pool = Executors.newFixedThreadPool(16, new DownloadThreadFactory());
+    private static ExecutorService pool;
 
     static {
         if (!cacheDir.exists()) {
@@ -70,6 +71,9 @@ public final class DownloadManager {
     }
 
     public static void download(Downloadable downloadable) {
+        if (pool == null) {
+            pool = Executors.newFixedThreadPool(config.getValue("max-threads").getAsInt(), new DownloadThreadFactory());
+        }
         pool.execute(downloadable);
     }
 
