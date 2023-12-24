@@ -213,6 +213,10 @@ public class GuiVersionSelect extends JPanel {
     private void online() throws IOException, AttachNotSupportedException {
         beforeLaunch();
         File natives = launch((String) versionSelect.getSelectedItem(), branchInput.getText(), (String) moduleSelect.getSelectedItem());
+        if (natives == null) {
+            JOptionPane.showMessageDialog(this, f.getString("gui.launch.server.failure.message"), f.getString("gui.launch.server.failure.title"), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         runGame(() -> {
             try {
                 statusBar.setText(f.getString("status.launch.call-process"));

@@ -289,10 +289,13 @@ public class Celestial {
     /**
      * Get args
      */
-    @NotNull
+    @Nullable
     public static GameArgsResult getArgs(String version, String branch, String module, File installation, GameArgs gameArgs) throws IOException {
         List<String> args = new ArrayList<>();
         JsonObject json = launcherData.getVersion(version, branch, module);
+        if (!json.get("success").getAsBoolean()) {
+            return null;
+        }
         // === JRE ===
         String wrapper = config.getValue("wrapper").getAsString();
         String customJre = config.getValue("jre").getAsString();
@@ -396,6 +399,9 @@ public class Celestial {
         log.info(String.format("Resize: (%d, %d)", width, height));
         GameArgs gameArgs = new GameArgs(width, height, new File(config.getValue("game-dir").getAsString()));
         GameArgsResult argsResult = Celestial.getArgs(version, branch, module, installationDir, gameArgs);
+        if (argsResult == null) {
+            return null;
+        }
         List<String> args = argsResult.args();
         String argsString = String.join(" ", args);
         File natives = argsResult.natives();
