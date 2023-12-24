@@ -395,7 +395,6 @@ public class Celestial {
         int height = resize.get("height").getAsInt();
         log.info(String.format("Resize: (%d, %d)", width, height));
         GameArgs gameArgs = new GameArgs(width, height, new File(config.getValue("game-dir").getAsString()));
-        Celestial.launcherData = new LauncherData("https://api.lunarclientprod.com");
         GameArgsResult argsResult = Celestial.getArgs(version, branch, module, installationDir, gameArgs);
         List<String> args = argsResult.args();
         String argsString = String.join(" ", args);
@@ -473,6 +472,6 @@ public class Celestial {
             }
         });
         // TODO complete textures
+        
     }
-
 }

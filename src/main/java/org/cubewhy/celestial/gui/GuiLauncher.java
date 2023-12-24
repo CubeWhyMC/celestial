@@ -72,10 +72,17 @@ public class GuiLauncher extends JFrame {
         // Celestial 是免费开源的启动器, 请赞助来帮助我们走得更远 (收入会全部用于开发)
         // Celestial is an opensource launcher, please donate to let us go further (All money will be used for development)
         JButton btnDonate = new JButton(f.getString("gui.donate"));
+        JButton btnHelp = new JButton(f.getString("gui.help"));
         JButton btnLanguage = new JButton("Language"); // Do not translate this button :)
         btnDonate.addActionListener(e -> {
             try {
                 Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/donate"));
+            } catch (IOException ignored) {
+            }
+        });
+        btnHelp.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/help"));
             } catch (IOException ignored) {
             }
         });
@@ -87,7 +94,8 @@ public class GuiLauncher extends JFrame {
         menu.add(btnPrevious);
         menu.add(btnNext);
         menu.add(btnDonate);
-        menu.add(btnLanguage);
+        menu.add(btnHelp);
+//        menu.add(btnLanguage);
         menu.setSize(100, 20);
 
         this.add(menu, BorderLayout.NORTH);
