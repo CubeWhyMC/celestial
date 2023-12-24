@@ -47,10 +47,7 @@ public class FileUtils {
                 out.createNewFile();
                 InputStream entryInputStream = zipfile.getInputStream(entry);
                 try (FileOutputStream fileOutPutStream = new FileOutputStream(out)) {
-                    int b;
-                    while ((b = entryInputStream.read()) != -1) {
-                        fileOutPutStream.write(b);
-                    }
+                    fileOutPutStream.write(entryInputStream.readAllBytes());
                 }
             }
         }
