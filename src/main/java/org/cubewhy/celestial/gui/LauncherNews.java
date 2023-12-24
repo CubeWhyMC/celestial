@@ -1,5 +1,6 @@
 package org.cubewhy.celestial.gui;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import javax.swing.*;
@@ -32,7 +33,12 @@ public class LauncherNews extends JPanel {
         final JLabel imageLabel = new JLabel(new ImageIcon(image.getImage().getScaledInstance(400, 200, Image.SCALE_DEFAULT)), SwingConstants.CENTER);
         this.add(imageLabel);
 
-        JButton button = new JButton(this.json.get("button_text").getAsString());
+        JsonElement jsonBtnText = this.json.get("button_text");
+        String text = "View";
+        if (!jsonBtnText.isJsonNull()) {
+            text = jsonBtnText.getAsString();
+        }
+        JButton button = new JButton(jsonBtnText.getAsString());
         button.addActionListener(e -> {
             try {
                 Desktop.getDesktop().browse(URI.create(this.json.get("link").getAsString()));
