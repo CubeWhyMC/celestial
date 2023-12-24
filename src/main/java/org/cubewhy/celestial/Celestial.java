@@ -200,6 +200,7 @@ public class Celestial {
                 .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("game", (JsonElement) null)
+                .initValue("ram", 4096)
                 .initValue("max-threads", Runtime.getRuntime().availableProcessors()) // recommend: same as your CPU core
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
                 .initValue("theme", "dark") // dark, light, unset, custom.
@@ -309,6 +310,9 @@ public class Celestial {
             args.add("\"" + customJre + "\"");
         }
         // === default vm args ===
+        long ram = config.getValue("ram").getAsLong();
+        args.add("-Xms" + ram + "m");
+        args.add("-Xmx" + ram + "m");
         args.addAll(LauncherData.getDefaultJvmArgs(json, installation));
         // === javaagents ===
         List<JavaAgent> javaAgents = JavaAgent.findAll();
