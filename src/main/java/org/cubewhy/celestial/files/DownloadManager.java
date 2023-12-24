@@ -97,7 +97,7 @@ public final class DownloadManager {
     }
 
     public static void download(Downloadable downloadable) {
-        if (pool == null) {
+        if (pool == null || pool.isTerminated()) {
             pool = Executors.newFixedThreadPool(config.getValue("max-threads").getAsInt(), new DownloadThreadFactory());
         }
         pool.execute(downloadable);
