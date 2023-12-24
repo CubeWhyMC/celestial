@@ -16,6 +16,7 @@ import org.cubewhy.celestial.game.GameArgsResult;
 import org.cubewhy.celestial.game.JavaAgent;
 import org.cubewhy.celestial.gui.GuiLauncher;
 import org.cubewhy.celestial.utils.*;
+import org.cubewhy.celestial.utils.game.MinecraftData;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +33,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 
+import static org.cubewhy.celestial.gui.GuiLauncher.statusBar;
+
 @Slf4j
 public class Celestial {
 
@@ -44,6 +47,7 @@ public class Celestial {
 
     public static LauncherData launcherData;
     public static JsonObject metadata;
+    public static JsonObject minecraftManifest;
     public static GuiLauncher launcherFrame;
     public static boolean themed = true;
     public static String os = System.getProperty("os.name");
@@ -193,6 +197,7 @@ public class Celestial {
 
     public static void initLauncher() throws IOException {
         metadata = launcherData.metadata();
+        minecraftManifest = MinecraftData.manifest();
         if (metadata.has("error")) {
             // trouble here
             log.error("Metadata info: " + metadata);
@@ -499,5 +504,10 @@ public class Celestial {
             File file = new File(installation, "textures/" + fileName);
             DownloadManager.download(new Downloadable(url, file, full[full.length - 1]));
         });
+
+        // TODO vanilla Minecraft textures
+        statusBar.setText("Complete textures for vanilla Minecraft");
+        JsonObject textureIndex = MinecraftData.getTextureIndex(Objects.requireNonNull(MinecraftData.getVersion(version, minecraftManifest)));
+
     }
 }
