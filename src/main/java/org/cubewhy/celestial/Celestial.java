@@ -52,6 +52,17 @@ public class Celestial {
     public static final File launcherLogFile = new File(configDir, "logs/launcher.log");
     public static final boolean isDevelopMode = System.getProperties().containsKey("dev-mode");
     public static long gamePid = 0;
+    public static File sessionFile;
+
+    static {
+        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
+            // Microsoft Windows
+            sessionFile = new File(System.getenv("APPDATA"), "launcher/sentry/session.json");
+        } else {
+            // Linux, Macos... etc.
+            sessionFile = new File(System.getProperty("user.home"), ".config/launcher/sentry/session.json");
+        }
+    }
 
     public static void main(String[] args) throws Exception {
         log.info("Celestial v" + GitUtils.getBuildVersion() + " build by " + GitUtils.getBuildUser());
@@ -173,7 +184,6 @@ public class Celestial {
 
         // detect the official launcher (Windows only)
         if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
-            File sessionFile = new File(System.getenv("APPDATA"), "launcher/sentry/session.json");
             if (sessionFile.exists() && LunarUtils.isReallyOfficial(sessionFile)) {
                 log.warn("Detected the official launcher");
                 JOptionPane.showMessageDialog(null, f.getString("warn.official-launcher.message"), f.getString("warn.official-launcher.title"), JOptionPane.WARNING_MESSAGE);
@@ -444,14 +454,6 @@ public class Celestial {
      * Patching network disabling for LunarClient
      */
     public static void completeSession() throws IOException {
-        File sessionFile;
-        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
-            // Microsoft Windows
-            sessionFile = new File(System.getenv("APPDATA"), "launcher/sentry/session.json");
-        } else {
-            // Linux, Macos... etc.
-            sessionFile = new File(System.getProperty("user.home"), ".config/launcher/sentry/session.json");
-        }
         if (!sessionFile.exists()) {
             log.info("Completing session.json to fix the network error for LunarClient");
             byte[] json;
