@@ -39,6 +39,8 @@ public final class DownloadManager {
         while (!pool.awaitTermination(1, TimeUnit.SECONDS)) {
             Thread.onSpinWait();
         }
+        // create a new pool (on invoking download)
+        pool = null;
     }
 
 
