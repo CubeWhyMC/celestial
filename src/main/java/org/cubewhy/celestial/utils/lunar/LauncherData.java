@@ -278,7 +278,7 @@ public final class LauncherData {
                 Map<String, String> map = new HashMap<>();
                 for (String s : response.body().string().split("\n")) {
                     // filename hashcode
-                    map.put(baseUrl + s.split(" ")[0], s.split(" ")[1]);
+                    map.put(s.split(" ")[0], baseUrl + s.split(" ")[1]);
                 }
                 return map;
             }
@@ -286,9 +286,9 @@ public final class LauncherData {
         return null;
     }
 
-    public static String getTexturesBaseUrl(JsonElement version) throws IOException {
+    public static String getTexturesBaseUrl(JsonElement version) {
         JsonObject versionJson = Objects.requireNonNull(version).getAsJsonObject();
-        return versionJson.get("baseUrl").getAsString();
+        return versionJson.getAsJsonObject("textures").get("baseUrl").getAsString();
     }
 
 
