@@ -38,7 +38,7 @@ public class LauncherNews extends JPanel {
         if (!jsonBtnText.isJsonNull()) {
             text = jsonBtnText.getAsString();
         }
-        JButton button = new JButton(jsonBtnText.getAsString());
+        JButton button = new JButton(text);
         button.addActionListener(e -> {
             try {
                 Desktop.getDesktop().browse(URI.create(this.json.get("link").getAsString()));
