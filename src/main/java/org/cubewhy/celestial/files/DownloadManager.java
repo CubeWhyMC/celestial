@@ -69,7 +69,7 @@ public final class DownloadManager {
      */
     public static boolean download(URL url, @NotNull File file, String sha1) throws IOException {
         // connect
-        if (file.exists() && sha1 != null) {
+        if (file.isFile() && sha1 != null) {
             // assert sha1
             if (SecureUtil.sha1(file).equals(sha1)) {
                 return true;
@@ -98,7 +98,7 @@ public final class DownloadManager {
         if (pool == null) {
             pool = Executors.newFixedThreadPool(config.getValue("max-threads").getAsInt(), new DownloadThreadFactory());
         }
-        pool.submit(downloadable);
+        pool.execute(downloadable);
     }
 
     private static class DownloadThreadFactory implements ThreadFactory {

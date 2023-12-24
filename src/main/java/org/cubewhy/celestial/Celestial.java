@@ -467,17 +467,31 @@ public class Celestial {
      */
     public synchronized static void checkUpdate(String version, String module, String branch) throws IOException {
         log.info("Checking update");
+        File installation = new File(config.getValue("installation-dir").getAsString());
         JsonObject versionJson = launcherData.getVersion(version, branch, module);
         // download artifacts
         Map<String, Map<String, String>> artifacts = LauncherData.getArtifacts(versionJson);
         artifacts.forEach((name, info) -> {
             try {
-                DownloadManager.download(new Downloadable(new URL(info.get("url")), new File(config.getValue("installation-dir").getAsString(), name), info.get("sha1")));
+                DownloadManager.download(new Downloadable(new URL(info.get("url")), new File(installation, name), info.get("sha1")));
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }
         });
-        // TODO complete textures
-        
+
+        // download textures
+        Map<String, String> index = LauncherData.getLunarTexturesIndex(versionJson);
+        assert index != null;
+        index.forEach((fileName, urlString) -> {
+            URL url;
+            try {
+                url = new URL(urlString);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            }
+            String[] full = urlString.split("/");
+            File file = new File(installation, "textures/" + fileName);
+            DownloadManager.download(new Downloadable(url, file, full[full.length - 1]));
+        });
     }
 }

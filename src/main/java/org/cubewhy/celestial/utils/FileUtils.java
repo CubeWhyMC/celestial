@@ -26,12 +26,13 @@ public class FileUtils {
     }
 
     public static void unzipNatives(File nativesZip, File baseDir) throws IOException {
-        log.info("Unzipping natives...");
+        log.info("Unzipping natives");
         File dir = new File(baseDir, "natives");
         if (!dir.exists()) {
             dir.mkdirs();
         }
         unZip(nativesZip, dir);
+        log.info("Natives unzipped.");
     }
 
     public static void unZip(File input, File outputDir) throws IOException {
