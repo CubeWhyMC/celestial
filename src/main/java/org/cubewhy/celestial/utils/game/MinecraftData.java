@@ -22,10 +22,12 @@ import java.net.URL;
 
 public final class MinecraftData {
     public static final URL versionManifest;
+    public static final URL texture;
 
     static {
         try {
             versionManifest = new URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json");
+            texture = new URL("https://resources.download.minecraft.net");
         } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }

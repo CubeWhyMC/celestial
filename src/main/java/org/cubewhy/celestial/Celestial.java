@@ -505,9 +505,25 @@ public class Celestial {
             DownloadManager.download(new Downloadable(url, file, full[full.length - 1]));
         });
 
+        File minecraftFolder = new File(config.getValue("game-dir").getAsString());
+
         // TODO vanilla Minecraft textures
         statusBar.setText("Complete textures for vanilla Minecraft");
         JsonObject textureIndex = MinecraftData.getTextureIndex(Objects.requireNonNull(MinecraftData.getVersion(version, minecraftManifest)));
+        // dump to .minecraft/assets/indexes
+        File assetsFolder = new File(minecraftFolder, "assets");
+        File indexFile = new File(assetsFolder, "indexes/" + String.join(".", Arrays.copyOfRange(version.split("\\."), 0, 2)) + ".json");
+        org.apache.commons.io.FileUtils.writeStringToFile(indexFile, new Gson().toJson(textureIndex), StandardCharsets.UTF_8);
 
+        Map<String, JsonElement> objects = textureIndex.getAsJsonObject("objects").asMap();
+        // baseURL/hash[0:2]/hash
+        for (JsonElement s : objects.values()) {
+            JsonObject resource = s.getAsJsonObject();
+            String hash = resource.get("hash").getAsString();
+            String folder = hash.substring(0, 2);
+            URL finalURL = new URL(String.format("%s/%s/%s", MinecraftData.texture, folder, hash));
+            File finalFile = new File(assetsFolder, "objects/" + folder + "/" + hash);
+            DownloadManager.download(new Downloadable(finalURL, finalFile, hash));
+        }
     }
 }
