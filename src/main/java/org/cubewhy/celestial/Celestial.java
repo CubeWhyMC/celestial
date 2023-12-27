@@ -13,7 +13,7 @@ import org.cubewhy.celestial.files.Downloadable;
 import org.cubewhy.celestial.game.AuthServer;
 import org.cubewhy.celestial.game.GameArgs;
 import org.cubewhy.celestial.game.GameArgsResult;
-import org.cubewhy.celestial.game.JavaAgent;
+import org.cubewhy.celestial.game.addon.JavaAgent;
 import org.cubewhy.celestial.gui.GuiLauncher;
 import org.cubewhy.celestial.utils.*;
 import org.cubewhy.celestial.utils.game.MinecraftData;

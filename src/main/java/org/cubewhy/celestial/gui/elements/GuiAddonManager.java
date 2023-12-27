@@ -7,7 +7,7 @@
 package org.cubewhy.celestial.gui.elements;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cubewhy.celestial.game.JavaAgent;
+import org.cubewhy.celestial.game.addon.JavaAgent;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
