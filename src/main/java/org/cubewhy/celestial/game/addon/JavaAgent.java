@@ -1,4 +1,10 @@
-package org.cubewhy.celestial.game;
+/*
+ * Celestial Launcher <me@lunarclient.top>
+ * License under GPLv3
+ * Do NOT remove this note if you want to copy this file.
+ */
+
+package org.cubewhy.celestial.game.addon;
 
 import com.google.gson.JsonObject;
 import lombok.Getter;
