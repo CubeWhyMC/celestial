@@ -8,6 +8,8 @@ package org.cubewhy.celestial.gui.elements;
 
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.game.addon.JavaAgent;
+import org.cubewhy.celestial.game.addon.LunarCNMod;
+import org.cubewhy.celestial.game.addon.WeaveMod;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -33,6 +35,12 @@ public class GuiAddonManager extends JPanel {
         // load items
         for (JavaAgent javaAgent : JavaAgent.findAll()) {
             agents.addElement(javaAgent.getFile().getName());
+        }
+        for (WeaveMod weaveMod : WeaveMod.findAll()) {
+            weave.addElement(weaveMod.getFile().getName());
+        }
+        for (LunarCNMod lunarCNMod : LunarCNMod.findAll()) {
+            lunarCN.addElement(lunarCNMod.getFile().getName());
         }
 
         JList<String> list1 = new JList<>(lunarCN);

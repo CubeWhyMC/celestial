@@ -6,6 +6,7 @@
 
 package org.cubewhy.celestial.game.addon;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,12 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public record WeaveMod(File file) {
+@Getter
+public class WeaveMod {
     public static final File modFolder = new File(System.getProperty("user.home"), ".weave/mods");
+    private final File file;
+
+    public WeaveMod(File file) {
+        this.file = file;
+    }
 
     /**
      * Find all mods in the lunarcn mods folder
-     * */
+     */
     @NotNull
     @Contract(pure = true)
     public static List<WeaveMod> findAll() {
