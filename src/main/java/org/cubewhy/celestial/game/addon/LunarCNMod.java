@@ -32,9 +32,11 @@ public class LunarCNMod {
     @Contract(pure = true)
     public static List<LunarCNMod> findAll() {
         List<LunarCNMod> list = new ArrayList<>();
-        for (File file : Objects.requireNonNull(modFolder.listFiles())) {
-            if (file.getName().endsWith(".jar") && file.isFile()) {
-                list.add(new LunarCNMod(file));
+        if (modFolder.isDirectory()) {
+            for (File file : Objects.requireNonNull(modFolder.listFiles())) {
+                if (file.getName().endsWith(".jar") && file.isFile()) {
+                    list.add(new LunarCNMod(file));
+                }
             }
         }
         return list;
