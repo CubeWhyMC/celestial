@@ -31,9 +31,11 @@ public class WeaveMod {
     @Contract(pure = true)
     public static List<WeaveMod> findAll() {
         List<WeaveMod> list = new ArrayList<>();
-        for (File file : Objects.requireNonNull(modFolder.listFiles())) {
-            if (file.getName().endsWith(".jar") && file.isFile()) {
-                list.add(new WeaveMod(file));
+        if (modFolder.isDirectory()) {
+            for (File file : Objects.requireNonNull(modFolder.listFiles())) {
+                if (file.getName().endsWith(".jar") && file.isFile()) {
+                    list.add(new WeaveMod(file));
+                }
             }
         }
         return list;
