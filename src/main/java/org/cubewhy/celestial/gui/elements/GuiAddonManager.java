@@ -42,13 +42,32 @@ public class GuiAddonManager extends JPanel {
         for (LunarCNMod lunarCNMod : LunarCNMod.findAll()) {
             lunarCN.addElement(lunarCNMod.getFile().getName());
         }
-
         JList<String> list1 = new JList<>(lunarCN);
         JList<String> list2 = new JList<>(weave);
         JList<String> list3 = new JList<>(agents);
-        tab.addTab(f.getString("gui.addons.mods.cn"), new JScrollPane(list1));
-        tab.addTab(f.getString("gui.addons.mods.weave"), new JScrollPane(list2));
-        tab.addTab(f.getString("gui.addons.agents"), new JScrollPane(list3));
+        // buttons
+        JButton btnAddLunarCNMod = new JButton("Add mod");
+        JButton btnAddWeaveMod = new JButton("Add mod");
+        JButton btnAddAgent = new JButton("Add agent");
+        // TODO Stretch to the right
+
+        // panels
+        final JPanel panelLunarCN = new JPanel();
+        panelLunarCN.setLayout(new BoxLayout(panelLunarCN, BoxLayout.Y_AXIS));
+        panelLunarCN.add(new JScrollPane(list1));
+        panelLunarCN.add(btnAddLunarCNMod);
+        final JPanel panelWeave = new JPanel();
+        panelWeave.setLayout(new BoxLayout(panelWeave, BoxLayout.Y_AXIS));
+        panelWeave.add(new JScrollPane(list2));
+        panelWeave.add(btnAddWeaveMod);
+        final JPanel panelAgents = new JPanel();
+        panelAgents.setLayout(new BoxLayout(panelAgents, BoxLayout.Y_AXIS));
+        panelAgents.add(new JScrollPane(list3));
+        panelAgents.add(Box.createVerticalGlue());
+        panelAgents.add(btnAddAgent);
+        tab.addTab(f.getString("gui.addons.mods.cn"), panelLunarCN);
+        tab.addTab(f.getString("gui.addons.mods.weave"), panelWeave);
+        tab.addTab(f.getString("gui.addons.agents"), panelAgents);
 
         this.add(tab);
     }
