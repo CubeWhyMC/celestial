@@ -10,10 +10,8 @@ import org.cubewhy.celestial.utils.lunar.LauncherData;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-
 import java.awt.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import static org.cubewhy.celestial.Celestial.f;
@@ -35,15 +33,19 @@ public class GuiNews extends JScrollPane {
     private void initGui() throws IOException {
         // render blogPosts
         log.info("Loading blogPosts (gui)");
-        log.info(String.valueOf(blogPosts));
-        for (JsonElement blogPost : blogPosts) {
-            // cache the image if the image of the news isn't exist
-            JsonObject json = blogPost.getAsJsonObject();
-            String imageURL = json.get("image").getAsString();
-            String title = json.get("title").getAsString();
-            if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
-                // load
-                panel.add(new LauncherNews(json));
+        if (blogPosts.isJsonNull()) {
+            log.error("Failed to load blog posts");
+            this.add(new JLabel("Failed to load news (blogPosts is null)"));
+        } else {
+            for (JsonElement blogPost : blogPosts) {
+                // cache the image if the image of the news doesn't exist
+                JsonObject json = blogPost.getAsJsonObject();
+                String imageURL = json.get("image").getAsString();
+                String title = json.get("title").getAsString();
+                if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
+                    // load
+                    panel.add(new LauncherNews(json));
+                }
             }
         }
     }
