@@ -40,6 +40,7 @@ public class Celestial {
 
 
     public static final File configDir = new File(System.getProperty("user.home"), ".cubewhy/lunarcn");
+    public static final File themesDir = new File(configDir, "themes");
     public static final ConfigFile config = new ConfigFile(new File(configDir, "celestial.json"));
     public static Locale locale;
     public static String userLanguage;
@@ -206,6 +207,14 @@ public class Celestial {
     }
 
     private static void initConfig() {
+        // init dirs
+        if (configDir.mkdirs()) {
+            log.info("Making config dir");
+        }
+        if (themesDir.mkdirs()) {
+            log.info("Making themes dir");
+        }
+        // init config
         JsonObject resize = new JsonObject();
         resize.addProperty("width", 854);
         resize.addProperty("height", 480);
@@ -267,7 +276,7 @@ public class Celestial {
                 themed = false;
             }
             default -> {
-                File themeFile = new File(configDir, "themes/" + themeType);
+                File themeFile = new File(themesDir, themeType);
                 if (!themeFile.exists()) {
                     // cannot load custom theme without theme.json
                     JOptionPane.showMessageDialog(null, f.getString("theme.custom.notfound.message"), f.getString("theme.custom.notfound.title"), JOptionPane.WARNING_MESSAGE);
