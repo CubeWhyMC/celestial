@@ -190,16 +190,16 @@ public class GuiVersionSelect extends JPanel {
                                         View the log of the latest launch: %s
                                                                                 
                                         *%s*""", id, url, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                            } else {
+                                throw new RuntimeException("Failed to upload crash report");
                             }
-                        } else {
-                            throw new RuntimeException("Failed to upload crash report");
                         }
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(this, String.format("""
                                 Your client was crashed:
                                 View the log of the latest launch: %s
                                 *%s*
-                                """, gameLogFile.getPath(), f.getString("gui.version.crash.tip")));
+                                """, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
                         throw new RuntimeException(e);
                     }
                 }
