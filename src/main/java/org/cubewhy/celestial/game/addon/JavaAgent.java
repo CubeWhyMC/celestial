@@ -9,10 +9,10 @@ package org.cubewhy.celestial.game.addon;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
 import org.cubewhy.celestial.game.BaseAddon;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import static org.cubewhy.celestial.Celestial.configDir;
 
 @Getter
 @Slf4j
-public class JavaAgent implements BaseAddon {
+public class JavaAgent extends BaseAddon {
     public static final File javaAgentFolder = new File(configDir, "javaagents"); // share with LunarCN Launcher
 
     static {
@@ -133,20 +133,12 @@ public class JavaAgent implements BaseAddon {
         return ja.get(name).getAsString();
     }
 
-    public static JavaAgent add(@NotNull File file, String arg) throws IOException {
-        String name = file.getName();
-        if (!name.endsWith(".jar")) {
-            name += ".jar"; // adds an ends with for the file
-        }
-        File target = new File(javaAgentFolder, name);
-        if (target.exists()) {
-            return null;
-        }
-        FileUtils.copyFile(file, target);
+    public static @Nullable JavaAgent add(@NotNull File file, String arg) throws IOException {
+        File target = autoCopy(file, javaAgentFolder);
         if (arg != null) {
             setArgFor(file.getName(), arg);
         }
-        return new JavaAgent(file, arg);
+        return (target == null) ? null : new JavaAgent(target, arg);
     }
 
     /**
@@ -154,7 +146,7 @@ public class JavaAgent implements BaseAddon {
      *
      * @param old name of the old agent
      * @param n3w name of the new agent
-     * */
+     */
     public static void migrate(String old, String n3w) {
         JsonObject ja = config.getValue("javaagents").getAsJsonObject();
         String arg = ja.get(old).getAsString();

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
-public class LunarCNMod implements BaseAddon {
+public class LunarCNMod extends BaseAddon {
     public static final File modFolder = new File(Celestial.configDir, "mods");
     private final File file;
 

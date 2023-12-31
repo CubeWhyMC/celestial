@@ -7,7 +7,6 @@
 package org.cubewhy.celestial.gui.elements;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.cubewhy.celestial.Celestial;
 import org.cubewhy.celestial.event.impl.AddonAddEvent;
@@ -16,12 +15,12 @@ import org.cubewhy.celestial.game.addon.JavaAgent;
 import org.cubewhy.celestial.game.addon.LunarCNMod;
 import org.cubewhy.celestial.game.addon.WeaveMod;
 import org.cubewhy.celestial.gui.GuiLauncher;
+import org.cubewhy.celestial.utils.GuiUtils;
 import org.cubewhy.celestial.utils.TextUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -47,9 +46,7 @@ public class GuiAddonManager extends JPanel {
         DefaultListModel<JavaAgent> agents = new DefaultListModel<>();
         // load items
         loadAgents(agents);
-        for (WeaveMod weaveMod : WeaveMod.findAll()) {
-            weave.addElement(weaveMod);
-        }
+        loadWeaveMods(weave);
         for (LunarCNMod lunarCNMod : LunarCNMod.findAll()) {
             lunarCN.addElement(lunarCNMod);
         }
@@ -87,9 +84,9 @@ public class GuiAddonManager extends JPanel {
             String name = currentAgent.getFile().getName();
             if (JOptionPane.showConfirmDialog(this, String.format(f.getString("gui.addon.agents.remove.confirm.message"), name), f.getString("gui.addon.agents.remove.confirm.title"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION && currentAgent.getFile().delete()) {
                 GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.agents.remove.success"), name));
+                agents.clear();
+                loadAgents(agents);
             }
-            agents.clear();
-            loadAgents(agents);
         });
 
         renameAgent.addActionListener(e -> {
@@ -107,17 +104,59 @@ public class GuiAddonManager extends JPanel {
             }
         });
 
+        // weave menu
         JPopupMenu weaveMenu = new JPopupMenu();
+        JMenuItem renameWeaveMod = new JMenuItem(f.getString("gui.addon.rename"));
         JMenuItem removeWeaveMod = new JMenuItem(f.getString("gui.addon.mods.weave.remove"));
+        weaveMenu.add(renameWeaveMod);
+        weaveMenu.addSeparator();
         weaveMenu.add(removeWeaveMod);
 
+        renameWeaveMod.addActionListener(e -> {
+            WeaveMod currentMod = listWeave.getSelectedValue();
+            File file = currentMod.getFile();
+            String name = file.getName();
+            String newName = JOptionPane.showInputDialog(this, f.getString("gui.addon.rename.dialog.message"), name.substring(0, name.length() - 4));
+            if (newName != null && file.renameTo(new File(file.getParentFile(), newName + ".jar"))) {
+                log.info(String.format("Rename weave mod %s -> %s", name, newName + ".jar"));
+                GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.rename.success"), newName));
+                weave.clear();
+                loadWeaveMods(weave);
+            }
+        });
+
+        removeWeaveMod.addActionListener(e -> {
+            WeaveMod currentMod = listWeave.getSelectedValue();
+            String name = currentMod.getFile().getName();
+            if (JOptionPane.showConfirmDialog(this, String.format(f.getString("gui.addon.mods.weave.remove.confirm.message"), name), f.getString("gui.addon.mods.weave.remove.confirm.title"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION && currentMod.getFile().delete()) {
+                GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.mods.weave.remove.success"), name));
+                weave.clear();
+                loadWeaveMods(weave);
+            }
+        });
+
         JPopupMenu lunarCNMenu = new JPopupMenu();
+        JMenuItem renameLunarCNMod = new JMenuItem(f.getString("gui.addon.rename"));
         JMenuItem removeLunarCNMod = new JMenuItem(f.getString("gui.addon.mods.cn.remove"));
+        lunarCNMenu.add(renameLunarCNMod);
+        lunarCNMenu.addSeparator();
         lunarCNMenu.add(removeLunarCNMod);
+
+        renameLunarCNMod.addActionListener(e -> {
+            LunarCNMod currentMod = listLunarCN.getSelectedValue();
+            File file = currentMod.getFile();
+            String name = file.getName();
+            String newName = JOptionPane.showInputDialog(this, f.getString("gui.addon.rename.dialog.message"), name.substring(0, name.length() - 4));
+            if (newName != null && file.renameTo(new File(file.getParentFile(), newName + ".jar"))) {
+                log.info(String.format("Rename LunarCN mod %s -> %s", name, newName + ".jar"));
+                GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.rename.success"), newName));
+            }
+        });
+
         // bind menus
-        bingMenu(listLunarCN, lunarCNMenu);
-        bingMenu(listWeave, weaveMenu);
-        bingMenu(listAgents, agentMenu);
+        bindMenu(listLunarCN, lunarCNMenu);
+        bindMenu(listWeave, weaveMenu);
+        bindMenu(listAgents, agentMenu);
 
 
         // buttons
@@ -127,10 +166,10 @@ public class GuiAddonManager extends JPanel {
         // TODO Stretch to the right
 
         btnAddAgent.addActionListener(e -> {
-            FileDialog fileDialog = new FileDialog(Celestial.launcherFrame, "Choosing a file", FileDialog.LOAD);
-            fileDialog.setFilenameFilter(new SuffixFileFilter("jar")); // jar
-            fileDialog.setVisible(true);
-            File file = new File(fileDialog.getDirectory(), fileDialog.getFile());
+            File file = GuiUtils.chooseFile(new SuffixFileFilter(".jar"));
+            if (file == null) {
+                return;
+            }
             String arg = JOptionPane.showInputDialog(this, f.getString("gui.addon.agents.add.arg"));
             try {
                 JavaAgent agent = JavaAgent.add(file, arg);
@@ -147,6 +186,29 @@ public class GuiAddonManager extends JPanel {
                 String trace = TextUtils.dumpTrace(ex);
                 log.error(trace);
                 JOptionPane.showMessageDialog(this, String.format(f.getString("gui.addon.agents.add.failure.io"), trace), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        btnAddWeaveMod.addActionListener(e -> {
+            File file = GuiUtils.chooseFile(new SuffixFileFilter(".jar"));
+            if (file == null) {
+                return;
+            }
+            try {
+                WeaveMod mod = WeaveMod.add(file);
+                if (mod != null) {
+                    // success
+                    new AddonAddEvent(AddonAddEvent.Type.WEAVE, mod);
+                    GuiLauncher.statusBar.setText(f.getString("gui.addon.mods.weave.add.success"));
+                    weave.clear();
+                    loadWeaveMods(weave);
+                } else {
+                    JOptionPane.showMessageDialog(this, f.getString("gui.addon.mods.weave.add.failure.exists"), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException ex) {
+                String trace = TextUtils.dumpTrace(ex);
+                log.error(trace);
+                JOptionPane.showMessageDialog(this, String.format(f.getString("gui.addon.mods.weave.add.failure.io"), trace), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -171,13 +233,19 @@ public class GuiAddonManager extends JPanel {
         this.add(tab);
     }
 
-    private static void loadAgents(DefaultListModel<JavaAgent> agentsList) {
-        for (JavaAgent javaAgent : JavaAgent.findAll()) {
-            agentsList.addElement(javaAgent);
+    private static void loadWeaveMods(DefaultListModel<WeaveMod> weave) {
+        for (WeaveMod weaveMod : WeaveMod.findAll()) {
+            weave.addElement(weaveMod);
         }
     }
 
-    private void bingMenu(@NotNull JList<? extends BaseAddon> list, JPopupMenu menu) {
+    private static void loadAgents(DefaultListModel<JavaAgent> agentList) {
+        for (JavaAgent javaAgent : JavaAgent.findAll()) {
+            agentList.addElement(javaAgent);
+        }
+    }
+
+    private void bindMenu(@NotNull JList<? extends BaseAddon> list, JPopupMenu menu) {
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
