@@ -9,6 +9,7 @@ package org.cubewhy.celestial.game.addon;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.game.BaseAddon;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +23,7 @@ import static org.cubewhy.celestial.Celestial.configDir;
 
 @Getter
 @Slf4j
-public class JavaAgent {
+public class JavaAgent implements BaseAddon {
     public static final File javaAgentFolder = new File(configDir, "javaagents"); // share with LunarCN Launcher
 
     static {
@@ -34,14 +35,12 @@ public class JavaAgent {
 
     /**
      * -- GETTER --
-     *  Get agent arg
-     *
+     * Get agent arg
      */
     private String arg = "";
     /**
      * -- GETTER --
-     *  Get a file of the javaagent
-     *
+     * Get a file of the javaagent
      */
     private final File file;
 
@@ -87,7 +86,7 @@ public class JavaAgent {
 
     /**
      * Find all javaagents in the javaagent folder
-     * */
+     */
     @NotNull
     @Contract(pure = true)
     public static List<JavaAgent> findAll() {
@@ -100,7 +99,19 @@ public class JavaAgent {
         return list;
     }
 
-    private static String findAgentArg(String name) {
+    /**
+     * Set param for a Javaagent
+     *
+     * @param agent the agent
+     * @param arg   new param
+     */
+    public static void setArgFor(@NotNull JavaAgent agent, String arg) {
+        JsonObject ja = config.getValue("javaagents").getAsJsonObject();
+        ja.addProperty(agent.file.getName(), arg); // leave empty
+        config.setValue("javaagents", ja); // dump
+    }
+
+    public static String findAgentArg(String name) {
         JsonObject ja = config.getValue("javaagents").getAsJsonObject();
         if (!ja.has(name)) {
             // create config for the agent
@@ -109,6 +120,7 @@ public class JavaAgent {
         }
         return ja.get(name).getAsString();
     }
+
 
     /**
      * Get args which add to the jvm
@@ -125,5 +137,14 @@ public class JavaAgent {
             }
         }
         return jvmArgs;
+    }
+
+    @Override
+    public String toString() {
+        String result = this.file.getName();
+        if (!this.arg.isBlank()) {
+            result += "=" + this.arg;
+        }
+        return result;
     }
 }
