@@ -149,6 +149,20 @@ public class JavaAgent implements BaseAddon {
         return true;
     }
 
+    /**
+     * Migrate the arg of an agent
+     *
+     * @param old name of the old agent
+     * @param n3w name of the new agent
+     * */
+    public static void migrate(String old, String n3w) {
+        JsonObject ja = config.getValue("javaagents").getAsJsonObject();
+        String arg = ja.get(old).getAsString();
+        ja.addProperty(n3w, arg); // leave empty
+        ja.remove(old);
+        config.setValue("javaagents", ja); // dump
+    }
+
 
     /**
      * Get args which add to the jvm

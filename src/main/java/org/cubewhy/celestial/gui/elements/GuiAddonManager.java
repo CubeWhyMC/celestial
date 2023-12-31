@@ -97,7 +97,10 @@ public class GuiAddonManager extends JPanel {
             String name = file.getName();
             String newName = JOptionPane.showInputDialog(this, f.getString("gui.addon.rename.dialog.message"), name.substring(0, name.length() - 4));
             if (newName != null && file.renameTo(new File(file.getParentFile(), newName + ".jar"))) {
+                log.info(String.format("Rename agent %s -> %s", name, newName + ".jar"));
                 GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.rename.success"), newName));
+                // rename the name in the config
+                JavaAgent.migrate(name, newName + ".jar");
                 agents.clear();
                 loadAgents(agents);
             }
