@@ -7,9 +7,11 @@
 package org.cubewhy.celestial.gui.elements;
 
 import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.game.BaseAddon;
 import org.cubewhy.celestial.game.addon.JavaAgent;
 import org.cubewhy.celestial.game.addon.LunarCNMod;
 import org.cubewhy.celestial.game.addon.WeaveMod;
+import org.cubewhy.celestial.gui.GuiLauncher;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -32,22 +34,20 @@ public class GuiAddonManager extends JPanel {
     }
 
     private void initGui() {
-        DefaultListModel<String> lunarCN = new DefaultListModel<>();
-        DefaultListModel<String> weave = new DefaultListModel<>();
-        DefaultListModel<String> agents = new DefaultListModel<>();
+        DefaultListModel<LunarCNMod> lunarCN = new DefaultListModel<>();
+        DefaultListModel<WeaveMod> weave = new DefaultListModel<>();
+        DefaultListModel<JavaAgent> agents = new DefaultListModel<>();
         // load items
-        for (JavaAgent javaAgent : JavaAgent.findAll()) {
-            agents.addElement(javaAgent.getFile().getName());
-        }
+        loadAgents(agents);
         for (WeaveMod weaveMod : WeaveMod.findAll()) {
-            weave.addElement(weaveMod.getFile().getName());
+            weave.addElement(weaveMod);
         }
         for (LunarCNMod lunarCNMod : LunarCNMod.findAll()) {
-            lunarCN.addElement(lunarCNMod.getFile().getName());
+            lunarCN.addElement(lunarCNMod);
         }
-        JList<String> listLunarCN = new JList<>(lunarCN);
-        JList<String> listWeave = new JList<>(weave);
-        JList<String> listAgents = new JList<>(agents);
+        JList<LunarCNMod> listLunarCN = new JList<>(lunarCN);
+        JList<WeaveMod> listWeave = new JList<>(weave);
+        JList<JavaAgent> listAgents = new JList<>(agents);
         // menus
         JPopupMenu agentMenu = new JPopupMenu();
         JMenuItem manageArg = new JMenuItem(f.getString("gui.addon.agents.arg"));
@@ -55,6 +55,22 @@ public class GuiAddonManager extends JPanel {
         agentMenu.add(manageArg);
         agentMenu.addSeparator();
         agentMenu.add(removeAgent);
+
+        manageArg.addActionListener(e -> {
+            // open a dialog
+            JavaAgent currentAgent = listAgents.getSelectedValue();
+            String newArg = JOptionPane.showInputDialog(this, f.getString("gui.addon.agents.arg.message"), currentAgent.getArg());
+            if (newArg != null && !currentAgent.getArg().equals(newArg)) {
+                JavaAgent.setArgFor(currentAgent, newArg);
+                if (newArg.isBlank()) {
+                    GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.agents.arg.remove.success"), currentAgent.getFile().getName()));
+                } else {
+                    GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.agents.arg.set.success"), currentAgent.getFile().getName(), newArg));
+                }
+                agents.clear();
+                loadAgents(agents);
+            }
+        });
 
         JPopupMenu weaveMenu = new JPopupMenu();
         JMenuItem removeWeaveMod = new JMenuItem(f.getString("gui.addon.mods.weave.remove"));
@@ -96,14 +112,20 @@ public class GuiAddonManager extends JPanel {
         this.add(tab);
     }
 
-    private void bingMenu(@NotNull JList<String> listWeave, JPopupMenu weaveMenu) {
-        listWeave.addMouseListener(new MouseAdapter() {
+    private static void loadAgents(DefaultListModel<JavaAgent> agents) {
+        for (JavaAgent javaAgent : JavaAgent.findAll()) {
+            agents.addElement(javaAgent);
+        }
+    }
+
+    private void bingMenu(@NotNull JList<? extends BaseAddon> list, JPopupMenu menu) {
+        list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    int index = listWeave.locationToIndex(e.getPoint());
-                    listWeave.setSelectedIndex(index);
-                    weaveMenu.show(listWeave, e.getX(), e.getY());
+                    int index = list.locationToIndex(e.getPoint());
+                    list.setSelectedIndex(index);
+                    menu.show(list, e.getX(), e.getY());
                 }
             }
         });

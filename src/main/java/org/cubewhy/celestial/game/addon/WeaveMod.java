@@ -7,6 +7,7 @@
 package org.cubewhy.celestial.game.addon;
 
 import lombok.Getter;
+import org.cubewhy.celestial.game.BaseAddon;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
-public class WeaveMod {
+public class WeaveMod implements BaseAddon {
     public static final File modFolder = new File(System.getProperty("user.home"), ".weave/mods");
     private final File file;
 
