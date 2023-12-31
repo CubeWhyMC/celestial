@@ -176,19 +176,21 @@ public class GuiVersionSelect extends JPanel {
                     statusBar.setText(f.getString("status.launch.crashed"));
                     log.info("Client looks crashed, starting upload the log");
                     try {
-                        String trace = FileUtils.readFileToString(gameLogFile, StandardCharsets.UTF_8);
-                        String script = FileUtils.readFileToString(launchScript, StandardCharsets.UTF_8);
-                        Map<String, String> map1 = launcherData.uploadCrashReport(trace, CrashReportType.GAME, script);
-                        if (!map1.isEmpty()) {
-                            String url = map1.get("url");
-                            String id = map1.get("id");
-                            JOptionPane.showMessageDialog(this, String.format("""
-                                    Your client was crashed:
-                                    Crash id: %s
-                                    View your crash report at %s
-                                    View the log of the latest launch: %s
-                                                                            
-                                    *%s*""", id, url, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                        if (config.getConfig().has("data-sharing") && config.getValue("data-sharing").getAsBoolean()) {
+                            String trace = FileUtils.readFileToString(gameLogFile, StandardCharsets.UTF_8);
+                            String script = FileUtils.readFileToString(launchScript, StandardCharsets.UTF_8);
+                            Map<String, String> map1 = launcherData.uploadCrashReport(trace, CrashReportType.GAME, script);
+                            if (!map1.isEmpty()) {
+                                String url = map1.get("url");
+                                String id = map1.get("id");
+                                JOptionPane.showMessageDialog(this, String.format("""
+                                        Your client was crashed:
+                                        Crash id: %s
+                                        View your crash report at %s
+                                        View the log of the latest launch: %s
+                                                                                
+                                        *%s*""", id, url, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                            }
                         } else {
                             throw new RuntimeException("Failed to upload crash report");
                         }
