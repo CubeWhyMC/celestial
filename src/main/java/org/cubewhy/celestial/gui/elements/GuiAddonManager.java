@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.filefilter.MagicNumberFileFilter;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.cubewhy.celestial.Celestial;
+import org.cubewhy.celestial.event.impl.AddonAddEvent;
 import org.cubewhy.celestial.game.BaseAddon;
 import org.cubewhy.celestial.game.addon.JavaAgent;
 import org.cubewhy.celestial.game.addon.LunarCNMod;
@@ -132,8 +133,10 @@ public class GuiAddonManager extends JPanel {
             File file = new File(fileDialog.getDirectory(), fileDialog.getFile());
             String arg = JOptionPane.showInputDialog(this, f.getString("gui.addon.agents.add.arg"));
             try {
-                if (JavaAgent.add(file, arg)) {
+                JavaAgent agent = JavaAgent.add(file, arg);
+                if (agent != null) {
                     // success
+                    new AddonAddEvent(AddonAddEvent.Type.JAVAAGENT, agent);
                     GuiLauncher.statusBar.setText(f.getString("gui.addon.agents.add.success"));
                     agents.clear();
                     loadAgents(agents);

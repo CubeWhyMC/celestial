@@ -133,20 +133,20 @@ public class JavaAgent implements BaseAddon {
         return ja.get(name).getAsString();
     }
 
-    public static boolean add(@NotNull File file, String arg) throws IOException {
+    public static JavaAgent add(@NotNull File file, String arg) throws IOException {
         String name = file.getName();
         if (!name.endsWith(".jar")) {
             name += ".jar"; // adds an ends with for the file
         }
         File target = new File(javaAgentFolder, name);
         if (target.exists()) {
-            return false;
+            return null;
         }
         FileUtils.copyFile(file, target);
         if (arg != null) {
             setArgFor(file.getName(), arg);
         }
-        return true;
+        return new JavaAgent(file, arg);
     }
 
     /**
