@@ -9,11 +9,13 @@ package org.cubewhy.celestial.game.addon;
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.cubewhy.celestial.game.BaseAddon;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -103,11 +105,21 @@ public class JavaAgent implements BaseAddon {
      * Set param for a Javaagent
      *
      * @param agent the agent
-     * @param arg   new param
+     * @param arg   param of the agent
      */
     public static void setArgFor(@NotNull JavaAgent agent, String arg) {
+        setArgFor(agent.file.getName(), arg);
+    }
+
+    /**
+     * Set param for a Javaagent
+     *
+     * @param name name of the agent
+     * @param arg  param of the agent
+     */
+    public static void setArgFor(String name, String arg) {
         JsonObject ja = config.getValue("javaagents").getAsJsonObject();
-        ja.addProperty(agent.file.getName(), arg); // leave empty
+        ja.addProperty(name, arg); // leave empty
         config.setValue("javaagents", ja); // dump
     }
 
@@ -119,6 +131,22 @@ public class JavaAgent implements BaseAddon {
             config.setValue("javaagents", ja); // dump
         }
         return ja.get(name).getAsString();
+    }
+
+    public static boolean add(@NotNull File file, String arg) throws IOException {
+        String name = file.getName();
+        if (!name.endsWith(".jar")) {
+            name += ".jar"; // adds an ends with for the file
+        }
+        File target = new File(javaAgentFolder, name);
+        if (target.exists()) {
+            return false;
+        }
+        FileUtils.copyFile(file, target);
+        if (arg != null) {
+            setArgFor(file.getName(), arg);
+        }
+        return true;
     }
 
 
