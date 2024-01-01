@@ -45,7 +45,7 @@ public class GuiNews extends JScrollPane {
                 String title = json.get("title").getAsString();
                 try {
                     if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
-                        // load
+                        // load news
                         panel.add(new LauncherNews(json));
                     }
                 } catch (IOException e) {
