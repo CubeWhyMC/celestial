@@ -216,21 +216,47 @@ public class GuiAddonManager extends JPanel {
         final JPanel panelLunarCN = new JPanel();
         panelLunarCN.setLayout(new BoxLayout(panelLunarCN, BoxLayout.Y_AXIS));
         panelLunarCN.add(new JScrollPane(listLunarCN));
-        panelLunarCN.add(btnAddLunarCNMod);
+        final JPanel btnPanel1 = new JPanel();
+        btnPanel1.setLayout(new BoxLayout(btnPanel1, BoxLayout.X_AXIS));
+        btnPanel1.add(btnAddLunarCNMod);
+        btnPanel1.add(createButtonOpenFolder(f.getString("gui.addon.folder"), LunarCNMod.modFolder));
+        panelLunarCN.add(btnPanel1);
+
         final JPanel panelWeave = new JPanel();
         panelWeave.setLayout(new BoxLayout(panelWeave, BoxLayout.Y_AXIS));
         panelWeave.add(new JScrollPane(listWeave));
-        panelWeave.add(btnAddWeaveMod);
+        final JPanel btnPanel2 = new JPanel();
+        btnPanel2.setLayout(new BoxLayout(btnPanel2, BoxLayout.X_AXIS));
+        btnPanel2.add(btnAddWeaveMod);
+        btnPanel2.add(createButtonOpenFolder(f.getString("gui.addon.folder"), WeaveMod.modFolder));
+        panelWeave.add(btnPanel2);
+
         final JPanel panelAgents = new JPanel();
         panelAgents.setLayout(new BoxLayout(panelAgents, BoxLayout.Y_AXIS));
         panelAgents.add(new JScrollPane(listAgents));
-        panelAgents.add(Box.createVerticalGlue());
-        panelAgents.add(btnAddAgent);
+        final JPanel btnPanel3 = new JPanel();
+        btnPanel3.setLayout(new BoxLayout(btnPanel3, BoxLayout.X_AXIS));
+        btnPanel3.add(btnAddAgent);
+        btnPanel3.add(createButtonOpenFolder(f.getString("gui.addon.folder"), JavaAgent.javaAgentFolder));
+        panelAgents.add(btnPanel3);
+
+        tab.addTab(f.getString("gui.addons.agents"), panelAgents);
         tab.addTab(f.getString("gui.addons.mods.cn"), panelLunarCN);
         tab.addTab(f.getString("gui.addons.mods.weave"), panelWeave);
-        tab.addTab(f.getString("gui.addons.agents"), panelAgents);
 
         this.add(tab);
+    }
+
+    private JButton createButtonOpenFolder(String text, File folder) {
+        JButton btn = new JButton(text);
+        btn.addActionListener(e -> {
+            try {
+                Desktop.getDesktop().open(folder);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        return btn;
     }
 
     private static void loadWeaveMods(DefaultListModel<WeaveMod> weave) {
