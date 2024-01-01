@@ -125,11 +125,11 @@ public class GuiVersionSelect extends JPanel {
 
     private void beforeLaunch() throws IOException, AttachNotSupportedException {
         Celestial.completeSession();
-        if (gamePid != 0) {
+        if (gamePid.get() != 0) {
             if (SystemUtils.findJava(LauncherData.getMainClass(null)) != null) {
                 JOptionPane.showMessageDialog(this, f.getString("gui.version.launched.message"), f.getString("gui.version.launched.title"), JOptionPane.WARNING_MESSAGE);
             } else {
-                gamePid = 0;
+                gamePid.set(0);
             }
         }
     }
@@ -149,16 +149,16 @@ public class GuiVersionSelect extends JPanel {
                     VirtualMachine java = SystemUtils.findJava(LauncherData.getMainClass(null));
                     assert java != null;
                     String id = java.id();
-                    gamePid = Long.parseLong(id);
+                    gamePid.set(Long.parseLong(id));
                     java.detach();
                 } catch (Exception ex) {
                     log.error("Failed to get the real pid of the game, is Celestial launched non java program?");
                     log.warn("process.pid() will be used to get the process id, which may not be the real PID");
-                    gamePid = p[0].pid();
+                    gamePid.set(p[0].pid());
                 }
                 log.info("Pid: " + gamePid);
                 statusBar.setText(String.format(f.getString("status.launch.started"), gamePid));
-                new GameStartEvent(gamePid).call();
+                new GameStartEvent(gamePid.get()).call();
             }
         });
         new Thread(() -> {
@@ -171,7 +171,7 @@ public class GuiVersionSelect extends JPanel {
                 int code = p[0].waitFor();
                 log.info("Game terminated");
                 statusBar.setText(f.getString("status.launch.terminated"));
-                Celestial.gamePid = 0;
+                gamePid.set(0);
                 new GameTerminateEvent().call();
                 if (code != 0) {
                     // upload crash report
