@@ -26,6 +26,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.NotActiveException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -174,7 +175,7 @@ public class GuiVersionSelect extends JPanel {
                 if (code != 0) {
                     // upload crash report
                     statusBar.setText(f.getString("status.launch.crashed"));
-                    log.info("Client looks crashed, starting upload the log");
+                    log.info("Client looks crashed");
                     try {
                         if (config.getConfig().has("data-sharing") && config.getValue("data-sharing").getAsBoolean()) {
                             String trace = FileUtils.readFileToString(gameLogFile, StandardCharsets.UTF_8);
@@ -193,6 +194,8 @@ public class GuiVersionSelect extends JPanel {
                             } else {
                                 throw new RuntimeException("Failed to upload crash report");
                             }
+                        } else {
+                            throw new NotActiveException();
                         }
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(this, String.format("""
@@ -200,7 +203,9 @@ public class GuiVersionSelect extends JPanel {
                                 View the log of the latest launch: %s
                                 *%s*
                                 """, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
-                        throw new RuntimeException(e);
+                        if (!(e instanceof NotActiveException)) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             } catch (InterruptedException ex) {

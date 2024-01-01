@@ -8,7 +8,7 @@ group = 'org.cubewhy.celestial'
 version = '1.2-pre2-SNAPSHOT'
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-println('Celestial Launcher -> https://www.lunarclient.top/celestial')
+println('Celestial Launcher -> https://www.lunarclient.top/')
 
 compileJava.options.encoding = "UTF-8"
 

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 @Slf4j
 public class ConfigFile {
@@ -84,7 +85,7 @@ public class ConfigFile {
 
         while (!successful) {
             try {
-                bufferedReader = new BufferedReader(new FileReader(this.file));
+                bufferedReader = new BufferedReader(new FileReader(this.file, StandardCharsets.UTF_8));
                 config = gson.fromJson(bufferedReader, JsonObject.class);
                 if (config == null) {
                     config = new JsonObject();
@@ -100,6 +101,8 @@ public class ConfigFile {
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
         return this;
