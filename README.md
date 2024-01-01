@@ -6,15 +6,16 @@
 
 1. Full open source (GPLv3)
 2. No electron
-3. No installation needed
-4. Ready out of the box
-5. External browser login support (In working)
-6. Cross-platform (You might need to complete natives)
-7. Custom API address ([LunarCN API](https://github.com/CubeWhyMC/website) only)
-8. Multi version, one jre
-9. Javaagent support (Experimental)
-10. LunarCN support (In working)
-11. Weave support (In working)
+3. Lite, high performance (For example, the downloader)
+4. No installation needed
+5. Ready out of the box
+6. External browser login support
+7. Cross-platform (Experimental)
+8. Custom API address ([LunarCN API](https://github.com/CubeWhyMC/website) only)
+9. Multi version, one jre
+10. Javaagent support (Experimental)
+11. LunarCN support (In working)
+12. Weave support (Experimental)
 
 ## Get celestial
 
