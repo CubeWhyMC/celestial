@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -166,7 +167,7 @@ public class GuiAddonManager extends JPanel {
         // TODO Stretch to the right
 
         btnAddAgent.addActionListener(e -> {
-            File file = GuiUtils.chooseFile(new SuffixFileFilter(".jar"));
+            File file = GuiUtils.chooseFile(new FileNameExtensionFilter("Agent", "jar"));
             if (file == null) {
                 return;
             }
@@ -190,7 +191,7 @@ public class GuiAddonManager extends JPanel {
         });
 
         btnAddWeaveMod.addActionListener(e -> {
-            File file = GuiUtils.chooseFile(new SuffixFileFilter(".jar"));
+            File file = GuiUtils.chooseFile(new FileNameExtensionFilter("Weave Mod", "jar"));
             if (file == null) {
                 return;
             }

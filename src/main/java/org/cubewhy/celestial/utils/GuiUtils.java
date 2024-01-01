@@ -11,6 +11,8 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.cubewhy.celestial.Celestial;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 
@@ -18,10 +20,10 @@ public final class GuiUtils {
     private GuiUtils() {
     }
 
-    public static @Nullable File chooseFile(AbstractFileFilter filter) {
-        FileDialog fileDialog = new FileDialog(Celestial.launcherFrame, "Choosing a file", FileDialog.LOAD);
-        fileDialog.setFilenameFilter(filter); // jar
-        fileDialog.setVisible(true);
-        return (fileDialog.getFile() == null) ? null : new File(fileDialog.getDirectory(), fileDialog.getFile());
+    public static @Nullable File chooseFile(FileFilter filter) {
+        JFileChooser fileDialog = new JFileChooser();
+        fileDialog.addChoosableFileFilter(filter);
+        fileDialog.showDialog(Celestial.launcherFrame, null);
+        return fileDialog.getSelectedFile();
     }
 }
