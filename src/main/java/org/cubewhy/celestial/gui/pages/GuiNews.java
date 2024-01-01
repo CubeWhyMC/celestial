@@ -33,6 +33,7 @@ public class GuiNews extends JScrollPane {
 
     private void initGui() {
         // render blogPosts
+        this.getVerticalScrollBar().setUnitIncrement(30);
         log.info("Loading blogPosts (gui)");
         if (blogPosts.isJsonNull()) {
             log.error("Failed to load blog posts");
