@@ -42,9 +42,13 @@ public class GuiNews extends JScrollPane {
                 JsonObject json = blogPost.getAsJsonObject();
                 String imageURL = json.get("image").getAsString();
                 String title = json.get("title").getAsString();
-                if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
-                    // load
-                    panel.add(new LauncherNews(json));
+                try {
+                    if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
+                        // load
+                        panel.add(new LauncherNews(json));
+                    }
+                } catch (IOException e) {
+                    log.warn("Failed to cache " + imageURL);
                 }
             }
         }
