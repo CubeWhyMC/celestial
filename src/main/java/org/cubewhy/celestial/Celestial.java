@@ -32,6 +32,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.cubewhy.celestial.gui.GuiLauncher.statusBar;
 
@@ -56,7 +57,7 @@ public class Celestial {
     public static final File gameLogFile = new File(configDir, "logs/game.log");
     public static final File launcherLogFile = new File(configDir, "logs/launcher.log");
     public static final boolean isDevelopMode = System.getProperties().containsKey("dev-mode");
-    public static long gamePid = 0;
+    public static final AtomicLong gamePid = new AtomicLong();
     public static File sessionFile;
 
     static {
