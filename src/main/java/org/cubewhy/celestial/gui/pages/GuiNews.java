@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.files.DownloadManager;
 import org.cubewhy.celestial.gui.LauncherNews;
+import org.cubewhy.celestial.utils.TextUtils;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
 
 import javax.swing.*;
@@ -30,7 +31,7 @@ public class GuiNews extends JScrollPane {
         this.initGui();
     }
 
-    private void initGui() throws IOException {
+    private void initGui() {
         // render blogPosts
         log.info("Loading blogPosts (gui)");
         if (blogPosts.isJsonNull()) {
@@ -42,9 +43,15 @@ public class GuiNews extends JScrollPane {
                 JsonObject json = blogPost.getAsJsonObject();
                 String imageURL = json.get("image").getAsString();
                 String title = json.get("title").getAsString();
-                if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
-                    // load
-                    panel.add(new LauncherNews(json));
+                try {
+                    if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
+                        // load news
+                        panel.add(new LauncherNews(json));
+                    }
+                } catch (IOException e) {
+                    log.warn("Failed to cache " + imageURL);
+                    String trace = TextUtils.dumpTrace(e);
+                    log.error(trace);
                 }
             }
         }

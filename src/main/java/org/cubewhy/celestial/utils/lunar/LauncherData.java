@@ -81,7 +81,7 @@ public final class LauncherData {
                     .getAsJsonObject("launchTypeData")
                     .get("ichor").getAsBoolean();
         } else {
-            return true; // force enable ichor in the latest api version
+            return true; // forces enable ichor in the latest api version
         }
     }
 
