@@ -42,6 +42,7 @@ public class GuiVersionSelect extends JPanel {
     private boolean isFinishOk = false;
     private final JButton btnOnline = new JButton(f.getString("gui.version.online"));
     private final JButton btnOffline = new JButton(f.getString("gui.version.offline"));
+    private boolean isLaunching = false;
 
     private interface CreateProcess {
         Process create() throws IOException;
@@ -213,6 +214,10 @@ public class GuiVersionSelect extends JPanel {
     }
 
     private void online() throws IOException, AttachNotSupportedException {
+        if (isLaunching) {
+            JOptionPane.showMessageDialog(this, f.getString("gui.launch.launching.message"), f.getString("gui.launch.launching.title"), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         beforeLaunch();
         File natives = launch((String) versionSelect.getSelectedItem(), branchInput.getText(), (String) moduleSelect.getSelectedItem());
         if (natives == null) {
@@ -228,6 +233,7 @@ public class GuiVersionSelect extends JPanel {
             }
         }, () -> {
             try {
+                isLaunching = true;
                 statusBar.setText(f.getString("status.launch.begin"));
                 Celestial.checkUpdate((String) versionSelect.getSelectedItem(), (String) moduleSelect.getSelectedItem(), branchInput.getText());
                 DownloadManager.waitForAll();
@@ -241,6 +247,7 @@ public class GuiVersionSelect extends JPanel {
                 }
                 // exec, run
                 log.info("Everything is OK, starting game...");
+                isLaunching = false;
             } catch (Exception e) {
                 log.error("Failed to check update");
                 String trace = TextUtils.dumpTrace(e);
