@@ -31,7 +31,7 @@ Donate at [lunarclient.top](https://www.lunarclient.top/donate) (CNY only/仅支
 ## Translation
 
 All languages except Chinese are translated via Google Translate.
-If there are any translation errors, please submit a PR or issue (English)
+If there are any translation errors, please submit a PR or an issue (in English)
 
 ## License
 
