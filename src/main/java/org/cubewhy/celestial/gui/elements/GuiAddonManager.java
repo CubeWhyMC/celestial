@@ -252,6 +252,9 @@ public class GuiAddonManager extends JPanel {
         JButton btn = new JButton(text);
         btn.addActionListener(e -> {
             try {
+                if (folder.mkdirs()) {
+                    log.info("Creating " + folder + " because the folder not exist");
+                }
                 Desktop.getDesktop().open(folder);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

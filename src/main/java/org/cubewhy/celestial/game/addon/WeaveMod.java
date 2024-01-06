@@ -28,7 +28,7 @@ public class WeaveMod extends BaseAddon {
     }
 
     /**
-     * Find all mods in the lunarcn mods folder
+     * Find all mods in the weave mods folder
      */
     @NotNull
     @Contract(pure = true)
