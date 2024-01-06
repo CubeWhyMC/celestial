@@ -12,6 +12,7 @@ import java.io.File;
 import java.net.URL;
 
 public record Downloadable(URL url, File file, String sha1) implements Runnable {
+    public static final int fallBack = 5;
 
     /**
      * Start download
@@ -20,6 +21,8 @@ public record Downloadable(URL url, File file, String sha1) implements Runnable 
     @Override
     public void run() {
         // TODO multipart support
-        DownloadManager.download(this.url, this.file, this.sha1);
+        for (int i = 0; i < fallBack; i++) {
+            DownloadManager.download(this.url, this.file, this.sha1);
+        }
     }
 }
