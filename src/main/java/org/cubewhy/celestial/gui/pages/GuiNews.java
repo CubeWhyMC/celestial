@@ -6,14 +6,13 @@ import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.files.DownloadManager;
 import org.cubewhy.celestial.gui.LauncherNews;
+import org.cubewhy.celestial.utils.TextUtils;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-
 import java.awt.*;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import static org.cubewhy.celestial.Celestial.f;
@@ -32,18 +31,29 @@ public class GuiNews extends JScrollPane {
         this.initGui();
     }
 
-    private void initGui() throws IOException {
+    private void initGui() {
         // render blogPosts
+        this.getVerticalScrollBar().setUnitIncrement(30);
         log.info("Loading blogPosts (gui)");
-        log.info(String.valueOf(blogPosts));
-        for (JsonElement blogPost : blogPosts) {
-            // cache the image if the image of the news isn't exist
-            JsonObject json = blogPost.getAsJsonObject();
-            String imageURL = json.get("image").getAsString();
-            String title = json.get("title").getAsString();
-            if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
-                // load
-                panel.add(new LauncherNews(json));
+        if (blogPosts.isJsonNull()) {
+            log.error("Failed to load blog posts");
+            this.add(new JLabel("Failed to load news (blogPosts is null)"));
+        } else {
+            for (JsonElement blogPost : blogPosts) {
+                // cache the image if the image of the news doesn't exist
+                JsonObject json = blogPost.getAsJsonObject();
+                String imageURL = json.get("image").getAsString();
+                String title = json.get("title").getAsString();
+                try {
+                    if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
+                        // load news
+                        panel.add(new LauncherNews(json));
+                    }
+                } catch (IOException e) {
+                    log.warn("Failed to cache " + imageURL);
+                    String trace = TextUtils.dumpTrace(e);
+                    log.error(trace);
+                }
             }
         }
     }
