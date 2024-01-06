@@ -7,6 +7,7 @@
 package org.cubewhy.celestial.game.addon;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.Celestial;
 import org.cubewhy.celestial.game.BaseAddon;
 import org.jetbrains.annotations.Contract;
@@ -18,9 +19,16 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
+@Slf4j
 public class LunarCNMod extends BaseAddon {
     public static final File modFolder = new File(Celestial.configDir, "mods");
     private final File file;
+
+    static {
+        if (modFolder.mkdirs()) {
+            log.info("Making lunarCN mods folder");
+        }
+    }
 
     public LunarCNMod(File file) {
         this.file = file;
