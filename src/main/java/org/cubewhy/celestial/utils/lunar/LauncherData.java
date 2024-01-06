@@ -81,7 +81,7 @@ public final class LauncherData {
                     .getAsJsonObject("launchTypeData")
                     .get("ichor").getAsBoolean();
         } else {
-            return true; // force enable ichor in the latest api version
+            return true; // forces enable ichor in the latest api version
         }
     }
 
@@ -100,12 +100,12 @@ public final class LauncherData {
     }
 
     /**
-     * Get alert message
+     * Get the alert message
      *
      * @param metadata metadata from api
      * @return a map of the alert (title, message)
      * */
-    public static Map<String, String> getAlert(JsonObject metadata) {
+    public static @Nullable Map<String, String> getAlert(JsonObject metadata) {
         if (metadata.has("alert") && !metadata.get("alert").isJsonNull()) {
             JsonObject alert = metadata.getAsJsonObject("alert");
             Map<String, String> map = new HashMap<>();

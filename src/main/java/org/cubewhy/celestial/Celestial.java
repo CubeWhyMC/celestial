@@ -13,9 +13,10 @@ import org.cubewhy.celestial.files.Downloadable;
 import org.cubewhy.celestial.game.AuthServer;
 import org.cubewhy.celestial.game.GameArgs;
 import org.cubewhy.celestial.game.GameArgsResult;
-import org.cubewhy.celestial.game.JavaAgent;
+import org.cubewhy.celestial.game.addon.JavaAgent;
 import org.cubewhy.celestial.gui.GuiLauncher;
 import org.cubewhy.celestial.utils.*;
+import org.cubewhy.celestial.utils.game.MinecraftData;
 import org.cubewhy.celestial.utils.lunar.LauncherData;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -31,12 +32,16 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
+
+import static org.cubewhy.celestial.gui.GuiLauncher.statusBar;
 
 @Slf4j
 public class Celestial {
 
 
     public static final File configDir = new File(System.getProperty("user.home"), ".cubewhy/lunarcn");
+    public static final File themesDir = new File(configDir, "themes");
     public static final ConfigFile config = new ConfigFile(new File(configDir, "celestial.json"));
     public static Locale locale;
     public static String userLanguage;
@@ -44,6 +49,7 @@ public class Celestial {
 
     public static LauncherData launcherData;
     public static JsonObject metadata;
+    public static JsonObject minecraftManifest;
     public static GuiLauncher launcherFrame;
     public static boolean themed = true;
     public static String os = System.getProperty("os.name");
@@ -51,7 +57,7 @@ public class Celestial {
     public static final File gameLogFile = new File(configDir, "logs/game.log");
     public static final File launcherLogFile = new File(configDir, "logs/launcher.log");
     public static final boolean isDevelopMode = System.getProperties().containsKey("dev-mode");
-    public static long gamePid = 0;
+    public static final AtomicLong gamePid = new AtomicLong();
     public static File sessionFile;
 
     static {
@@ -65,6 +71,8 @@ public class Celestial {
     }
 
     public static void main(String[] args) throws Exception {
+        // set encoding
+        System.setProperty("file.encoding", "UTF-8");
         log.info("Celestial v" + GitUtils.getBuildVersion() + " build by " + GitUtils.getBuildUser());
         try {
             System.setProperty("file.encoding", "UTF-8");
@@ -182,17 +190,15 @@ public class Celestial {
             JOptionPane.showMessageDialog(null, f.getString("compatibility.warn.message"), f.getString("compatibility.warn.title"), JOptionPane.WARNING_MESSAGE);
         }
 
-        // detect the official launcher (Windows only)
-        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
-            if (sessionFile.exists() && LunarUtils.isReallyOfficial(sessionFile)) {
-                log.warn("Detected the official launcher");
-                JOptionPane.showMessageDialog(null, f.getString("warn.official-launcher.message"), f.getString("warn.official-launcher.title"), JOptionPane.WARNING_MESSAGE);
-            }
+        if (sessionFile.exists() && LunarUtils.isReallyOfficial(sessionFile)) {
+            log.warn("Detected the official launcher");
+            JOptionPane.showMessageDialog(null, f.getString("warn.official-launcher.message"), f.getString("warn.official-launcher.title"), JOptionPane.WARNING_MESSAGE);
         }
     }
 
     public static void initLauncher() throws IOException {
         metadata = launcherData.metadata();
+        minecraftManifest = MinecraftData.manifest();
         if (metadata.has("error")) {
             // trouble here
             log.error("Metadata info: " + metadata);
@@ -201,6 +207,14 @@ public class Celestial {
     }
 
     private static void initConfig() {
+        // init dirs
+        if (configDir.mkdirs()) {
+            log.info("Making config dir");
+        }
+        if (themesDir.mkdirs()) {
+            log.info("Making themes dir");
+        }
+        // init config
         JsonObject resize = new JsonObject();
         resize.addProperty("width", 854);
         resize.addProperty("height", 480);
@@ -262,7 +276,7 @@ public class Celestial {
                 themed = false;
             }
             default -> {
-                File themeFile = new File(configDir, "themes/" + themeType);
+                File themeFile = new File(themesDir, themeType);
                 if (!themeFile.exists()) {
                     // cannot load custom theme without theme.json
                     JOptionPane.showMessageDialog(null, f.getString("theme.custom.notfound.message"), f.getString("theme.custom.notfound.title"), JOptionPane.WARNING_MESSAGE);
@@ -426,14 +440,17 @@ public class Celestial {
         if (launchScript.createNewFile()) {
             log.info("Launch script was created");
         }
-        try (FileWriter writer = new FileWriter(launchScript)) {
+        try (FileWriter writer = new FileWriter(launchScript, StandardCharsets.UTF_8)) {
             if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
                 // Microsoft Windows
-                writer.write("@echo off\n");
-                writer.write("rem Generated by LunarCN (Celestial Launcher)\nrem Website: https://www.lunarclient.top/\n");
-                writer.write("rem Please donate to support us to continue develop https://www.lunarclient.top/donate\n");
-                writer.write("rem You can run this script to debug your game, or share this script to developers to resolve your launch problem\n");
-                writer.write("cd /d " + installationDir + "\n");
+                // NEW: Use CRLF (Windows 7)
+                writer.write("@echo off\r\n");
+                writer.write("chcp 65001\r\n"); // unicode support for Windows which uses Chinese
+                writer.write("@rem Generated by LunarCN (Celestial Launcher)\r\n@rem Website: https://www.lunarclient.top/\r\n");
+                writer.write(String.format("@rem Version %s\r\n", GitUtils.getBuildVersion()));
+                writer.write("@rem Please donate to support us to continue develop https://www.lunarclient.top/donate\r\n");
+                writer.write("@rem You can run this script to debug your game, or share this script to developers to resolve your launch problem\r\n");
+                writer.write("cd /d " + installationDir + "\r\n");
             } else {
                 // Others
                 writer.write("#!/bin/bash\n");
@@ -499,5 +516,26 @@ public class Celestial {
             File file = new File(installation, "textures/" + fileName);
             DownloadManager.download(new Downloadable(url, file, full[full.length - 1]));
         });
+
+        File minecraftFolder = new File(config.getValue("game-dir").getAsString());
+
+        // TODO vanilla Minecraft textures
+        statusBar.setText("Complete textures for vanilla Minecraft");
+        JsonObject textureIndex = MinecraftData.getTextureIndex(Objects.requireNonNull(MinecraftData.getVersion(version, minecraftManifest)));
+        // dump to .minecraft/assets/indexes
+        File assetsFolder = new File(minecraftFolder, "assets");
+        File indexFile = new File(assetsFolder, "indexes/" + String.join(".", Arrays.copyOfRange(version.split("\\."), 0, 2)) + ".json");
+        org.apache.commons.io.FileUtils.writeStringToFile(indexFile, new Gson().toJson(textureIndex), StandardCharsets.UTF_8);
+
+        Map<String, JsonElement> objects = textureIndex.getAsJsonObject("objects").asMap();
+        // baseURL/hash[0:2]/hash
+        for (JsonElement s : objects.values()) {
+            JsonObject resource = s.getAsJsonObject();
+            String hash = resource.get("hash").getAsString();
+            String folder = hash.substring(0, 2);
+            URL finalURL = new URL(String.format("%s/%s/%s", MinecraftData.texture, folder, hash));
+            File finalFile = new File(assetsFolder, "objects/" + folder + "/" + hash);
+            DownloadManager.download(new Downloadable(finalURL, finalFile, hash));
+        }
     }
 }

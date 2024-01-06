@@ -25,9 +25,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import static org.cubewhy.celestial.Celestial.*;
@@ -135,7 +133,7 @@ public class GuiLauncher extends JFrame {
             if (java != null) {
                 String pid = java.id();
                 log.info("Exist game process found! Pid: " + pid);
-                gamePid = Long.parseLong(pid);
+                gamePid.set(Long.parseLong(pid));
                 JOptionPane.showMessageDialog(this, String.format(f.getString("gui.launcher.game.exist.message"), pid), f.getString("gui.launcher.game.exist.title"), JOptionPane.INFORMATION_MESSAGE);
                 java.detach();
             }

@@ -10,14 +10,9 @@ import com.sun.tools.attach.AttachNotSupportedException;
 import com.sun.tools.attach.VirtualMachine;
 import com.sun.tools.attach.VirtualMachineDescriptor;
 import lombok.extern.slf4j.Slf4j;
-import org.cubewhy.celestial.Celestial;
-import org.cubewhy.celestial.utils.lunar.LauncherData;
-import org.jackhuang.hmcl.util.platform.ManagedProcess;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 // from hmcl launcher
 @Slf4j

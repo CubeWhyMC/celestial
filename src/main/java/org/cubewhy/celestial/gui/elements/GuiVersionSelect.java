@@ -26,6 +26,7 @@ import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.NotActiveException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class GuiVersionSelect extends JPanel {
     private boolean isFinishOk = false;
     private final JButton btnOnline = new JButton(f.getString("gui.version.online"));
     private final JButton btnOffline = new JButton(f.getString("gui.version.offline"));
+    private boolean isLaunching = false;
 
     private interface CreateProcess {
         Process create() throws IOException;
@@ -123,11 +125,11 @@ public class GuiVersionSelect extends JPanel {
 
     private void beforeLaunch() throws IOException, AttachNotSupportedException {
         Celestial.completeSession();
-        if (gamePid != 0) {
+        if (gamePid.get() != 0) {
             if (SystemUtils.findJava(LauncherData.getMainClass(null)) != null) {
                 JOptionPane.showMessageDialog(this, f.getString("gui.version.launched.message"), f.getString("gui.version.launched.title"), JOptionPane.WARNING_MESSAGE);
             } else {
-                gamePid = 0;
+                gamePid.set(0);
             }
         }
     }
@@ -147,16 +149,16 @@ public class GuiVersionSelect extends JPanel {
                     VirtualMachine java = SystemUtils.findJava(LauncherData.getMainClass(null));
                     assert java != null;
                     String id = java.id();
-                    gamePid = Long.parseLong(id);
+                    gamePid.set(Long.parseLong(id));
                     java.detach();
                 } catch (Exception ex) {
                     log.error("Failed to get the real pid of the game, is Celestial launched non java program?");
                     log.warn("process.pid() will be used to get the process id, which may not be the real PID");
-                    gamePid = p[0].pid();
+                    gamePid.set(p[0].pid());
                 }
                 log.info("Pid: " + gamePid);
                 statusBar.setText(String.format(f.getString("status.launch.started"), gamePid));
-                new GameStartEvent(gamePid).call();
+                new GameStartEvent(gamePid.get()).call();
             }
         });
         new Thread(() -> {
@@ -169,36 +171,42 @@ public class GuiVersionSelect extends JPanel {
                 int code = p[0].waitFor();
                 log.info("Game terminated");
                 statusBar.setText(f.getString("status.launch.terminated"));
-                Celestial.gamePid = 0;
+                gamePid.set(0);
                 new GameTerminateEvent().call();
                 if (code != 0) {
                     // upload crash report
                     statusBar.setText(f.getString("status.launch.crashed"));
-                    log.info("Client looks crashed, starting upload the log");
+                    log.info("Client looks crashed");
                     try {
-                        String trace = FileUtils.readFileToString(gameLogFile, StandardCharsets.UTF_8);
-                        String script = FileUtils.readFileToString(launchScript, StandardCharsets.UTF_8);
-                        Map<String, String> map1 = launcherData.uploadCrashReport(trace, CrashReportType.GAME, script);
-                        if (!map1.isEmpty()) {
-                            String url = map1.get("url");
-                            String id = map1.get("id");
-                            JOptionPane.showMessageDialog(this, String.format("""
-                                    Your client was crashed:
-                                    Crash id: %s
-                                    View your crash report at %s
-                                    View the log of the latest launch: %s
-                                                                            
-                                    *%s*""", id, url, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                        if (config.getConfig().has("data-sharing") && config.getValue("data-sharing").getAsBoolean()) {
+                            String trace = FileUtils.readFileToString(gameLogFile, StandardCharsets.UTF_8);
+                            String script = FileUtils.readFileToString(launchScript, StandardCharsets.UTF_8);
+                            Map<String, String> map1 = launcherData.uploadCrashReport(trace, CrashReportType.GAME, script);
+                            if (!map1.isEmpty()) {
+                                String url = map1.get("url");
+                                String id = map1.get("id");
+                                JOptionPane.showMessageDialog(this, String.format("""
+                                        Your client was crashed:
+                                        Crash id: %s
+                                        View your crash report at %s
+                                        View the log of the latest launch: %s
+                                                                                
+                                        *%s*""", id, url, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                            } else {
+                                throw new RuntimeException("Failed to upload crash report");
+                            }
                         } else {
-                            throw new RuntimeException("Failed to upload crash report");
+                            throw new NotActiveException();
                         }
                     } catch (Exception e) {
                         JOptionPane.showMessageDialog(this, String.format("""
                                 Your client was crashed:
                                 View the log of the latest launch: %s
                                 *%s*
-                                """, gameLogFile.getPath(), f.getString("gui.version.crash.tip")));
-                        throw new RuntimeException(e);
+                                """, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                        if (!(e instanceof NotActiveException)) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             } catch (InterruptedException ex) {
@@ -211,6 +219,10 @@ public class GuiVersionSelect extends JPanel {
     }
 
     private void online() throws IOException, AttachNotSupportedException {
+        if (isLaunching) {
+            JOptionPane.showMessageDialog(this, f.getString("gui.launch.launching.message"), f.getString("gui.launch.launching.title"), JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         beforeLaunch();
         File natives = launch((String) versionSelect.getSelectedItem(), branchInput.getText(), (String) moduleSelect.getSelectedItem());
         if (natives == null) {
@@ -226,6 +238,7 @@ public class GuiVersionSelect extends JPanel {
             }
         }, () -> {
             try {
+                isLaunching = true;
                 statusBar.setText(f.getString("status.launch.begin"));
                 Celestial.checkUpdate((String) versionSelect.getSelectedItem(), (String) moduleSelect.getSelectedItem(), branchInput.getText());
                 DownloadManager.waitForAll();
@@ -239,6 +252,7 @@ public class GuiVersionSelect extends JPanel {
                 }
                 // exec, run
                 log.info("Everything is OK, starting game...");
+                isLaunching = false;
             } catch (Exception e) {
                 log.error("Failed to check update");
                 String trace = TextUtils.dumpTrace(e);

@@ -1,12 +1,21 @@
-package org.cubewhy.celestial.game;
+/*
+ * Celestial Launcher <me@lunarclient.top>
+ * License under GPLv3
+ * Do NOT remove this note if you want to copy this file.
+ */
+
+package org.cubewhy.celestial.game.addon;
 
 import com.google.gson.JsonObject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.game.BaseAddon;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +25,7 @@ import static org.cubewhy.celestial.Celestial.configDir;
 
 @Getter
 @Slf4j
-public class JavaAgent {
+public class JavaAgent extends BaseAddon {
     public static final File javaAgentFolder = new File(configDir, "javaagents"); // share with LunarCN Launcher
 
     static {
@@ -28,14 +37,12 @@ public class JavaAgent {
 
     /**
      * -- GETTER --
-     *  Get agent arg
-     *
+     * Get agent arg
      */
     private String arg = "";
     /**
      * -- GETTER --
-     *  Get a file of the javaagent
-     *
+     * Get a file of the javaagent
      */
     private final File file;
 
@@ -81,7 +88,7 @@ public class JavaAgent {
 
     /**
      * Find all javaagents in the javaagent folder
-     * */
+     */
     @NotNull
     @Contract(pure = true)
     public static List<JavaAgent> findAll() {
@@ -94,7 +101,29 @@ public class JavaAgent {
         return list;
     }
 
-    private static String findAgentArg(String name) {
+    /**
+     * Set param for a Javaagent
+     *
+     * @param agent the agent
+     * @param arg   param of the agent
+     */
+    public static void setArgFor(@NotNull JavaAgent agent, String arg) {
+        setArgFor(agent.file.getName(), arg);
+    }
+
+    /**
+     * Set param for a Javaagent
+     *
+     * @param name name of the agent
+     * @param arg  param of the agent
+     */
+    public static void setArgFor(String name, String arg) {
+        JsonObject ja = config.getValue("javaagents").getAsJsonObject();
+        ja.addProperty(name, arg); // leave empty
+        config.setValue("javaagents", ja); // dump
+    }
+
+    public static String findAgentArg(String name) {
         JsonObject ja = config.getValue("javaagents").getAsJsonObject();
         if (!ja.has(name)) {
             // create config for the agent
@@ -103,6 +132,29 @@ public class JavaAgent {
         }
         return ja.get(name).getAsString();
     }
+
+    public static @Nullable JavaAgent add(@NotNull File file, String arg) throws IOException {
+        File target = autoCopy(file, javaAgentFolder);
+        if (arg != null) {
+            setArgFor(file.getName(), arg);
+        }
+        return (target == null) ? null : new JavaAgent(target, arg);
+    }
+
+    /**
+     * Migrate the arg of an agent
+     *
+     * @param old name of the old agent
+     * @param n3w name of the new agent
+     */
+    public static void migrate(String old, String n3w) {
+        JsonObject ja = config.getValue("javaagents").getAsJsonObject();
+        String arg = ja.get(old).getAsString();
+        ja.addProperty(n3w, arg); // leave empty
+        ja.remove(old);
+        config.setValue("javaagents", ja); // dump
+    }
+
 
     /**
      * Get args which add to the jvm
@@ -119,5 +171,14 @@ public class JavaAgent {
             }
         }
         return jvmArgs;
+    }
+
+    @Override
+    public String toString() {
+        String result = this.file.getName();
+        if (!this.arg.isBlank()) {
+            result += "=" + this.arg;
+        }
+        return result;
     }
 }

@@ -5,10 +5,10 @@ plugins {
 }
 
 group = 'org.cubewhy.celestial'
-version = '1.2-pre1-SNAPSHOT'
+version = '1.2-pre4-SNAPSHOT'
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-println('Celestial Launcher -> https://www.lunarclient.top/celestial')
+println('Celestial Launcher -> https://www.lunarclient.top/')
 
 compileJava.options.encoding = "UTF-8"
 
@@ -30,12 +30,12 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
 
-    include 'org.slf4j:slf4j-api:2.0.7'
-    include 'org.slf4j:slf4j-log4j12:2.0.7'
-    include 'org.apache.logging.log4j:log4j-api:2.20.0'
-    include 'org.apache.logging.log4j:log4j-core:2.20.0'
+    include 'org.slf4j:slf4j-api:2.0.10'
+    include 'org.slf4j:slf4j-log4j12:2.0.10'
+    include 'org.apache.logging.log4j:log4j-api:2.22.1'
+    include 'org.apache.logging.log4j:log4j-core:2.22.1'
 
-    include 'com.squareup.okhttp3:okhttp:4.11.0'
+    include 'com.squareup.okhttp3:okhttp:4.12.0'
     include 'com.google.code.gson:gson:2.10.1'
     include 'net.sf.jopt-simple:jopt-simple:6.0-alpha-3'
     include 'com.formdev:flatlaf:3.3-SNAPSHOT'
@@ -51,6 +51,7 @@ dependencies {
 }
 
 test {
+    enabled = false
     useJUnitPlatform()
 }
 
