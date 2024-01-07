@@ -22,8 +22,7 @@ public class Event {
         final ArrayList<EventData> dataList = EventManager.get(this.getClass());
 
         if (dataList != null) {
-            for (int i = 0; i < dataList.size(); i++) {
-                EventData data = dataList.get(i);
+            for (EventData data : dataList) {
                 try {
                     data.target.invoke(data.source, this);
                 } catch (Exception e) {
