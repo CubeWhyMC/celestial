@@ -60,7 +60,7 @@ public final class DownloadManager {
         }
         log.info("Caching " + name + " (from " + url.toString() + ")");
         // download
-        return download(url, file);
+        return download0(url, file);
     }
 
     /**
@@ -70,7 +70,7 @@ public final class DownloadManager {
      * @param file file instance of the local file
      * @return is success
      */
-    public static boolean download(URL url, @NotNull File file, String sha1) throws IOException {
+    public static boolean download0(URL url, @NotNull File file, String sha1) throws IOException {
         // connect
         if (file.isFile() && sha1 != null) {
             // assert sha1
@@ -100,8 +100,8 @@ public final class DownloadManager {
         return true;
     }
 
-    public static boolean download(URL url, File file) throws IOException {
-        return download(url, file, null);
+    public static boolean download0(URL url, File file) throws IOException {
+        return download0(url, file, null);
     }
 
     public static void download(Downloadable downloadable) {

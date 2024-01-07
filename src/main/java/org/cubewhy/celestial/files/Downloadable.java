@@ -9,7 +9,6 @@ package org.cubewhy.celestial.files;
 import lombok.SneakyThrows;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
 public record Downloadable(URL url, File file, String sha1) implements Runnable {
@@ -24,7 +23,7 @@ public record Downloadable(URL url, File file, String sha1) implements Runnable 
         // TODO multipart support
         for (int i = 0; i < fallBack; i++) {
             try {
-                DownloadManager.download(this.url, this.file, this.sha1);
+                DownloadManager.download0(this.url, this.file, this.sha1);
             } catch (Exception e) {
                 continue; // try again
             }
