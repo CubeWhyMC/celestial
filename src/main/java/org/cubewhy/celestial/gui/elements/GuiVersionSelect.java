@@ -135,7 +135,7 @@ public class GuiVersionSelect extends JPanel {
         Celestial.completeSession();
         // check update for loaders
         JsonObject weave = config.getValue("addon").getAsJsonObject().getAsJsonObject("weave");
-        JsonObject cn = config.getValue("addon").getAsJsonObject().getAsJsonObject("cn");
+        JsonObject cn = config.getValue("addon").getAsJsonObject().getAsJsonObject("lunarcn");
         boolean checkUpdate = false;
         if (weave.get("enable").getAsBoolean() && weave.get("check-update").getAsBoolean()) {
             checkUpdate = WeaveMod.checkUpdate();
