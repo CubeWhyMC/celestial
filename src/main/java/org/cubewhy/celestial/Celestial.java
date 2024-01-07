@@ -363,7 +363,7 @@ public class Celestial {
         }
         // ===     loaders    ===
         JsonObject weave = config.getValue("addon").getAsJsonObject().getAsJsonObject("weave");
-        JsonObject cn = config.getValue("addon").getAsJsonObject().getAsJsonObject("cn");
+        JsonObject cn = config.getValue("addon").getAsJsonObject().getAsJsonObject("lunarcn");
         if (weave.get("enable").getAsBoolean()) {
             String file = weave.get("installation").getAsString();
             log.info("Weave enabled! " + file);
