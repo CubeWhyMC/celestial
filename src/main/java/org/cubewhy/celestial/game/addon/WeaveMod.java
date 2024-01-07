@@ -18,8 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.cubewhy.celestial.Celestial.config;
+
 @Getter
 public class WeaveMod extends BaseAddon {
+    public static final String build = "Weave-MC/Weave-Loader"; // https://github.com/<build>/releases/latest
     public static final File modFolder = new File(System.getProperty("user.home"), ".weave/mods");
     private final File file;
 

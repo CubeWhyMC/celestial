@@ -3,6 +3,7 @@ package org.cubewhy.celestial;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.IntelliJTheme;
+import com.formdev.flatlaf.json.Json;
 import com.google.gson.*;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -221,11 +222,24 @@ public class Celestial {
         resize.addProperty("width", 854);
         resize.addProperty("height", 480);
 
+        JsonObject addon = new JsonObject();
+        // weave
+        JsonObject weave = new JsonObject();
+        weave.addProperty("enable", false);
+        weave.addProperty("check-update", true);
+        addon.add("weave", weave);
+        // lccn
+        JsonObject lunarcn = new JsonObject();
+        lunarcn.addProperty("enable", false);
+        lunarcn.addProperty("check-update", true);
+        addon.add("lunarcn", lunarcn);
+
         config.initValue("jre", "") // leave empty if you want to use the default one
                 .initValue("language", "zh") // en, zh
                 .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("game", (JsonElement) null)
+                .initValue("addon", addon)
                 .initValue("ram", 4096)
                 .initValue("max-threads", Runtime.getRuntime().availableProcessors()) // recommend: same as your CPU core
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
