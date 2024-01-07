@@ -278,7 +278,8 @@ public class Celestial {
     }
 
     public static void initTheme() throws IOException {
-        String themeType = config.getValue("theme").getAsString();
+        JsonElement theme = config.getValue("theme");
+        String themeType = (theme.isJsonNull()) ? "dark" : theme.getAsString();
         log.info("Set theme -> " + themeType);
         switch (themeType) {
             case "dark" -> {
