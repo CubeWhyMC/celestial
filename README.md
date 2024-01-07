@@ -1,6 +1,6 @@
 # Celestial
 
-> A 3rd party LunarClient Launcher
+> A 3rd party Minecraft Launcher
 
 ## Features
 
