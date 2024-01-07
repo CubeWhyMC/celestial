@@ -101,6 +101,7 @@ public class Celestial {
 
 
     private static void run(String[] args) throws Exception {
+        initTheme(); // init theme
         // init config
         initConfig();
 
@@ -147,7 +148,6 @@ public class Celestial {
             System.exit(0);
         }
         log.info("Language: " + userLanguage);
-        initTheme(); // init theme
         checkJava();
         launcherData = new LauncherData(config.getValue("api").getAsString());
         while (true) {
