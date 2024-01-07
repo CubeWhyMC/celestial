@@ -90,7 +90,6 @@ public class GuiVersionSelect extends JPanel {
         refreshModuleSelect(false);
         // get is first launch
         if (config.getValue("game").isJsonNull()) {
-            log.info("Init ");
             JsonObject game = new JsonObject();
             game.addProperty("version", (String) versionSelect.getSelectedItem());
             game.addProperty("module", (String) moduleSelect.getSelectedItem());

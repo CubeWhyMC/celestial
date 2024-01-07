@@ -232,7 +232,7 @@ public class Celestial {
         // lccn
         JsonObject lunarcn = new JsonObject();
         lunarcn.addProperty("enable", false);
-        weave.addProperty("installation", new File(System.getProperty("user.home"), ".cubewhy/lunarcn/loaders/cn.jar").getPath());
+        lunarcn.addProperty("installation", new File(System.getProperty("user.home"), ".cubewhy/lunarcn/loaders/cn.jar").getPath());
         lunarcn.addProperty("check-update", true);
         addon.add("lunarcn", lunarcn);
 
