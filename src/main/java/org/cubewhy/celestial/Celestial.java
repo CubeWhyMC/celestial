@@ -226,11 +226,13 @@ public class Celestial {
         // weave
         JsonObject weave = new JsonObject();
         weave.addProperty("enable", false);
+        weave.addProperty("installation", new File(System.getProperty("user.home"), ".cubewhy/lunarcn/loaders/weave.jar").getPath());
         weave.addProperty("check-update", true);
         addon.add("weave", weave);
         // lccn
         JsonObject lunarcn = new JsonObject();
         lunarcn.addProperty("enable", false);
+        weave.addProperty("installation", new File(System.getProperty("user.home"), ".cubewhy/lunarcn/loaders/cn.jar").getPath());
         lunarcn.addProperty("check-update", true);
         addon.add("lunarcn", lunarcn);
 
@@ -358,6 +360,19 @@ public class Celestial {
         List<JavaAgent> javaAgents = JavaAgent.findAll();
         for (JavaAgent agent : javaAgents) {
             args.add(agent.getJvmArg());
+        }
+        // ===     loaders    ===
+        JsonObject weave = config.getValue("addon").getAsJsonObject().getAsJsonObject("weave");
+        JsonObject cn = config.getValue("addon").getAsJsonObject().getAsJsonObject("cn");
+        if (weave.get("enable").getAsBoolean()) {
+            String file = weave.get("installation").getAsString();
+            log.info("Weave enabled! " + file);
+            javaAgents.add(new JavaAgent(file));
+        }
+        if (cn.get("enable").getAsBoolean()) {
+            String file = cn.get("installation").getAsString();
+            log.info("LunarCN enabled! " + file);
+            javaAgents.add(new JavaAgent(file));
         }
         // === custom vm args ===
         List<String> customVMArgs = new ArrayList<>();

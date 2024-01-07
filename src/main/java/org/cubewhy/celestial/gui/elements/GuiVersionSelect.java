@@ -15,6 +15,8 @@ import org.cubewhy.celestial.Celestial;
 import org.cubewhy.celestial.event.impl.GameStartEvent;
 import org.cubewhy.celestial.event.impl.GameTerminateEvent;
 import org.cubewhy.celestial.files.DownloadManager;
+import org.cubewhy.celestial.game.addon.LunarCNMod;
+import org.cubewhy.celestial.game.addon.WeaveMod;
 import org.cubewhy.celestial.utils.CrashReportType;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.cubewhy.celestial.utils.TextUtils;
@@ -123,14 +125,29 @@ public class GuiVersionSelect extends JPanel {
         });
     }
 
-    private void beforeLaunch() throws IOException, AttachNotSupportedException {
-        Celestial.completeSession();
+    private void beforeLaunch() throws IOException, AttachNotSupportedException, InterruptedException {
         if (gamePid.get() != 0) {
             if (SystemUtils.findJava(LauncherData.getMainClass(null)) != null) {
                 JOptionPane.showMessageDialog(this, f.getString("gui.version.launched.message"), f.getString("gui.version.launched.title"), JOptionPane.WARNING_MESSAGE);
             } else {
                 gamePid.set(0);
             }
+        }
+        Celestial.completeSession();
+        // check update for loaders
+        JsonObject weave = config.getValue("addon").getAsJsonObject().getAsJsonObject("weave");
+        JsonObject cn = config.getValue("addon").getAsJsonObject().getAsJsonObject("cn");
+        boolean checkUpdate = false;
+        if (weave.get("enable").getAsBoolean() && weave.get("check-update").getAsBoolean()) {
+            checkUpdate = WeaveMod.checkUpdate();
+        }
+        if (cn.get("enable").getAsBoolean() && cn.get("check-update").getAsBoolean()) {
+            checkUpdate = LunarCNMod.checkUpdate();
+        }
+
+        if (checkUpdate) {
+            statusBar.setText(f.getString("gui.addon.update"));
+            DownloadManager.waitForAll();
         }
     }
 
@@ -218,7 +235,7 @@ public class GuiVersionSelect extends JPanel {
         }).start();
     }
 
-    private void online() throws IOException, AttachNotSupportedException {
+    private void online() throws IOException, AttachNotSupportedException, InterruptedException {
         if (isLaunching) {
             JOptionPane.showMessageDialog(this, f.getString("gui.launch.launching.message"), f.getString("gui.launch.launching.title"), JOptionPane.ERROR_MESSAGE);
             return;
