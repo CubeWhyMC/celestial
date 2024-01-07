@@ -103,9 +103,9 @@ public class Celestial {
 
 
     private static void run(String[] args) throws Exception {
-        initTheme(); // init theme
         // init config
         initConfig();
+        initTheme(); // init theme
 
         OptionParser optionParser = new OptionParser();
         optionParser.accepts("help", "Print help and exit")
@@ -278,8 +278,7 @@ public class Celestial {
     }
 
     public static void initTheme() throws IOException {
-        JsonElement theme = config.getValue("theme");
-        String themeType = (theme.isJsonNull()) ? "dark" : theme.getAsString();
+        String themeType = config.getValue("theme").getAsString();
         log.info("Set theme -> " + themeType);
         switch (themeType) {
             case "dark" -> {
