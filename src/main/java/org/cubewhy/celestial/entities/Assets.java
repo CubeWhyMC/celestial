@@ -6,12 +6,6 @@ import lombok.Data;
 
 import java.util.Date;
 
-/**
- * Auto-generated: 2024-01-07 19:7:0
- *
- * @author json.cn (i@json.cn)
- * @website http://www.json.cn/java2pojo/
- */
 @Data
 public class Assets {
 

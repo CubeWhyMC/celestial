@@ -14,7 +14,7 @@ import java.util.List;
  * @website http://www.json.cn/java2pojo/
  */
 @Data
-public class releaseEntity {
+public class ReleaseEntity {
 
     private String url;
     private String assets_url;
