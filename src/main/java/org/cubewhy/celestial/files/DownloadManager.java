@@ -4,6 +4,7 @@ import cn.hutool.crypto.SecureUtil;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
 import org.apache.commons.io.FileUtils;
+import org.cubewhy.celestial.event.impl.FileDownloadEvent;
 import org.cubewhy.celestial.utils.RequestUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,9 +78,11 @@ public final class DownloadManager {
                 return true;
             }
         }
+        new FileDownloadEvent(file, FileDownloadEvent.Type.START).call();
         log.info("Downloading " + url + " to " + file);
         try (Response response = RequestUtils.get(url).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
+                new FileDownloadEvent(file, FileDownloadEvent.Type.FALURE).call();
                 return false;
             }
             byte[] bytes = response.body().bytes();
@@ -87,8 +90,13 @@ public final class DownloadManager {
         }
         statusBar.setText("Download " + file.getName() + " success.");
         if (sha1 != null) {
-            return SecureUtil.sha1(file).equals(sha1);
+            boolean result = SecureUtil.sha1(file).equals(sha1);
+            if (!result) {
+                new FileDownloadEvent(file, FileDownloadEvent.Type.FALURE).call();
+            }
+            return result;
         }
+        new FileDownloadEvent(file, FileDownloadEvent.Type.SUCCESS).call();
         return true;
     }
 
