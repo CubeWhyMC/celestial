@@ -10,13 +10,17 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.Celestial;
 import org.cubewhy.celestial.game.BaseAddon;
+import org.cubewhy.celestial.utils.AddonUtils;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static org.cubewhy.celestial.Celestial.config;
 
 @Getter
 @Slf4j
@@ -49,5 +53,10 @@ public class LunarCNMod extends BaseAddon {
             }
         }
         return list;
+    }
+
+    public static boolean checkUpdate() throws MalformedURLException {
+        log.info("Updating LunarCN Loader...");
+        return AddonUtils.downloadLoader("CubeWhyMC/LunarClient-CN", new File(config.getValue("addon").getAsJsonObject().getAsJsonObject("lunarcn").get("installation").getAsString()));
     }
 }
