@@ -20,12 +20,12 @@ public class ReleaseEntity {
     private String assets_url;
     private String upload_url;
     private String html_url;
-    private String id;
+    private long id;
     private Author author;
     private String node_id;
     private String tag_name;
     private String target_commitish;
-    private Date name;
+    private String name;
     private boolean draft;
     private boolean prerelease;
     private Date created_at;
