@@ -15,6 +15,7 @@ import org.cubewhy.celestial.game.addon.JavaAgent;
 import org.cubewhy.celestial.game.addon.LunarCNMod;
 import org.cubewhy.celestial.game.addon.WeaveMod;
 import org.cubewhy.celestial.gui.GuiLauncher;
+import org.cubewhy.celestial.utils.AddonUtils;
 import org.cubewhy.celestial.utils.GuiUtils;
 import org.cubewhy.celestial.utils.TextUtils;
 import org.jetbrains.annotations.NotNull;
@@ -169,6 +170,7 @@ public class GuiAddonManager extends JPanel {
         btnAddAgent.addActionListener(e -> {
             File file = GuiUtils.chooseFile(new FileNameExtensionFilter("Agent", "jar"));
             if (file == null) {
+                log.info("Cancel add agent because file == null");
                 return;
             }
             String arg = JOptionPane.showInputDialog(this, f.getString("gui.addon.agents.add.arg"));
@@ -196,6 +198,9 @@ public class GuiAddonManager extends JPanel {
                 return;
             }
             try {
+                if (!AddonUtils.isWeaveMod(file)) {
+                    JOptionPane.showMessageDialog(this, String.format(f.getString("gui.addon.mods.incorrect"), file), "Warning | Type incorrect", JOptionPane.WARNING_MESSAGE);
+                }
                 WeaveMod mod = WeaveMod.add(file);
                 if (mod != null) {
                     // success
@@ -210,6 +215,32 @@ public class GuiAddonManager extends JPanel {
                 String trace = TextUtils.dumpTrace(ex);
                 log.error(trace);
                 JOptionPane.showMessageDialog(this, String.format(f.getString("gui.addon.mods.weave.add.failure.io"), trace), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        btnAddLunarCNMod.addActionListener(e -> {
+            File file = GuiUtils.chooseFile(new FileNameExtensionFilter("LunarCN Mod", "jar"));
+            if (file == null) {
+                return;
+            }
+            try {
+                if (!AddonUtils.isLunarCNMod(file)) {
+                    JOptionPane.showMessageDialog(this, String.format(f.getString("gui.addon.mods.incorrect"), file), "Warning | Type incorrect", JOptionPane.WARNING_MESSAGE);
+                }
+                WeaveMod mod = WeaveMod.add(file);
+                if (mod != null) {
+                    // success
+                    new AddonAddEvent(AddonAddEvent.Type.WEAVE, mod);
+                    GuiLauncher.statusBar.setText(f.getString("gui.addon.mods.cn.add.success"));
+                    weave.clear();
+                    loadWeaveMods(weave);
+                } else {
+                    JOptionPane.showMessageDialog(this, f.getString("gui.addon.mods.cn.add.failure.exists"), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException ex) {
+                String trace = TextUtils.dumpTrace(ex);
+                log.error(trace);
+                JOptionPane.showMessageDialog(this, String.format(f.getString("gui.addon.mods.cn.add.failure.io"), trace), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
