@@ -77,6 +77,8 @@ public class WeaveMod extends BaseAddon {
                     }
                 }
             }
+        }else{
+            //TODO: loaderUrl to ~/.cubewhy/addon/Weave-<%s>.jar, releaseEntity.getName()
         }
         return true;
     }
