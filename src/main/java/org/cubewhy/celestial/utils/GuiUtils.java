@@ -6,8 +6,6 @@
 
 package org.cubewhy.celestial.utils;
 
-import org.apache.commons.io.filefilter.AbstractFileFilter;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.cubewhy.celestial.Celestial;
 import org.jetbrains.annotations.Nullable;
 

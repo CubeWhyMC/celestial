@@ -7,6 +7,7 @@ import com.google.gson.*;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.event.impl.CreateLauncherEvent;
 import org.cubewhy.celestial.files.ConfigFile;
 import org.cubewhy.celestial.files.DownloadManager;
 import org.cubewhy.celestial.files.Downloadable;
@@ -177,6 +178,7 @@ public class Celestial {
         // start gui launcher
 
         launcherFrame = new GuiLauncher();
+        new CreateLauncherEvent(launcherFrame).call();
         launcherFrame.setVisible(true);
         launcherFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
