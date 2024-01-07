@@ -20,7 +20,7 @@ public class ReleaseEntity {
     private String assets_url;
     private String upload_url;
     private String html_url;
-    private long id;
+    private String id;
     private Author author;
     private String node_id;
     private String tag_name;
