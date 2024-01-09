@@ -358,9 +358,6 @@ public class Celestial {
         args.addAll(LauncherData.getDefaultJvmArgs(json, installation));
         // === javaagents ===
         List<JavaAgent> javaAgents = JavaAgent.findAll();
-        for (JavaAgent agent : javaAgents) {
-            args.add(agent.getJvmArg());
-        }
         // ===     loaders    ===
         JsonObject weave = config.getValue("addon").getAsJsonObject().getAsJsonObject("weave");
         JsonObject cn = config.getValue("addon").getAsJsonObject().getAsJsonObject("lunarcn");
@@ -373,6 +370,9 @@ public class Celestial {
             String file = cn.get("installation").getAsString();
             log.info("LunarCN enabled! " + file);
             javaAgents.add(new JavaAgent(file));
+        }
+        for (JavaAgent agent : javaAgents) {
+            args.add(agent.getJvmArg());
         }
         // === custom vm args ===
         List<String> customVMArgs = new ArrayList<>();

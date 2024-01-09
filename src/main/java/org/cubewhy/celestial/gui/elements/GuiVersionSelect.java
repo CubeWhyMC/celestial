@@ -138,9 +138,11 @@ public class GuiVersionSelect extends JPanel {
         JsonObject cn = config.getValue("addon").getAsJsonObject().getAsJsonObject("lunarcn");
         boolean checkUpdate = false;
         if (weave.get("enable").getAsBoolean() && weave.get("check-update").getAsBoolean()) {
+            log.info("Checking update for Weave loader");
             checkUpdate = WeaveMod.checkUpdate();
         }
         if (cn.get("enable").getAsBoolean() && cn.get("check-update").getAsBoolean()) {
+            log.info("Checking update for LunarCN loader");
             checkUpdate = LunarCNMod.checkUpdate();
         }
 
