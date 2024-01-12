@@ -6,14 +6,17 @@ import java.awt.*;
 
 import static org.cubewhy.celestial.Celestial.f;
 
-public class GuiSettings extends JPanel {
+public class GuiSettings extends JScrollPane {
+    private static final JPanel panel = new JPanel();
+
     public GuiSettings() {
+        super(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.setBorder(new TitledBorder(null, f.getString("gui.settings.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
-        this.setLayout(new GridLayout(3, 3, 5, 5));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         this.initGui();
     }
 
     private void initGui() {
-        this.add(new JLabel("settings"));
+        panel.add(new JLabel("settings"));
     }
 }
