@@ -41,7 +41,7 @@ dependencies {
     include 'com.formdev:flatlaf:3.3-SNAPSHOT'
     include 'co.gongzh.procbridge:procbridge:1.1'
     include 'commons-io:commons-io:2.15.1'
-    include 'cn.hutool:hutool-crypto:5.8.18'
+    include 'cn.hutool:hutool-crypto:5.8.25'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
