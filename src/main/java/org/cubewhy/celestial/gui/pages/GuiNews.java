@@ -24,7 +24,7 @@ public class GuiNews extends JScrollPane {
     private final JsonArray blogPosts;
 
     public GuiNews() throws IOException {
-        super(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        super(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         this.setBorder(new TitledBorder(null, f.getString("gui.news.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         blogPosts = LauncherData.getBlogPosts(metadata);
