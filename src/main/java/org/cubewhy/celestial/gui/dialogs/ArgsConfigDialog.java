@@ -52,7 +52,7 @@ public class ArgsConfigDialog extends JDialog {
         }
         this.add(args, BorderLayout.CENTER);
         JPanel panelButtons = new JPanel();
-        panelButtons.setLayout(new FlowLayout());
+        panelButtons.setLayout(new GridLayout(1, 2));
         // btnAdd
         JButton btnAdd = new JButton(f.getString("gui.settings.args.add"));
         btnAdd.addActionListener((e) -> {
@@ -64,11 +64,10 @@ public class ArgsConfigDialog extends JDialog {
         // btnRemove
         JButton btnRemove = new JButton(f.getString("gui.settings.args.remove"));
         btnRemove.addActionListener((e) -> {
-            if (JOptionPane.showConfirmDialog(this, String.format(f.getString("gui.settings.args.remove.confirm"), args.getSelectedValue()), "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+            int index = args.getSelectedIndex();
+            if (index == -1 & JOptionPane.showConfirmDialog(this, String.format(f.getString("gui.settings.args.remove.confirm"), args.getSelectedValue()), "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
-            ;
-            int index = args.getSelectedIndex();
             this.removeArg(index, model);
         });
         panelButtons.add(btnAdd);
