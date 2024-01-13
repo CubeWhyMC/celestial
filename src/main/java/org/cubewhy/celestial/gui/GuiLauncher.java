@@ -8,7 +8,6 @@ import org.cubewhy.celestial.event.EventTarget;
 import org.cubewhy.celestial.event.impl.AuthEvent;
 import org.cubewhy.celestial.event.impl.GameStartEvent;
 import org.cubewhy.celestial.event.impl.GameTerminateEvent;
-import org.cubewhy.celestial.gui.dialogs.LanguageSelectDialog;
 import org.cubewhy.celestial.gui.elements.StatusBar;
 import org.cubewhy.celestial.gui.pages.GuiAbout;
 import org.cubewhy.celestial.gui.pages.GuiNews;
@@ -71,7 +70,6 @@ public class GuiLauncher extends JFrame {
         // Celestial is an opensource launcher, please donate to let us go further (All money will be used for development)
         JButton btnDonate = new JButton(f.getString("gui.donate"));
         JButton btnHelp = new JButton(f.getString("gui.help"));
-        JButton btnLanguage = new JButton("Language"); // Do not translate this button :)
         btnDonate.addActionListener(e -> {
             try {
                 Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/donate"));
@@ -85,10 +83,6 @@ public class GuiLauncher extends JFrame {
             }
         });
 
-        btnLanguage.addActionListener(e ->{
-            // show language selection dialog
-            new LanguageSelectDialog(this).setVisible(true);
-        });
         menu.add(btnPrevious);
         menu.add(btnNext);
         menu.add(btnDonate);
