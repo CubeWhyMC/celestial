@@ -65,7 +65,7 @@ public class ArgsConfigDialog extends JDialog {
         JButton btnRemove = new JButton(f.getString("gui.settings.args.remove"));
         btnRemove.addActionListener((e) -> {
             int index = args.getSelectedIndex();
-            if (index == -1 & JOptionPane.showConfirmDialog(this, String.format(f.getString("gui.settings.args.remove.confirm"), args.getSelectedValue()), "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+            if (index == -1 || JOptionPane.showConfirmDialog(this, String.format(f.getString("gui.settings.args.remove.confirm"), args.getSelectedValue()), "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
             this.removeArg(index, model);
