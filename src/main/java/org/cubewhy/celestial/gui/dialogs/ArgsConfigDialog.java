@@ -10,9 +10,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+
+import java.awt.*;
 
 import static org.cubewhy.celestial.Celestial.config;
 import static org.cubewhy.celestial.Celestial.f;
@@ -28,7 +31,7 @@ public class ArgsConfigDialog extends JDialog {
         this.key = key;
         this.json = json;
         this.array = json.getAsJsonArray(key);
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setLayout(new GridLayout(2, 1));
         this.initGui();
         this.setSize(600, 600);
         this.setModalityType(ModalityType.APPLICATION_MODAL);
@@ -48,8 +51,8 @@ public class ArgsConfigDialog extends JDialog {
             for (JsonElement element : array) {
                 model.addElement(element.getAsString());
             }
-            this.add(args);
         }
+        this.add(args);
         JPanel panelButtons = new JPanel();
         panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.X_AXIS));
         // btnAdd
@@ -65,7 +68,8 @@ public class ArgsConfigDialog extends JDialog {
         btnRemove.addActionListener((e) -> {
             if (JOptionPane.showConfirmDialog(this, String.format(f.getString("gui.settings.args.remove.confirm"), args.getSelectedValue()), "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
-            };
+            }
+            ;
             int index = args.getSelectedIndex();
             this.removeArg(index, model);
         });
