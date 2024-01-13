@@ -18,13 +18,10 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import java.util.List;
+import java.util.*;
 
-import static org.cubewhy.celestial.Celestial.config;
-import static org.cubewhy.celestial.Celestial.f;
+import static org.cubewhy.celestial.Celestial.*;
 import static org.cubewhy.celestial.gui.GuiLauncher.statusBar;
 
 @Slf4j
@@ -131,7 +128,15 @@ public class GuiSettings extends JScrollPane {
         // theme
         JPanel p5 = new JPanel();
         p5.add(new JLabel(f.getString("gui.settings.launcher.theme")));
-        p5.add(getAutoSaveComboBox(config.getConfig(), "theme", List.of(new String[]{"dark", "light"})));
+        List<String> themes = new ArrayList<>();
+        themes.add("dark");
+        themes.add("light"); // default themes
+        for (File file : Objects.requireNonNull(themesDir.listFiles())) {
+            if (file.isFile() && file.getName().endsWith(".json")) {
+                themes.add(file.getName());
+            }
+        }
+        p5.add(getAutoSaveComboBox(config.getConfig(), "theme", themes));
         panelLauncher.add(p5);
         // language
         JPanel p6 = new JPanel();
