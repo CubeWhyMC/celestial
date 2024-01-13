@@ -43,6 +43,7 @@ public class GuiSettings extends JScrollPane {
     private void initGui() {
         // config
         // jre
+        panel.add(new JLabel(f.getString("gui.settings.warn.restart")));
         JPanel panelVM = new JPanel();
         panelVM.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
         panelVM.setBorder(new TitledBorder(null, f.getString("gui.settings.jvm"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
