@@ -131,6 +131,7 @@ public class GuiSettings extends JScrollPane {
         List<String> themes = new ArrayList<>();
         themes.add("dark");
         themes.add("light"); // default themes
+        // custom themes
         for (File file : Objects.requireNonNull(themesDir.listFiles())) {
             if (file.isFile() && file.getName().endsWith(".json")) {
                 themes.add(file.getName());
