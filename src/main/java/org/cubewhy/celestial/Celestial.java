@@ -84,6 +84,7 @@ public class Celestial {
             log.error(trace);
             // please share the crash report with developers to help us solve the problems of the Celestial Launcher
             StringBuffer message = new StringBuffer("Celestial Crashed\n");
+            message.append("Launcher Version: ").append(GitUtils.getBuildVersion());
             if (config.getConfig().has("data-sharing") && config.getValue("data-sharing").getAsBoolean()) {
                 log.info("Uploading crash report");
                 String logString = org.apache.commons.io.FileUtils.readFileToString(launcherLogFile, StandardCharsets.UTF_8);
