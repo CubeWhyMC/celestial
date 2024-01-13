@@ -1,6 +1,7 @@
 package org.cubewhy.celestial.gui.pages;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout;
@@ -104,16 +105,16 @@ public class GuiSettings extends JScrollPane {
         JPanel panelUnclaimed = new JPanel();
         panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         panelUnclaimed.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
-        addUnclaimed(panelUnclaimed, config.getConfig().entrySet());
+        addUnclaimed(panelUnclaimed, config.getConfig());
         panel.add(panelUnclaimed);
     }
 
-    private void addUnclaimed(JPanel basePanel, Set<Map.Entry<String, JsonElement>> entry) {
-        for (Map.Entry<String, JsonElement> s : entry) {
+    private void addUnclaimed(JPanel basePanel, JsonObject json) {
+        for (Map.Entry<String, JsonElement> s : json.entrySet()) {
             if (!claimed.contains(s.getKey())) {
                 // unclaimed
                 if (s.getValue().isJsonPrimitive()) {
-                    JPanel p = getSimplePanel(s.getKey(), s.getValue().getAsJsonPrimitive());
+                    JPanel p = getSimplePanel(json, s.getKey(), s.getValue().getAsJsonPrimitive());
                     basePanel.add(p);
                 }
                 if (s.getValue().isJsonObject()) {
@@ -121,25 +122,26 @@ public class GuiSettings extends JScrollPane {
                     subPanel.setBorder(new TitledBorder(null, s.getKey(), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
                     subPanel.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
                     basePanel.add(subPanel);
-                    addUnclaimed(subPanel, s.getValue().getAsJsonObject().entrySet());
+                    addUnclaimed(subPanel, s.getValue().getAsJsonObject());
                 }
             }
         }
     }
 
-    private @NotNull JPanel getSimplePanel(String key, @NotNull JsonPrimitive value) {
+    private @NotNull JPanel getSimplePanel(JsonObject json, String key, @NotNull JsonPrimitive value) {
         JPanel panel = new JPanel();
         if (value.isBoolean()) {
             JCheckBox cb = new JCheckBox(key);
             cb.setSelected(value.getAsBoolean());
             cb.addActionListener((e) -> {
                 JCheckBox source = (JCheckBox) e.getSource();
-                config.setValue(key, source.isSelected());
+                json.addProperty(key, source.isSelected());
+                config.save();
             });
             panel.add(cb);
         } else if (value.isString()) {
             panel.add(new JLabel(key));
-            JTextField input = getAutoSaveTextField(key, value);
+            JTextField input = getAutoSaveTextField(key, value, json);
             panel.add(input);
         } else if (value.isNumber()) {
             panel.add(new JLabel(key));
@@ -150,7 +152,8 @@ public class GuiSettings extends JScrollPane {
             spinner.addChangeListener((e) -> {
                 JSpinner source = (JSpinner) e.getSource();
                 Number v = (Number) source.getValue();
-                config.setValue(key, v);
+                json.addProperty(key, v);
+                config.save();
             });
             textField.setColumns(20);
             panel.add(spinner);
@@ -160,19 +163,21 @@ public class GuiSettings extends JScrollPane {
     }
 
     @NotNull
-    private static JTextField getAutoSaveTextField(String key, @NotNull JsonPrimitive value) {
+    private static JTextField getAutoSaveTextField(String key, @NotNull JsonPrimitive value, JsonObject json) {
         JTextField input = new JTextField(value.getAsString());
         input.addActionListener((e) -> {
             JTextField source = (JTextField) e.getSource();
             // save value
-            config.setValue(key, source.getText());
+            json.addProperty(key, source.getText());
+            config.save();
         });
         input.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
                 JTextField source = (JTextField) e.getSource();
                 // save value
-                config.setValue(key, source.getText());
+                json.addProperty(key, source.getText());
+                config.save();
             }
         });
         return input;
