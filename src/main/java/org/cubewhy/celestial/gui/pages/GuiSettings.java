@@ -133,7 +133,7 @@ public class GuiSettings extends JScrollPane {
         // max threads
         JPanel p6 = new JPanel();
         p6.add(new JLabel(f.getString("gui.settings.launcher.max-threads")));
-        p6.add(getAutoSaveSpinner(config.getConfig(), "max-threads", 0, 256));
+        p6.add(getAutoSaveSpinner(config.getConfig(), "max-threads", 1, 256));
         panelLauncher.add(p6);
 
         claim("data-sharing", panelLauncher);
