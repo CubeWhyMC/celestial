@@ -137,6 +137,11 @@ public class GuiSettings extends JScrollPane {
             spinner.setAutoscrolls(true);
             JComponent editor = spinner.getEditor();
             JFormattedTextField textField = ((JSpinner.DefaultEditor) editor).getTextField();
+            spinner.addChangeListener((e) -> {
+                JSpinner source = (JSpinner) e.getSource();
+                Number v = (Number) source.getValue();
+                config.setValue(key, v);
+            });
             textField.setColumns(20);
             panel.add(spinner);
 
