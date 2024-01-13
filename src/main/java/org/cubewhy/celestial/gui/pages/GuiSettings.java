@@ -94,6 +94,12 @@ public class GuiSettings extends JScrollPane {
         p2.add(labelRam);
         panelVM.add(p2);
 
+        JPanel p3 = new JPanel();
+        p3.add(new JLabel(f.getString("gui.settings.jvm.wrapper")));
+        JTextField wrapperInput = getAutoSaveTextField("wrapper", config.getValue("wrapper").getAsJsonPrimitive(), config.getConfig());
+        p3.add(wrapperInput);
+        panelVM.add(p3);
+
         claim("jre", panelVM);
         claim("ram");
         claim("vm-args");
@@ -123,6 +129,9 @@ public class GuiSettings extends JScrollPane {
                     subPanel.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
                     basePanel.add(subPanel);
                     addUnclaimed(subPanel, s.getValue().getAsJsonObject());
+                }
+                if (s.getValue().isJsonArray()) {
+                    // TODO valueList
                 }
             }
         }
