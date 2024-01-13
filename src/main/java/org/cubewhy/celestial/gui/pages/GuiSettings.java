@@ -121,6 +121,7 @@ public class GuiSettings extends JScrollPane {
         JPanel panel = new JPanel();
         if (value.isBoolean()) {
             JCheckBox cb = new JCheckBox(key);
+            cb.setSelected(value.getAsBoolean());
             cb.addActionListener((e) -> {
                 JCheckBox source = (JCheckBox) e.getSource();
                 config.setValue(key, source.isSelected());
