@@ -12,6 +12,8 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.HashSet;
@@ -126,14 +128,7 @@ public class GuiSettings extends JScrollPane {
             panel.add(cb);
         } else if (value.isString()) {
             panel.add(new JLabel(key));
-            JTextField input = new JTextField(value.getAsString());
-            input.addActionListener((e) -> {
-                JTextField source = (JTextField) e.getSource();
-                if (!source.getHorizontalVisibility().getValueIsAdjusting()) {
-                    // save value
-                    config.setValue(key, source.getText());
-                }
-            });
+            JTextField input = getAutoSaveTextField(key, value);
             panel.add(input);
         } else if (value.isNumber()) {
             panel.add(new JLabel(key));
@@ -146,6 +141,25 @@ public class GuiSettings extends JScrollPane {
 
         }
         return panel;
+    }
+
+    @NotNull
+    private static JTextField getAutoSaveTextField(String key, @NotNull JsonPrimitive value) {
+        JTextField input = new JTextField(value.getAsString());
+        input.addActionListener((e) -> {
+            JTextField source = (JTextField) e.getSource();
+            // save value
+            config.setValue(key, source.getText());
+        });
+        input.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                JTextField source = (JTextField) e.getSource();
+                // save value
+                config.setValue(key, source.getText());
+            }
+        });
+        return input;
     }
 
     /**
