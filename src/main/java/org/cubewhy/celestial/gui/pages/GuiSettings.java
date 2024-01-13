@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog;
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout;
 import org.cubewhy.celestial.utils.GuiUtils;
 import org.cubewhy.celestial.utils.SystemUtils;
@@ -98,6 +99,11 @@ public class GuiSettings extends JScrollPane {
         p3.add(new JLabel(f.getString("gui.settings.jvm.wrapper")));
         JTextField wrapperInput = getAutoSaveTextField("wrapper", config.getValue("wrapper").getAsJsonPrimitive(), config.getConfig());
         p3.add(wrapperInput);
+        JButton btnSetVMArgs = new JButton(f.getString("gui.settings.jvm.args"));
+        btnSetVMArgs.addActionListener((e) -> {
+            new ArgsConfigDialog("vm-args", config.getConfig()).setVisible(true);
+        });
+        panelVM.add(btnSetVMArgs);
         panelVM.add(p3);
 
         claim("jre", panelVM);
