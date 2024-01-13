@@ -98,20 +98,29 @@ public class GuiSettings extends JScrollPane {
         claim("vm-args");
         claim("wrapper");
 
+        claim("javaagents"); // config in GuiAddonManager
+
         JPanel panelUnclaimed = new JPanel();
         panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         panelUnclaimed.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
-        addUnclaimed(panelUnclaimed);
+        addUnclaimed(panelUnclaimed, config.getConfig().entrySet());
         panel.add(panelUnclaimed);
     }
 
-    private void addUnclaimed(JPanel basePanel) {
-        for (Map.Entry<String, JsonElement> s : config.getConfig().entrySet()) {
+    private void addUnclaimed(JPanel basePanel, Set<Map.Entry<String, JsonElement>> entry) {
+        for (Map.Entry<String, JsonElement> s : entry) {
             if (!claimed.contains(s.getKey())) {
                 // unclaimed
                 if (s.getValue().isJsonPrimitive()) {
                     JPanel p = getSimplePanel(s.getKey(), s.getValue().getAsJsonPrimitive());
                     basePanel.add(p);
+                }
+                if (s.getValue().isJsonObject()) {
+                    JPanel subPanel = new JPanel();
+                    subPanel.setBorder(new TitledBorder(null, s.getKey(), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+                    subPanel.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
+                    basePanel.add(subPanel);
+                    addUnclaimed(subPanel, s.getValue().getAsJsonObject().entrySet());
                 }
             }
         }

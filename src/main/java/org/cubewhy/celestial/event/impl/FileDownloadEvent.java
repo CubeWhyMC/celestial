@@ -17,7 +17,7 @@ public class FileDownloadEvent extends Event {
 
     public enum Type {
         START,
-        SUCCESS, FALURE;
+        SUCCESS, FAILURE;
     }
 
     public FileDownloadEvent(File file, Type type) {
