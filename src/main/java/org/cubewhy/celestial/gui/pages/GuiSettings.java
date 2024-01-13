@@ -120,20 +120,26 @@ public class GuiSettings extends JScrollPane {
         panelLauncher.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
         panelLauncher.setBorder(new TitledBorder(null, f.getString("gui.settings.launcher"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         panelLauncher.add(getAutoSaveCheckBox(config.getConfig(), "data-sharing", f.getString("gui.settings.launcher.data-sharing")));
-
+        // theme
         JPanel p4 = new JPanel();
         p4.add(new JLabel(f.getString("gui.settings.launcher.theme")));
         p4.add(getAutoSaveComboBox(config.getConfig(), "theme", List.of(new String[]{"dark", "light"})));
         panelLauncher.add(p4);
-
+        // language
         JPanel p5 = new JPanel();
         p5.add(new JLabel(f.getString("gui.settings.launcher.language")));
         p5.add(getAutoSaveComboBox(config.getConfig(), "language", List.of(new String[]{"zh", "en"})));
         panelLauncher.add(p5);
+        // max threads
+        JPanel p6 = new JPanel();
+        p6.add(new JLabel(f.getString("gui.settings.launcher.max-threads")));
+        p6.add(getAutoSaveSpinner(config.getConfig(), "max-threads", 0, 256));
+        panelLauncher.add(p6);
 
         claim("data-sharing", panelLauncher);
         claim("theme");
         claim("language");
+        claim("max-threads");
 
         JPanel panelUnclaimed = new JPanel();
         panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
@@ -191,21 +197,28 @@ public class GuiSettings extends JScrollPane {
             panel.add(input);
         } else if (value.isNumber()) {
             panel.add(new JLabel(key));
-            JSpinner spinner = new JSpinner(new SpinnerNumberModel(value.getAsDouble(), Double.MIN_VALUE, Double.MAX_VALUE, 0.01));
-            spinner.setAutoscrolls(true);
-            JComponent editor = spinner.getEditor();
-            JFormattedTextField textField = ((JSpinner.DefaultEditor) editor).getTextField();
-            spinner.addChangeListener((e) -> {
-                JSpinner source = (JSpinner) e.getSource();
-                Number v = (Number) source.getValue();
-                json.addProperty(key, v);
-                config.save();
-            });
-            textField.setColumns(20);
+            JSpinner spinner = getAutoSaveSpinner(json, key, Double.MIN_VALUE, Double.MAX_VALUE);
             panel.add(spinner);
 
         }
         return panel;
+    }
+
+    @NotNull
+    private static JSpinner getAutoSaveSpinner(@NotNull JsonObject json, String key, double min, double max) {
+        JsonPrimitive value = json.getAsJsonPrimitive(key);
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel(value.getAsDouble(), min, max, 0.01));
+        spinner.setAutoscrolls(true);
+        JComponent editor = spinner.getEditor();
+        JFormattedTextField textField = ((JSpinner.DefaultEditor) editor).getTextField();
+        spinner.addChangeListener((e) -> {
+            JSpinner source = (JSpinner) e.getSource();
+            Number v = (Number) source.getValue();
+            json.addProperty(key, v);
+            config.save();
+        });
+        textField.setColumns(20);
+        return spinner;
     }
 
     @NotNull
