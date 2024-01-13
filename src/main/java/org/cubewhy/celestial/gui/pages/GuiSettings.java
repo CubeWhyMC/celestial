@@ -116,30 +116,39 @@ public class GuiSettings extends JScrollPane {
         claim("game"); // config in GuiVersionSelect
         claim("javaagents"); // config in GuiAddonManager
 
+        // config of the launcher
         JPanel panelLauncher = new JPanel();
         panelLauncher.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
         panelLauncher.setBorder(new TitledBorder(null, f.getString("gui.settings.launcher"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+        // api
+        JPanel p4 = new JPanel();
+        p4.add(new JLabel(f.getString("gui.settings.launcher.api")));
+        p4.add(getAutoSaveTextField("api", config.getConfig()));
+
+        panelLauncher.add(p4);
+        // data sharing
         panelLauncher.add(getAutoSaveCheckBox(config.getConfig(), "data-sharing", f.getString("gui.settings.launcher.data-sharing")));
         // theme
-        JPanel p4 = new JPanel();
-        p4.add(new JLabel(f.getString("gui.settings.launcher.theme")));
-        p4.add(getAutoSaveComboBox(config.getConfig(), "theme", List.of(new String[]{"dark", "light"})));
-        panelLauncher.add(p4);
-        // language
         JPanel p5 = new JPanel();
-        p5.add(new JLabel(f.getString("gui.settings.launcher.language")));
-        p5.add(getAutoSaveComboBox(config.getConfig(), "language", List.of(new String[]{"zh", "en"})));
+        p5.add(new JLabel(f.getString("gui.settings.launcher.theme")));
+        p5.add(getAutoSaveComboBox(config.getConfig(), "theme", List.of(new String[]{"dark", "light"})));
         panelLauncher.add(p5);
-        // max threads
+        // language
         JPanel p6 = new JPanel();
-        p6.add(new JLabel(f.getString("gui.settings.launcher.max-threads")));
-        p6.add(getAutoSaveSpinner(config.getConfig(), "max-threads", 1, 256));
+        p6.add(new JLabel(f.getString("gui.settings.launcher.language")));
+        p6.add(getAutoSaveComboBox(config.getConfig(), "language", List.of(new String[]{"zh", "en"})));
         panelLauncher.add(p6);
+        // max threads
+        JPanel p7 = new JPanel();
+        p7.add(new JLabel(f.getString("gui.settings.launcher.max-threads")));
+        p7.add(getAutoSaveSpinner(config.getConfig(), "max-threads", 1, 256));
+        panelLauncher.add(p7);
 
         claim("data-sharing", panelLauncher);
         claim("theme");
         claim("language");
         claim("max-threads");
+        claim("api");
 
         JPanel panelUnclaimed = new JPanel();
         panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
