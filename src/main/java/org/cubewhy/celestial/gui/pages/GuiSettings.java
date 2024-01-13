@@ -126,8 +126,14 @@ public class GuiSettings extends JScrollPane {
         p4.add(getAutoSaveComboBox(config.getConfig(), "theme", List.of(new String[]{"dark", "light"})));
         panelLauncher.add(p4);
 
+        JPanel p5 = new JPanel();
+        p5.add(new JLabel(f.getString("gui.settings.launcher.language")));
+        p5.add(getAutoSaveComboBox(config.getConfig(), "language", List.of(new String[]{"zh", "en"})));
+        panelLauncher.add(p5);
+
         claim("data-sharing", panelLauncher);
         claim("theme");
+        claim("language");
 
         JPanel panelUnclaimed = new JPanel();
         panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
