@@ -98,6 +98,7 @@ public class GuiSettings extends JScrollPane {
         claim("vm-args");
         claim("wrapper");
 
+        claim("game"); // config in GuiVersionSelect
         claim("javaagents"); // config in GuiAddonManager
 
         JPanel panelUnclaimed = new JPanel();
