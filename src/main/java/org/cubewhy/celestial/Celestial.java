@@ -347,17 +347,28 @@ public class Celestial {
             args.add(wrapper);
         }
         if (customJre.isEmpty()) {
-            args.add("\"" + System.getProperty("java.home") + "/bin/java\""); // Note: Java may not be found through this method on some non-Windows computers. You can manually specify the Java executable file.
+            File java = SystemUtils.getCurrentJavaExec();
+            if (!java.exists()) {
+                log.error("Java executable not found, please specify it in " + config.file);
+            }
+            log.info("Use default jre: " + java);
+            args.add("\"" + java.getPath() + "\""); // Note: Java may not be found through this method on some non-Windows computers. You can manually specify the Java executable file.
         } else {
+            log.info("Use custom jre: " + customJre);
             args.add("\"" + customJre + "\"");
         }
         // === default vm args ===
         long ram = config.getValue("ram").getAsLong();
+        log.info("RAM: " + ram + "MB");
         args.add("-Xms" + ram + "m");
         args.add("-Xmx" + ram + "m");
         args.addAll(LauncherData.getDefaultJvmArgs(json, installation));
         // === javaagents ===
         List<JavaAgent> javaAgents = JavaAgent.findAll();
+        int size = javaAgents.size();
+        if (size != 0) {
+            log.info(String.format("Found %s javaagent%s (Except loaders)", size, (size == 1) ? "" : "s"));
+        }
         // ===     loaders    ===
         JsonObject weave = config.getValue("addon").getAsJsonObject().getAsJsonObject("weave");
         JsonObject cn = config.getValue("addon").getAsJsonObject().getAsJsonObject("lunarcn");
@@ -369,6 +380,7 @@ public class Celestial {
         if (cn.get("enable").getAsBoolean()) {
             String file = cn.get("installation").getAsString();
             log.info("LunarCN enabled! " + file);
+            log.warn("LunarCN loader is deprecated! Please migrate to weave!");
             javaAgents.add(new JavaAgent(file));
         }
         for (JavaAgent agent : javaAgents) {

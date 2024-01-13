@@ -63,8 +63,8 @@ public class GuiLauncher extends JFrame {
         this.add(statusBar, BorderLayout.SOUTH);
         // menu
         Panel menu = new Panel();
-        JButton btnPrevious = new JButton("previous");
-        JButton btnNext = new JButton("next");
+        JButton btnPrevious = new JButton(f.getString("gui.previous"));
+        JButton btnNext = new JButton(f.getString("gui.next"));
         // For developers: It is not recommended to remove the Donate button in Celestial Launcher's derivative versions
         // 不建议在衍生版本中删除赞助按钮
         // Celestial 是免费开源的启动器, 请赞助来帮助我们走得更远 (收入会全部用于开发)
