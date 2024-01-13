@@ -10,11 +10,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
-import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-
 import java.awt.*;
 
 import static org.cubewhy.celestial.Celestial.config;
@@ -31,7 +29,7 @@ public class ArgsConfigDialog extends JDialog {
         this.key = key;
         this.json = json;
         this.array = json.getAsJsonArray(key);
-        this.setLayout(new GridLayout(2, 1));
+        this.setLayout(new BorderLayout());
         this.initGui();
         this.setSize(600, 600);
         this.setModalityType(ModalityType.APPLICATION_MODAL);
@@ -52,9 +50,9 @@ public class ArgsConfigDialog extends JDialog {
                 model.addElement(element.getAsString());
             }
         }
-        this.add(args);
+        this.add(args, BorderLayout.CENTER);
         JPanel panelButtons = new JPanel();
-        panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.X_AXIS));
+        panelButtons.setLayout(new FlowLayout());
         // btnAdd
         JButton btnAdd = new JButton(f.getString("gui.settings.args.add"));
         btnAdd.addActionListener((e) -> {
@@ -75,7 +73,7 @@ public class ArgsConfigDialog extends JDialog {
         });
         panelButtons.add(btnAdd);
         panelButtons.add(btnRemove);
-        this.add(panelButtons);
+        this.add(panelButtons, BorderLayout.SOUTH);
     }
 
     private void addArg(String arg, @NotNull DefaultListModel<String> model) {
