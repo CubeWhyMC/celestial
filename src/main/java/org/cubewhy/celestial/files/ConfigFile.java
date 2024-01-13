@@ -31,7 +31,7 @@ public class ConfigFile {
         return this.save();
     }
 
-    public ConfigFile setValue(String key, int value) {
+    public ConfigFile setValue(String key, Number value) {
         this.config.addProperty(key, value);
         return this.save();
     }

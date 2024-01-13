@@ -131,6 +131,7 @@ public class GuiSettings extends JScrollPane {
         JPanel panel = new JPanel();
         if (value.isBoolean()) {
             JCheckBox cb = new JCheckBox(key);
+            cb.setSelected(value.getAsBoolean());
             cb.addActionListener((e) -> {
                 JCheckBox source = (JCheckBox) e.getSource();
                 config.setValue(key, source.isSelected());
@@ -146,6 +147,11 @@ public class GuiSettings extends JScrollPane {
             spinner.setAutoscrolls(true);
             JComponent editor = spinner.getEditor();
             JFormattedTextField textField = ((JSpinner.DefaultEditor) editor).getTextField();
+            spinner.addChangeListener((e) -> {
+                JSpinner source = (JSpinner) e.getSource();
+                Number v = (Number) source.getValue();
+                config.setValue(key, v);
+            });
             textField.setColumns(20);
             panel.add(spinner);
 
