@@ -1,4 +1,5 @@
 # Celestial
+[中文介绍](./README_zh.md)
 
 > A 3rd party Minecraft Launcher
 
