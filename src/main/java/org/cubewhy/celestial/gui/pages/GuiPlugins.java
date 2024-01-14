@@ -82,7 +82,7 @@ public class GuiPlugins extends JPanel {
      *
      * @param panel the panel
      * @param addon the addon
-     * @
+     * @param folder target folder
      * */
     private void addPlugin(JPanel panel, @NotNull RemoteAddon addon, File folder) {
         JPanel p = new JPanel();
