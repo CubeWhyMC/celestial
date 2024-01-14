@@ -99,7 +99,7 @@ public class GuiSettings extends JScrollPane {
 
         JPanel p3 = new JPanel();
         p3.add(new JLabel(f.getString("gui.settings.jvm.wrapper")));
-        JTextField wrapperInput = getAutoSaveTextField("wrapper", config.getConfig());
+        JTextField wrapperInput = getAutoSaveTextField(config.getConfig(), "wrapper");
         p3.add(wrapperInput);
         JButton btnSetVMArgs = new JButton(f.getString("gui.settings.jvm.args"));
         btnSetVMArgs.addActionListener((e) -> {
@@ -123,7 +123,7 @@ public class GuiSettings extends JScrollPane {
         // api
         JPanel p4 = new JPanel();
         p4.add(new JLabel(f.getString("gui.settings.launcher.api")));
-        p4.add(getAutoSaveTextField("api", config.getConfig()));
+        p4.add(getAutoSaveTextField(config.getConfig(), "api"));
 
         panelLauncher.add(p4);
         // data sharing
@@ -256,11 +256,41 @@ public class GuiSettings extends JScrollPane {
 
         claim("addon", panelAddon);
 
-        JPanel panelUnclaimed = new JPanel();
-        panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
-        panelUnclaimed.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
-        addUnclaimed(panelUnclaimed, config.getConfig());
-        panel.add(panelUnclaimed);
+        // game settings
+        JPanel panelGame = new JPanel();
+        panelGame.setBorder(new TitledBorder(null, f.getString("gui.settings.game"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+        panelGame.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
+
+        // program args
+        JPanel p13 = new JPanel();
+        JButton btnProgramArgs = new JButton(f.getString("gui.settings.game.args"));
+        btnProgramArgs.addActionListener((e) -> new ArgsConfigDialog("program-args", config.getConfig()).setVisible(true));
+        p13.add(btnProgramArgs);
+        panelGame.add(p13);
+        // resize
+        JPanel p14 = new JPanel();
+        p14.setBorder(new TitledBorder(null, f.getString("gui.settings.game.resize"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+        p14.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
+        JPanel p15 = new JPanel();
+        p15.add(new JLabel(f.getString("gui.settings.game.resize.width")));
+        p15.add(getAutoSaveTextField(config.getValue("resize").getAsJsonObject(), "width"));
+        p14.add(p15);
+        JPanel p16 = new JPanel();
+        p16.add(new JLabel(f.getString("gui.settings.game.resize.height")));
+        p16.add(getAutoSaveTextField(config.getValue("resize").getAsJsonObject(), "height"));
+        p14.add(p16);
+        panelGame.add(p14);
+
+        claim("program-args", panelGame);
+        claim("resize");
+
+        if (config.getConfig().keySet().size() != claimed.size()) {
+            JPanel panelUnclaimed = new JPanel();
+            panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+            panelUnclaimed.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
+            addUnclaimed(panelUnclaimed, config.getConfig());
+            panel.add(panelUnclaimed);
+        }
     }
 
     private void setModLoaderInstallation(String key, @NotNull File file) {
@@ -365,7 +395,7 @@ public class GuiSettings extends JScrollPane {
             panel.add(cb);
         } else if (value.isString()) {
             panel.add(new JLabel(key));
-            JTextField input = getAutoSaveTextField(key, json);
+            JTextField input = getAutoSaveTextField(json, key);
             panel.add(input);
         } else if (value.isNumber()) {
             panel.add(new JLabel(key));
@@ -407,7 +437,7 @@ public class GuiSettings extends JScrollPane {
     }
 
     @NotNull
-    private static JTextField getAutoSaveTextField(String key, @NotNull JsonObject json) {
+    private static JTextField getAutoSaveTextField(@NotNull JsonObject json, String key) {
         JsonPrimitive value = json.getAsJsonPrimitive(key);
         JTextField input = new JTextField(value.getAsString());
         input.addActionListener((e) -> {
