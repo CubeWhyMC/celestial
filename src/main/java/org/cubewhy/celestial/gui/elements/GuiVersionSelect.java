@@ -152,7 +152,7 @@ public class GuiVersionSelect extends JPanel {
         }
     }
 
-    private void runGame(CreateProcess cp, Runnable run) throws IOException {
+    private void runGame(CreateProcess cp, Runnable run) throws RuntimeException{
         final Process[] p = new Process[1]; // create process
 
         Thread threadGetId = new Thread(() -> {
@@ -203,13 +203,7 @@ public class GuiVersionSelect extends JPanel {
                             if (!map1.isEmpty()) {
                                 String url = map1.get("url");
                                 String id = map1.get("id");
-                                JOptionPane.showMessageDialog(this, String.format("""
-                                        Your client was crashed:
-                                        Crash id: %s
-                                        View your crash report at %s
-                                        View the log of the latest launch: %s
-                                                                                
-                                        *%s*""", id, url, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                                JOptionPane.showMessageDialog(this, String.format(f.getString("gui.message.clientCrash1"), id, url, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
                             } else {
                                 throw new RuntimeException("Failed to upload crash report");
                             }
@@ -217,11 +211,7 @@ public class GuiVersionSelect extends JPanel {
                             throw new NotActiveException();
                         }
                     } catch (Exception e) {
-                        JOptionPane.showMessageDialog(this, String.format("""
-                                Your client was crashed:
-                                View the log of the latest launch: %s
-                                *%s*
-                                """, gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, String.format(f.getString("gui.message.clientCrash2"), gameLogFile.getPath(), f.getString("gui.version.crash.tip")), "Game crashed!", JOptionPane.ERROR_MESSAGE);
                         if (!(e instanceof NotActiveException)) {
                             throw new RuntimeException(e);
                         }
