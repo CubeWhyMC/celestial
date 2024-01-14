@@ -7,8 +7,6 @@
 package org.cubewhy.celestial.game;
 
 import co.gongzh.procbridge.Server;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.event.impl.AuthEvent;
@@ -19,9 +17,7 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 
 @Slf4j
 public class AuthServer {
@@ -29,6 +25,7 @@ public class AuthServer {
         try {
             return method != null ? handleRequest(method, args) : null;
         } catch (Exception e) {
+
             log.info(TextUtils.dumpTrace(e));
         }
         return null;
