@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static org.cubewhy.celestial.Celestial.config;
+import static org.cubewhy.celestial.Celestial.f;
+import static org.cubewhy.celestial.gui.GuiLauncher.statusBar;
 
 @Getter
 @Slf4j
@@ -57,6 +59,7 @@ public class LunarCNMod extends BaseAddon {
 
     public static boolean checkUpdate() throws MalformedURLException {
         log.info("Updating LunarCN Loader...");
+        statusBar.setText(f.getString("gui.addon.mods.cn.warn"));
         return AddonUtils.downloadLoader("CubeWhyMC/LunarClient-CN", new File(config.getValue("addon").getAsJsonObject().getAsJsonObject("lunarcn").get("installation").getAsString()));
     }
 }
