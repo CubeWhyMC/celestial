@@ -226,33 +226,20 @@ public class GuiSettings extends JScrollPane {
         // installation (loader)
         JPanel p11 = new JPanel();
         // lunarcn
-        JButton btnSelectLunarCNInstallation = new JButton(LunarCNMod.getInstallation().getPath());
-        btnSelectLunarCNInstallation.addActionListener((e) -> {
-            File file = GuiUtils.saveFile(new FileNameExtensionFilter("LunarCN Loader", "jar"));
-            if (file == null) {
-                return;
-            }
-            JButton source = (JButton) e.getSource();
-            source.setText(file.getPath());
-            setModLoaderInstallation("lunarcn", file);
-        });
+        JButton btnSelectLunarCNInstallation = getSelectInstallationButton(LunarCNMod.getInstallation(), "LunarCN Loader", "lunarcn");
         p11.add(new JLabel(f.getString("gui.settings.addon.loader.cn.installation")));
         p11.add(btnSelectLunarCNInstallation);
         panelAddon.add(p11);
         JPanel p12 = new JPanel();
-        JButton btnSelectWeaveInstallation = new JButton(WeaveMod.getInstallation().getPath());
-        btnSelectWeaveInstallation.addActionListener((e) -> {
-            File file = GuiUtils.saveFile(new FileNameExtensionFilter("Weave Loader", "jar"));
-            if (file == null) {
-                return;
-            }
-            JButton source = (JButton) e.getSource();
-            source.setText(file.getPath());
-            setModLoaderInstallation("weave", file);
-        });
+        JButton btnSelectWeaveInstallation = getSelectInstallationButton(WeaveMod.getInstallation(), "Weave Loader", "weave");
         p12.add(new JLabel(f.getString("gui.settings.addon.loader.weave.installation")));
         p12.add(btnSelectWeaveInstallation);
         panelAddon.add(p12);
+
+        JPanel p13 = new JPanel();
+        p13.add(getAutoSaveCheckBox(config.getConfig().getAsJsonObject("addon").getAsJsonObject("weave"), "check-update", f.getString("gui.settings.addon.loader.weave.check-update")));
+        p13.add(getAutoSaveCheckBox(config.getConfig().getAsJsonObject("addon").getAsJsonObject("lunarcn"), "check-update", f.getString("gui.settings.addon.loader.cn.check-update")));
+        panelAddon.add(p13);
 
         claim("addon", panelAddon);
 
@@ -262,24 +249,24 @@ public class GuiSettings extends JScrollPane {
         panelGame.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
 
         // program args
-        JPanel p13 = new JPanel();
+        JPanel p14 = new JPanel();
         JButton btnProgramArgs = new JButton(f.getString("gui.settings.game.args"));
         btnProgramArgs.addActionListener((e) -> new ArgsConfigDialog("program-args", config.getConfig()).setVisible(true));
-        p13.add(btnProgramArgs);
-        panelGame.add(p13);
-        // resize
-        JPanel p14 = new JPanel();
-        p14.setBorder(new TitledBorder(null, f.getString("gui.settings.game.resize"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
-        p14.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
-        JPanel p15 = new JPanel();
-        p15.add(new JLabel(f.getString("gui.settings.game.resize.width")));
-        p15.add(getAutoSaveTextField(config.getValue("resize").getAsJsonObject(), "width"));
-        p14.add(p15);
-        JPanel p16 = new JPanel();
-        p16.add(new JLabel(f.getString("gui.settings.game.resize.height")));
-        p16.add(getAutoSaveTextField(config.getValue("resize").getAsJsonObject(), "height"));
-        p14.add(p16);
+        p14.add(btnProgramArgs);
         panelGame.add(p14);
+        // resize
+        JPanel p15 = new JPanel();
+        p15.setBorder(new TitledBorder(null, f.getString("gui.settings.game.resize"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+        p15.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
+        JPanel p16 = new JPanel();
+        p16.add(new JLabel(f.getString("gui.settings.game.resize.width")));
+        p16.add(getAutoSaveTextField(config.getValue("resize").getAsJsonObject(), "width"));
+        p15.add(p16);
+        JPanel p17 = new JPanel();
+        p17.add(new JLabel(f.getString("gui.settings.game.resize.height")));
+        p17.add(getAutoSaveTextField(config.getValue("resize").getAsJsonObject(), "height"));
+        p15.add(p17);
+        panelGame.add(p15);
 
         claim("program-args", panelGame);
         claim("resize");
@@ -291,6 +278,21 @@ public class GuiSettings extends JScrollPane {
             addUnclaimed(panelUnclaimed, config.getConfig());
             panel.add(panelUnclaimed);
         }
+    }
+
+    @NotNull
+    private JButton getSelectInstallationButton(File Installation, String name, String type) {
+        JButton btnSelectLunarCNInstallation = new JButton(Installation.getPath());
+        btnSelectLunarCNInstallation.addActionListener((e) -> {
+            File file = GuiUtils.saveFile(new FileNameExtensionFilter(name, "jar"));
+            if (file == null) {
+                return;
+            }
+            JButton source = (JButton) e.getSource();
+            source.setText(file.getPath());
+            setModLoaderInstallation(type, file);
+        });
+        return btnSelectLunarCNInstallation;
     }
 
     private void setModLoaderInstallation(String key, @NotNull File file) {
