@@ -53,6 +53,11 @@ public class GuiNews extends JScrollPane {
                     log.warn("Failed to cache " + imageURL);
                     String trace = TextUtils.dumpTrace(e);
                     log.error(trace);
+                } catch (NullPointerException e) {
+                    // new API
+                    panel.add(new JLabel(f.getString("gui.news.official")));
+                    log.warn("Failed to load news " + imageURL);
+                    log.error(TextUtils.dumpTrace(e));
                 }
             }
         }

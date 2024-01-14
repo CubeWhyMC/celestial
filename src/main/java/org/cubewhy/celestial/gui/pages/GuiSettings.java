@@ -138,6 +138,8 @@ public class GuiSettings extends JScrollPane {
             }
         }
         p5.add(getAutoSaveComboBox(config.getConfig(), "theme", themes));
+        JButton btnAddTheme = new JButton(f.getString("gui.settings.launcher.theme.add"));
+        p5.add(btnAddTheme);
         panelLauncher.add(p5);
         // language
         JPanel p6 = new JPanel();
