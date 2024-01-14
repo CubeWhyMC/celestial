@@ -9,6 +9,7 @@ import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout;
 import org.cubewhy.celestial.utils.GuiUtils;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -194,11 +195,88 @@ public class GuiSettings extends JScrollPane {
         claim("installation-dir");
         claim("game-dir");
 
+        // addon
+        JPanel panelAddon = new JPanel();
+        panelAddon.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
+        panelAddon.setBorder(new TitledBorder(null, f.getString("gui.settings.addon"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+        JPanel p10 = new JPanel();
+        ButtonGroup btnGroup = new ButtonGroup();
+        JRadioButton btnLoaderUnset = new JRadioButton(f.getString("gui.settings.addon.loader.unset"), isLoaderSelected(null));
+        btnGroup.add(btnLoaderUnset);
+        JRadioButton btnWeave = new JRadioButton("Weave", isLoaderSelected("weave"));
+        btnGroup.add(btnWeave);
+        JRadioButton btnLunarCN = new JRadioButton("LunarCN", isLoaderSelected("cn"));
+        btnGroup.add(btnLunarCN);
+        btnLoaderUnset.addActionListener((e) -> {
+            // make weave & cn = false
+            toggleLoader(null);
+        });
+        btnWeave.addActionListener((e) -> {
+            toggleLoader("weave");
+        });
+        btnLunarCN.addActionListener((e) -> {
+            toggleLoader("cn");
+        });
+        p10.add(btnLoaderUnset);
+        p10.add(btnWeave);
+        p10.add(btnLunarCN);
+        panelAddon.add(p10);
+
+        claim("addon", panelAddon);
+
         JPanel panelUnclaimed = new JPanel();
         panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         panelUnclaimed.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
         addUnclaimed(panelUnclaimed, config.getConfig());
         panel.add(panelUnclaimed);
+    }
+
+    /**
+     * Toggle loader
+     *
+     * @param type null, cn, weave
+     */
+    private void toggleLoader(@Nullable String type) {
+        boolean b1 = false; // weave
+        boolean b2 = false; // lccn
+        if (type != null) {
+            if (type.equals("cn")) {
+                b2 = true;
+            } else if (type.equals("weave")) {
+                b1 = true;
+            }
+        }
+        JsonObject addon = config.getValue("addon").getAsJsonObject();
+        JsonObject weave = addon.get("weave").getAsJsonObject();
+        JsonObject cn = addon.get("lunarcn").getAsJsonObject();
+        weave.addProperty("enable", b1);
+        cn.addProperty("enable", b2);
+        config.save();
+    }
+
+    private boolean isLoaderSelected(String type) {
+        JsonObject addon = config.getValue("addon").getAsJsonObject();
+        JsonObject weave = addon.get("weave").getAsJsonObject();
+        JsonObject cn = addon.get("lunarcn").getAsJsonObject();
+        boolean stateWeave = weave.get("enable").getAsBoolean();
+        boolean stateCN = cn.get("enable").getAsBoolean();
+        if (stateWeave && stateCN && type != null) {
+            // correct it
+
+            log.warn("Weave cannot load with LunarCN, auto corrected");
+            weave.addProperty("enable", false);
+            cn.addProperty("enable", false);
+            config.save();
+            return isLoaderSelected(null);
+        }
+        if (type == null) {
+            return !(stateWeave || stateCN);
+        } else if (type.equals("weave")) {
+            return stateWeave;
+        } else if (type.equals("cn")) {
+            return stateCN;
+        }
+        return false;
     }
 
     private void addUnclaimed(JPanel basePanel, @NotNull JsonObject json) {
