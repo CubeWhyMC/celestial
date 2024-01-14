@@ -31,7 +31,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
 
-    include 'org.slf4j:slf4j-api:2.0.10'
+    include 'org.slf4j:slf4j-api:2.0.11'
     include 'org.slf4j:slf4j-log4j12:2.0.10'
     include 'org.apache.logging.log4j:log4j-api:2.22.1'
     include 'org.apache.logging.log4j:log4j-core:2.22.1'
