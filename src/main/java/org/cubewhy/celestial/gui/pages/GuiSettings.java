@@ -151,12 +151,48 @@ public class GuiSettings extends JScrollPane {
         p7.add(new JLabel(f.getString("gui.settings.launcher.max-threads")));
         p7.add(getAutoSaveSpinner(config.getConfig(), "max-threads", 1, 256));
         panelLauncher.add(p7);
+        // installation-dir
+        JPanel p8 = new JPanel();
+        p8.add(new JLabel(f.getString("gui.settings.launcher.installation")));
+        JButton btnSelectInstallation = new JButton(config.getValue("installation-dir").getAsString());
+        btnSelectInstallation.addActionListener((e) -> {
+            File file = GuiUtils.chooseFolder();
+            JButton source = (JButton) e.getSource();
+            if (file == null) {
+                return;
+            }
+            config.setValue("installation-dir", file.getPath());
+            log.info("Set installation-dir to " + file);
+            source.setText(file.getPath());
+            statusBar.setText(String.format(f.getString("gui.settings.installation.success"), file));
+        });
+        p8.add(btnSelectInstallation);
+        panelLauncher.add(p8);
+        // game-dir
+        JPanel p9 = new JPanel();
+        p9.add(new JLabel(f.getString("gui.settings.launcher.game")));
+        JButton btnSelectGameDir = new JButton(config.getValue("game-dir").getAsString());
+        btnSelectGameDir.addActionListener((e) -> {
+            File file = GuiUtils.chooseFolder();
+            JButton source = (JButton) e.getSource();
+            if (file == null) {
+                return;
+            }
+            config.setValue("game-dir", file.getPath());
+            log.info("Set game-dir to " + file);
+            source.setText(file.getPath());
+            statusBar.setText(String.format(f.getString("gui.settings.game-dir.success"), file));
+        });
+        p9.add(btnSelectGameDir);
+        panelLauncher.add(p9);
 
         claim("data-sharing", panelLauncher);
         claim("theme");
         claim("language");
         claim("max-threads");
         claim("api");
+        claim("installation-dir");
+        claim("game-dir");
 
         JPanel panelUnclaimed = new JPanel();
         panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
@@ -181,7 +217,11 @@ public class GuiSettings extends JScrollPane {
                     addUnclaimed(subPanel, s.getValue().getAsJsonObject());
                 }
                 if (s.getValue().isJsonArray()) {
-                    // TODO valueList
+                    JButton btnShowList = new JButton(s.getKey());
+                    btnShowList.addActionListener((e) -> {
+                        new ArgsConfigDialog(s.getKey(), json).setVisible(true);
+                    });
+                    basePanel.add(btnShowList);
                 }
             }
         }
