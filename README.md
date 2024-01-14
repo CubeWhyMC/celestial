@@ -1,5 +1,6 @@
 # Celestial
-[中文介绍](./README_zh.md)
+
+[Chinese/中文](./README_zh.md)
 
 > A 3rd party Minecraft Launcher
 
@@ -20,12 +21,24 @@
 
 ## Get celestial
 
+## Releases
+
 Download at [releases](https://github.com/cubewhy/celestial/releases)
 
+## Actions
+
+> Warning: The version in Action usually has many problems and can even not be opened. If you encounter problems, please
+> open an issue.
+
+Get it in [Actions](https://github.com/CubeWhyMC/celestial/actions)
+
+## Docs
+
+> Looking for wiki? [Click here](https://github.com/CubeWhyMC/celestial/wiki)
+
+[here](https://mc.lunarclient.top/docs)
 
 ## Donate
-
-> There **might** some ads in the Launcher, but you are allowed to turn them off (permanent)
 
 Donate at [lunarclient.top](https://www.lunarclient.top/donate) (CNY only/仅支持中国元)
 

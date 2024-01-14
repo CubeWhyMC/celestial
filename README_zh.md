@@ -1,5 +1,6 @@
 # Celestial
-[English](./README.md)
+
+[英文/English](./README.md)
 
 > 一个第三方的lunarclient启动器
 
@@ -7,43 +8,37 @@
 
 1. 全部开源 (GPLv3)
 2. 不使用electron
-3. 轻量， 高性能 
-4. 不需要安装
-5. 开箱即用
-6. 浏览器登录微软账号支持
-7. 跨平台 (*实验*)
-8. 自定义API地址 (仅[LunarCN API](https://github.com/CubeWhyMC/website))
-9. 多版本，单java环境
-10. 支持javaagent (*实验*)
-11. 支持LunarCN (*实验*)
-12. 支持Weave (*实验*)
+3. 轻量， 高性能
+4. 开箱即用
+5. 浏览器登录微软账号支持
+6. 跨平台 (*实验*)
+7. 自定义API地址 (仅[LunarCN API](https://github.com/CubeWhyMC/website))
+8. 多版本,一个Java
+9. 支持javaagent (*实验*)
+10. 支持LunarCN (*实验*)
+11. 支持Weave (*实验*)
 
 ## 获取Celestial
+
 ### Release
+
 在[releases](https://github.com/cubewhy/celestial/releases)下载  
-### 自行构建
-1. 克隆仓库
-```shell
-git clone https://github.com/CubeWhyMC/celestial.git celestial
-cd ./celestial
-```
-2. 设置gradle
-```shell
-./gradlew clean
-```
-3. Build
-```shell
-./gradlew build
-```
-在build/libs目录里寻找构建结果
 
+## Actions
 
+> 警告: Action中的版本通常有很多问题,甚至打不开. 若遇到问题请开issue
+
+在[Actions]中获取(https://github.com/CubeWhyMC/celestial/actions)
 
 ## 捐赠
 
-> 启动器中可能会含有一些广告，但你可以将他们关闭（永久）。
-
 在[lunarclient.top](https://www.lunarclient.top/donate)中捐赠 (仅支持中国元)
+
+## 文档
+
+> 在找Wiki? [点这里](https://github.com/CubeWhyMC/celestial/wiki)
+
+[点击此处](https://mc.lunarclient.top/docs)
 
 ## 翻译
 
