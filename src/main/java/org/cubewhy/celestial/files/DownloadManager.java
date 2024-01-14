@@ -82,7 +82,7 @@ public final class DownloadManager {
         log.info("Downloading " + url + " to " + file);
         try (Response response = RequestUtils.get(url).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
-                new FileDownloadEvent(file, FileDownloadEvent.Type.FALURE).call();
+                new FileDownloadEvent(file, FileDownloadEvent.Type.FAILURE).call();
                 return false;
             }
             byte[] bytes = response.body().bytes();
@@ -92,7 +92,7 @@ public final class DownloadManager {
         if (sha1 != null) {
             boolean result = SecureUtil.sha1(file).equals(sha1);
             if (!result) {
-                new FileDownloadEvent(file, FileDownloadEvent.Type.FALURE).call();
+                new FileDownloadEvent(file, FileDownloadEvent.Type.FAILURE).call();
             }
             return result;
         }
