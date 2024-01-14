@@ -62,8 +62,12 @@ public class GuiPlugins extends JPanel {
         panelWeave.setLayout(new VerticalFlowLayout());
         JPanel panelAgents = new JPanel();
         panelAgents.setLayout(new VerticalFlowLayout());
-        this.tab.addTab("Weave", new JScrollPane(panelWeave, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
-        this.tab.addTab("Agents", new JScrollPane(panelAgents, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+        JScrollPane sp1 = new JScrollPane(panelWeave, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp1.getVerticalScrollBar().setUnitIncrement(30);
+        JScrollPane sp2 = new JScrollPane(panelAgents, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        sp2.getVerticalScrollBar().setUnitIncrement(30);
+        this.tab.addTab("Weave", sp1);
+        this.tab.addTab("Agents", sp2);
         for (RemoteAddon addon : addons) {
             if (addon.getCategory() == RemoteAddon.Category.WEAVE) {
                 addPlugin(panelWeave, addon, WeaveMod.modFolder);
