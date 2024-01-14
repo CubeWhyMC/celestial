@@ -31,7 +31,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
 
-    include 'org.slf4j:slf4j-api:2.0.10'
+    include 'org.slf4j:slf4j-api:2.0.11'
     include 'org.slf4j:slf4j-log4j12:2.0.10'
     include 'org.apache.logging.log4j:log4j-api:2.22.1'
     include 'org.apache.logging.log4j:log4j-core:2.22.1'
@@ -39,10 +39,10 @@ dependencies {
     include 'com.squareup.okhttp3:okhttp:4.12.0'
     include 'com.google.code.gson:gson:2.10.1'
     include 'net.sf.jopt-simple:jopt-simple:6.0-alpha-3'
-    include 'com.formdev:flatlaf:3.3-SNAPSHOT'
+    include 'com.formdev:flatlaf:3.4-SNAPSHOT'
     include 'co.gongzh.procbridge:procbridge:1.1'
     include 'commons-io:commons-io:2.15.1'
-    include 'cn.hutool:hutool-crypto:5.8.18'
+    include 'cn.hutool:hutool-crypto:5.8.25'
 
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
