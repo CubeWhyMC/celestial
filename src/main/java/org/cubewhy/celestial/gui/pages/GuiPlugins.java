@@ -95,7 +95,7 @@ public class GuiPlugins extends JPanel {
     }
 
     private @NotNull JButton getDownloadButton(URL url, File file) {
-        JButton btn = new JButton(f.getString("gui.plugins.download"));
+        JButton btn = new JButton(String.format(f.getString("gui.plugins.download"), file.getName()));
         btn.addActionListener((e) -> {
             DownloadManager.download(new Downloadable(url, file, null));
             new Thread(() -> {
