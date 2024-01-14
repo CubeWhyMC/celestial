@@ -381,7 +381,6 @@ public class Celestial {
         if (cn.get("enable").getAsBoolean()) {
             String file = cn.get("installation").getAsString();
             log.info("LunarCN enabled! " + file);
-            log.warn("LunarCN loader is deprecated! Please migrate to weave!");
             javaAgents.add(new JavaAgent(file));
         }
         for (JavaAgent agent : javaAgents) {
