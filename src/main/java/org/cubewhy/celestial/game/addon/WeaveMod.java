@@ -64,6 +64,10 @@ public class WeaveMod extends BaseAddon {
         return (target == null) ? null : new WeaveMod(target);
     }
 
+    public static File getInstallation() {
+        return new File(config.getValue("addon").getAsJsonObject().get("weave").getAsJsonObject().get("installation").getAsString());
+    }
+
     @Override
     public String toString() {
         return this.file.getName();

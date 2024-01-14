@@ -57,6 +57,10 @@ public class LunarCNMod extends BaseAddon {
         return list;
     }
 
+    public static File getInstallation() {
+        return new File(config.getValue("addon").getAsJsonObject().get("lunarcn").getAsJsonObject().get("installation").getAsString());
+    }
+
     public static boolean checkUpdate() throws MalformedURLException {
         log.info("Updating LunarCN Loader...");
         statusBar.setText(f.getString("gui.addon.mods.cn.warn"));

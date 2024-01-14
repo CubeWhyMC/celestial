@@ -4,6 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.game.addon.LunarCNMod;
+import org.cubewhy.celestial.game.addon.WeaveMod;
 import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog;
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout;
 import org.cubewhy.celestial.utils.GuiUtils;
@@ -221,6 +223,36 @@ public class GuiSettings extends JScrollPane {
         p10.add(btnWeave);
         p10.add(btnLunarCN);
         panelAddon.add(p10);
+        // installation (loader)
+        JPanel p11 = new JPanel();
+        // lunarcn
+        JButton btnSelectLunarCNInstallation = new JButton(LunarCNMod.getInstallation().getPath());
+        btnSelectLunarCNInstallation.addActionListener((e) -> {
+            File file = GuiUtils.saveFile(new FileNameExtensionFilter("LunarCN Loader", "jar"));
+            if (file == null) {
+                return;
+            }
+            JButton source = (JButton) e.getSource();
+            source.setText(file.getPath());
+            setModLoaderInstallation("lunarcn", file);
+        });
+        p11.add(new JLabel(f.getString("gui.settings.addon.loader.cn.installation")));
+        p11.add(btnSelectLunarCNInstallation);
+        panelAddon.add(p11);
+        JPanel p12 = new JPanel();
+        JButton btnSelectWeaveInstallation = new JButton(WeaveMod.getInstallation().getPath());
+        btnSelectWeaveInstallation.addActionListener((e) -> {
+            File file = GuiUtils.saveFile(new FileNameExtensionFilter("Weave Loader", "jar"));
+            if (file == null) {
+                return;
+            }
+            JButton source = (JButton) e.getSource();
+            source.setText(file.getPath());
+            setModLoaderInstallation("weave", file);
+        });
+        p12.add(new JLabel(f.getString("gui.settings.addon.loader.weave.installation")));
+        p12.add(btnSelectWeaveInstallation);
+        panelAddon.add(p12);
 
         claim("addon", panelAddon);
 
@@ -229,6 +261,11 @@ public class GuiSettings extends JScrollPane {
         panelUnclaimed.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
         addUnclaimed(panelUnclaimed, config.getConfig());
         panel.add(panelUnclaimed);
+    }
+
+    private void setModLoaderInstallation(String key, @NotNull File file) {
+        config.getValue("addon").getAsJsonObject().getAsJsonObject(key).addProperty("installation", file.getPath());
+        config.save();
     }
 
     /**
