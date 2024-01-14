@@ -9,10 +9,7 @@ import org.cubewhy.celestial.event.impl.AuthEvent;
 import org.cubewhy.celestial.event.impl.GameStartEvent;
 import org.cubewhy.celestial.event.impl.GameTerminateEvent;
 import org.cubewhy.celestial.gui.elements.StatusBar;
-import org.cubewhy.celestial.gui.pages.GuiAbout;
-import org.cubewhy.celestial.gui.pages.GuiNews;
-import org.cubewhy.celestial.gui.pages.GuiSettings;
-import org.cubewhy.celestial.gui.pages.GuiVersion;
+import org.cubewhy.celestial.gui.pages.*;
 import org.cubewhy.celestial.utils.FileUtils;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.cubewhy.celestial.utils.TextUtils;
@@ -99,6 +96,7 @@ public class GuiLauncher extends JFrame {
         // add pages
         mainPanel.add("news", new GuiNews());
         mainPanel.add("version", new GuiVersion());
+        mainPanel.add("plugins", new GuiPlugins());
         mainPanel.add("settings", new GuiSettings());
         mainPanel.add("about", new GuiAbout());
 
