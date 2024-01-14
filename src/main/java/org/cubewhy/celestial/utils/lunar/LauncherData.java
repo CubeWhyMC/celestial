@@ -3,10 +3,10 @@ package org.cubewhy.celestial.utils.lunar;
 import com.google.gson.*;
 import okhttp3.Response;
 import org.cubewhy.celestial.event.impl.CrashReportUploadEvent;
+import org.cubewhy.celestial.game.RemoteAddon;
 import org.cubewhy.celestial.utils.CrashReportType;
 import org.cubewhy.celestial.utils.OSEnum;
 import org.cubewhy.celestial.utils.RequestUtils;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,7 +104,7 @@ public final class LauncherData {
      *
      * @param metadata metadata from api
      * @return a map of the alert (title, message)
-     * */
+     */
     public static @Nullable Map<String, String> getAlert(JsonObject metadata) {
         if (metadata.has("alert") && !metadata.get("alert").isJsonNull()) {
             JsonObject alert = metadata.getAsJsonObject("alert");
@@ -312,5 +312,25 @@ public final class LauncherData {
             }
         }
         return map;
+    }
+
+    /**
+     * Get the plugin list
+     */
+    public @Nullable List<RemoteAddon> getPlugins() throws IOException {
+        List<RemoteAddon> list = new ArrayList<>();
+        URL info = new URL(api + "/plugins/info");
+        JsonArray json;
+        try (Response response = RequestUtils.get(info).execute()) {
+            assert response.body() != null;
+            json = JsonParser.parseString(response.body().string()).getAsJsonObject().getAsJsonArray("data");
+        } catch (JsonSyntaxException e) {
+            return null; // official api
+        }
+        for (JsonElement element : json) {
+            JsonObject plugin = element.getAsJsonObject();
+            list.add(new RemoteAddon(plugin.get("name").getAsString(), new URL(api + plugin.get("downloadLink").getAsString()), RemoteAddon.Category.parse(plugin.get("category").getAsString())));
+        }
+        return list;
     }
 }
