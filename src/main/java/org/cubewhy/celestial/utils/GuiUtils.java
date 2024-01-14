@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
 public final class GuiUtils {
@@ -29,5 +30,13 @@ public final class GuiUtils {
         JFileChooser fileDialog = new JFileChooser();
         fileDialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         return (fileDialog.showOpenDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION) ? null : fileDialog.getSelectedFile();
+    }
+
+    public static File saveFile(FileNameExtensionFilter filter) {
+        JFileChooser fileDialog = new JFileChooser();
+        fileDialog.setFileFilter(filter);
+        fileDialog.addChoosableFileFilter(filter);
+        fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        return (fileDialog.showSaveDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION) ? null : fileDialog.getSelectedFile();
     }
 }
