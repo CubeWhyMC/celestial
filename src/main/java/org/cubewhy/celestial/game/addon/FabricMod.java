@@ -6,6 +6,7 @@
 
 package org.cubewhy.celestial.game.addon;
 
+import lombok.Getter;
 import org.cubewhy.celestial.Celestial;
 import org.cubewhy.celestial.game.BaseAddon;
 import org.jetbrains.annotations.NotNull;
@@ -17,9 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 public class FabricMod extends BaseAddon {
     public static final File modFolder = new File(Celestial.config.getValue("installation-dir").getAsString(), "mods");
-    public final File file;
+    private final File file;
 
     public FabricMod(File file) {
         this.file = file;
