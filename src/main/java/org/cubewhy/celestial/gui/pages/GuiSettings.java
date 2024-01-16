@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.cubewhy.celestial.game.addon.LunarCNMod;
 import org.cubewhy.celestial.game.addon.WeaveMod;
 import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog;
@@ -20,6 +21,7 @@ import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.*;
@@ -142,6 +144,24 @@ public class GuiSettings extends JScrollPane {
         }
         p5.add(getAutoSaveComboBox(config.getConfig(), "theme", themes));
         JButton btnAddTheme = new JButton(f.getString("gui.settings.launcher.theme.add"));
+        btnAddTheme.addActionListener((e) -> {
+            File file = GuiUtils.chooseFile(new FileNameExtensionFilter("Intellij IDEA theme (.json)", "json"));
+            if (file == null) {
+                return;
+            }
+            // copy
+            File f1 = new File(themesDir, file.getName());
+            if (f1.exists()) {
+                JOptionPane.showMessageDialog(this, f.getString("gui.settings.launcher.theme.exist"), "File always exist", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                FileUtils.copyFile(file, f1);
+                statusBar.setText("gui.settings.launcher.theme.success");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
         p5.add(btnAddTheme);
         panelLauncher.add(p5);
         // language
