@@ -11,6 +11,7 @@ import org.cubewhy.celestial.event.EventTarget;
 import org.cubewhy.celestial.event.impl.AddonAddEvent;
 import org.cubewhy.celestial.event.impl.CreateLauncherEvent;
 import org.cubewhy.celestial.game.BaseAddon;
+import org.cubewhy.celestial.game.addon.FabricMod;
 import org.cubewhy.celestial.game.addon.JavaAgent;
 import org.cubewhy.celestial.game.addon.LunarCNMod;
 import org.cubewhy.celestial.game.addon.WeaveMod;
@@ -33,9 +34,10 @@ import static org.cubewhy.celestial.Celestial.f;
 @Slf4j
 public class GuiAddonManager extends JPanel {
     private final JTabbedPane tab = new JTabbedPane();
-    private DefaultListModel<LunarCNMod> lunarcnList = new DefaultListModel<>();
-    private DefaultListModel<WeaveMod> weaveList = new DefaultListModel<>();
-    private DefaultListModel<JavaAgent> agentList = new DefaultListModel<>();
+    private final DefaultListModel<LunarCNMod> lunarcnList = new DefaultListModel<>();
+    private final DefaultListModel<WeaveMod> weaveList = new DefaultListModel<>();
+    private final DefaultListModel<JavaAgent> agentList = new DefaultListModel<>();
+    private final DefaultListModel<FabricMod> fabricList = new DefaultListModel<>();
 
     public GuiAddonManager() {
         this.setBorder(new TitledBorder(null, f.getString("gui.addons.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
@@ -53,6 +55,7 @@ public class GuiAddonManager extends JPanel {
         JList<LunarCNMod> jListLunarCN = new JList<>(lunarcnList);
         JList<WeaveMod> jListWeave = new JList<>(weaveList);
         JList<JavaAgent> jListAgents = new JList<>(agentList);
+        JList<FabricMod> jListFabric = new JList<>();
         // menus
         JPopupMenu agentMenu = new JPopupMenu();
         JMenuItem manageArg = new JMenuItem(f.getString("gui.addon.agents.arg"));
@@ -162,8 +165,8 @@ public class GuiAddonManager extends JPanel {
         // buttons
         JButton btnAddLunarCNMod = new JButton(f.getString("gui.addon.mods.add"));
         JButton btnAddWeaveMod = new JButton(f.getString("gui.addon.mods.add"));
+        JButton btnAddFabric = new JButton(f.getString("gui.addon.mods.add"));
         JButton btnAddAgent = new JButton(f.getString("gui.addon.agents.add"));
-        // TODO Stretch to the right
 
         btnAddAgent.addActionListener(e -> {
             File file = GuiUtils.chooseFile(new FileNameExtensionFilter("Agent", "jar"));
@@ -225,10 +228,10 @@ public class GuiAddonManager extends JPanel {
                 if (!AddonUtils.isLunarCNMod(file)) {
                     JOptionPane.showMessageDialog(this, String.format(f.getString("gui.addon.mods.incorrect"), file), "Warning | Type incorrect", JOptionPane.WARNING_MESSAGE);
                 }
-                WeaveMod mod = WeaveMod.add(file);
+                LunarCNMod mod = LunarCNMod.add(file);
                 if (mod != null) {
                     // success
-                    new AddonAddEvent(AddonAddEvent.Type.WEAVE, mod);
+                    new AddonAddEvent(AddonAddEvent.Type.LUNARCN, mod);
                     GuiLauncher.statusBar.setText(f.getString("gui.addon.mods.cn.add.success"));
                     weaveList.clear();
                     loadWeaveMods(weaveList);
@@ -239,6 +242,30 @@ public class GuiAddonManager extends JPanel {
                 String trace = TextUtils.dumpTrace(ex);
                 log.error(trace);
                 JOptionPane.showMessageDialog(this, String.format(f.getString("gui.addon.mods.cn.add.failure.io"), trace), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        btnAddFabric.addActionListener((e) -> {
+            File file = GuiUtils.chooseFile(new FileNameExtensionFilter("Fabric Mod", "jar"));
+            if (file == null) {
+                log.info("Cancel add fabric mod because file == null");
+                return;
+            }
+            try {
+                FabricMod mod = FabricMod.add(file);
+                if (mod != null) {
+                    // success
+                    new AddonAddEvent(AddonAddEvent.Type.FABRIC, mod);
+                    GuiLauncher.statusBar.setText(f.getString("gui.addon.mods.fabric.add.success"));
+                    agentList.clear();
+                    loadAgents(agentList);
+                } else {
+                    JOptionPane.showMessageDialog(this, f.getString("gui.addon.mods.fabric.add.failure.exists"), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (IOException ex) {
+                String trace = TextUtils.dumpTrace(ex);
+                log.error(trace);
+                JOptionPane.showMessageDialog(this, String.format(f.getString("gui.addon.mods.fabric.add.failure.io"), trace), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -273,9 +300,20 @@ public class GuiAddonManager extends JPanel {
         btnPanel3.add(createButtonOpenFolder(f.getString("gui.addon.folder"), JavaAgent.javaAgentFolder));
         panelAgents.add(btnPanel3);
 
+        final JPanel panelFabric = new JPanel();
+        panelFabric.setName("fabric");
+        panelFabric.setLayout(new BoxLayout(panelFabric, BoxLayout.Y_AXIS));
+        panelFabric.add(new JScrollPane(jListFabric));
+        final JPanel btnPanel4 = new JPanel();
+        btnPanel4.setLayout(new BoxLayout(btnPanel4, BoxLayout.X_AXIS));
+        btnPanel4.add(btnAddFabric);
+        btnPanel4.add(createButtonOpenFolder(f.getString("gui.addon.folder"), FabricMod.modFolder));
+        panelFabric.add(btnPanel4);
+
         tab.addTab(f.getString("gui.addons.agents"), panelAgents);
         tab.addTab(f.getString("gui.addons.mods.cn"), panelLunarCN);
         tab.addTab(f.getString("gui.addons.mods.weave"), panelWeave);
+        tab.addTab(f.getString("gui.addons.mods.fabric"), panelFabric);
 
         this.add(tab);
         this.tab.addChangeListener(e -> {
@@ -311,6 +349,16 @@ public class GuiAddonManager extends JPanel {
                 lunarcnList.clear();
                 loadLunarCNMods(lunarcnList);
             }
+            case "fabric" -> {
+                fabricList.clear();
+                loadFabricMods(fabricList);
+            }
+        }
+    }
+
+    private void loadFabricMods(DefaultListModel<FabricMod> modList) {
+        for (FabricMod mod : FabricMod.findAll()) {
+            modList.addElement(mod);
         }
     }
 
