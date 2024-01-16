@@ -154,12 +154,56 @@ public class GuiAddonManager extends JPanel {
             if (newName != null && file.renameTo(new File(file.getParentFile(), newName + ".jar"))) {
                 log.info(String.format("Rename LunarCN mod %s -> %s", name, newName + ".jar"));
                 GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.rename.success"), newName));
+                lunarcnList.clear();
+                loadLunarCNMods(lunarcnList);
             }
         });
+
+        removeLunarCNMod.addActionListener((e) -> {
+            LunarCNMod currentMod = jListLunarCN.getSelectedValue();
+            String name = currentMod.getFile().getName();
+            if (JOptionPane.showConfirmDialog(this, String.format(f.getString("gui.addon.mods.cn.remove.confirm.message"), name), f.getString("gui.addon.mods.cn.remove.confirm.title"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION && currentMod.getFile().delete()) {
+                GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.mods.cn.remove.success"), name));
+                lunarcnList.clear();
+                loadLunarCNMods(lunarcnList);
+            }
+        });
+
+        JPopupMenu fabricMenu = new JPopupMenu();
+        JMenuItem renameFabricMod = new JMenuItem(f.getString("gui.addon.rename"));
+        JMenuItem removeFabricMod = new JMenuItem(f.getString("gui.addon.mods.fabric.remove"));
+
+        renameFabricMod.addActionListener(e -> {
+            FabricMod currentMod = jListFabric.getSelectedValue();
+            File file = currentMod.getFile();
+            String name = file.getName();
+            String newName = JOptionPane.showInputDialog(this, f.getString("gui.addon.rename.dialog.message"), name.substring(0, name.length() - 4));
+            if (newName != null && file.renameTo(new File(file.getParentFile(), newName + ".jar"))) {
+                log.info(String.format("Rename Fabric mod %s -> %s", name, newName + ".jar"));
+                GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.rename.success"), newName));
+                fabricList.clear();
+                loadFabricMods(fabricList);
+            }
+        });
+
+        removeFabricMod.addActionListener((e) -> {
+            FabricMod currentMod = jListFabric.getSelectedValue();
+            String name = currentMod.getFile().getName();
+            if (JOptionPane.showConfirmDialog(this, String.format(f.getString("gui.addon.mods.fabric.remove.confirm.message"), name), f.getString("gui.addon.mods.fabric.remove.confirm.title"), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION && currentMod.getFile().delete()) {
+                GuiLauncher.statusBar.setText(String.format(f.getString("gui.addon.mods.fabric.remove.success"), name));
+                fabricList.clear();
+                loadFabricMods(fabricList);
+            }
+        });
+
+        fabricMenu.add(renameFabricMod);
+        fabricMenu.addSeparator();
+        fabricMenu.add(removeFabricMod);
 
         // bind menus
         bindMenu(jListLunarCN, lunarCNMenu);
         bindMenu(jListWeave, weaveMenu);
+        bindMenu(jListFabric, fabricMenu);
         bindMenu(jListAgents, agentMenu);
 
 
@@ -258,8 +302,8 @@ public class GuiAddonManager extends JPanel {
                     // success
                     new AddonAddEvent(AddonAddEvent.Type.FABRIC, mod);
                     GuiLauncher.statusBar.setText(f.getString("gui.addon.mods.fabric.add.success"));
-                    agentList.clear();
-                    loadAgents(agentList);
+                    fabricList.clear();
+                    loadFabricMods(fabricList);
                 } else {
                     JOptionPane.showMessageDialog(this, f.getString("gui.addon.mods.fabric.add.failure.exists"), "Error", JOptionPane.ERROR_MESSAGE);
                 }
