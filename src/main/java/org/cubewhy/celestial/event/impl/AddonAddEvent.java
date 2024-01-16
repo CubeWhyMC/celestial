@@ -19,7 +19,7 @@ public class AddonAddEvent extends Event {
     public enum Type {
         JAVAAGENT,
         WEAVE,
-        LUNARCN;
+        LUNARCN, FABRIC;
     }
 
     public AddonAddEvent(Type type, BaseAddon addon) {
