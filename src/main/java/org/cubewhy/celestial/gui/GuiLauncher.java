@@ -2,19 +2,14 @@ package org.cubewhy.celestial.gui;
 
 import com.sun.tools.attach.AttachNotSupportedException;
 import com.sun.tools.attach.VirtualMachine;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.event.EventManager;
 import org.cubewhy.celestial.event.EventTarget;
 import org.cubewhy.celestial.event.impl.AuthEvent;
 import org.cubewhy.celestial.event.impl.GameStartEvent;
 import org.cubewhy.celestial.event.impl.GameTerminateEvent;
-import org.cubewhy.celestial.gui.dialogs.LanguageSelectDialog;
 import org.cubewhy.celestial.gui.elements.StatusBar;
-import org.cubewhy.celestial.gui.pages.GuiAbout;
-import org.cubewhy.celestial.gui.pages.GuiNews;
-import org.cubewhy.celestial.gui.pages.GuiSettings;
-import org.cubewhy.celestial.gui.pages.GuiVersion;
+import org.cubewhy.celestial.gui.pages.*;
 import org.cubewhy.celestial.utils.FileUtils;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.cubewhy.celestial.utils.TextUtils;
@@ -34,7 +29,6 @@ import static org.cubewhy.celestial.Celestial.*;
 @Slf4j
 public class GuiLauncher extends JFrame {
 
-    public static JFrame instance;
     public static final JLabel statusBar = new StatusBar();
 
     public GuiLauncher() throws IOException {
@@ -48,7 +42,6 @@ public class GuiLauncher extends JFrame {
         this.resetIcon();
 
         this.initGui();
-
         // show alert
         Map<String, String> alert = LauncherData.getAlert(metadata);
         if (alert != null) {
@@ -62,8 +55,7 @@ public class GuiLauncher extends JFrame {
     /**
      * Init Celestial Launcher (gui)
      */
-    public void initGui() throws IOException {
-        instance = this;
+    private void initGui() throws IOException {
         this.add(statusBar, BorderLayout.SOUTH);
         // menu
         Panel menu = new Panel();
@@ -75,7 +67,6 @@ public class GuiLauncher extends JFrame {
         // Celestial is an opensource launcher, please donate to let us go further (All money will be used for development)
         JButton btnDonate = new JButton(f.getString("gui.donate"));
         JButton btnHelp = new JButton(f.getString("gui.help"));
-        JButton btnLanguage = new JButton("Language"); // Do not translate this button :)
         btnDonate.addActionListener(e -> {
             try {
                 Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/donate"));
@@ -89,10 +80,6 @@ public class GuiLauncher extends JFrame {
             }
         });
 
-        btnLanguage.addActionListener(e ->{
-            // show language selection dialog
-            new LanguageSelectDialog(this).setVisible(true);
-        });
         menu.add(btnPrevious);
         menu.add(btnNext);
         menu.add(btnDonate);
@@ -109,15 +96,13 @@ public class GuiLauncher extends JFrame {
         // add pages
         mainPanel.add("news", new GuiNews());
         mainPanel.add("version", new GuiVersion());
+        mainPanel.add("plugins", new GuiPlugins());
         mainPanel.add("settings", new GuiSettings());
         mainPanel.add("about", new GuiAbout());
+
         // bind buttons
-        btnPrevious.addActionListener(e -> {
-            layout.previous(mainPanel);
-        });
-        btnNext.addActionListener(e -> {
-            layout.next(mainPanel);
-        });
+        btnPrevious.addActionListener(e -> layout.previous(mainPanel));
+        btnNext.addActionListener(e -> layout.next(mainPanel));
         this.add(mainPanel); // add MainPanel
 
         // try to find the exist game process
@@ -188,9 +173,5 @@ public class GuiLauncher extends JFrame {
         clipboard.setContents(new StringSelection(e.authURL.toString()), null);
         String link = JOptionPane.showInputDialog(this, f.getString("gui.launcher.auth.message"), f.getString("gui.launcher.auth.title"), JOptionPane.QUESTION_MESSAGE);
         e.put(link);
-    }
-
-    public void repaintGui() {
-        repaint();
     }
 }
