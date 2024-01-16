@@ -2,6 +2,7 @@ package org.cubewhy.celestial.gui;
 
 import com.sun.tools.attach.AttachNotSupportedException;
 import com.sun.tools.attach.VirtualMachine;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.cubewhy.celestial.event.EventManager;
 import org.cubewhy.celestial.event.EventTarget;
@@ -33,6 +34,7 @@ import static org.cubewhy.celestial.Celestial.*;
 @Slf4j
 public class GuiLauncher extends JFrame {
 
+    public static JFrame instance;
     public static final JLabel statusBar = new StatusBar();
 
     public GuiLauncher() throws IOException {
@@ -46,6 +48,7 @@ public class GuiLauncher extends JFrame {
         this.resetIcon();
 
         this.initGui();
+
         // show alert
         Map<String, String> alert = LauncherData.getAlert(metadata);
         if (alert != null) {
@@ -59,7 +62,8 @@ public class GuiLauncher extends JFrame {
     /**
      * Init Celestial Launcher (gui)
      */
-    private void initGui() throws IOException {
+    public void initGui() throws IOException {
+        instance = this;
         this.add(statusBar, BorderLayout.SOUTH);
         // menu
         Panel menu = new Panel();
@@ -107,7 +111,6 @@ public class GuiLauncher extends JFrame {
         mainPanel.add("version", new GuiVersion());
         mainPanel.add("settings", new GuiSettings());
         mainPanel.add("about", new GuiAbout());
-
         // bind buttons
         btnPrevious.addActionListener(e -> {
             layout.previous(mainPanel);
@@ -185,5 +188,9 @@ public class GuiLauncher extends JFrame {
         clipboard.setContents(new StringSelection(e.authURL.toString()), null);
         String link = JOptionPane.showInputDialog(this, f.getString("gui.launcher.auth.message"), f.getString("gui.launcher.auth.title"), JOptionPane.QUESTION_MESSAGE);
         e.put(link);
+    }
+
+    public void repaintGui() {
+        repaint();
     }
 }

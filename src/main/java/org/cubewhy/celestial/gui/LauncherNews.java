@@ -2,6 +2,7 @@ package org.cubewhy.celestial.gui;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -17,7 +18,7 @@ public class LauncherNews extends JPanel {
     public final JsonObject json;
     public final File image;
 
-    public LauncherNews(JsonObject json) {
+    public LauncherNews(@NotNull JsonObject json) {
         this.json = json;
         this.image = new File(cacheDir, "news/" + json.get("title").getAsString() + ".png");
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

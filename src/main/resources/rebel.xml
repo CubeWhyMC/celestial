@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Celestial Launcher <me@lunarclient.top>
+  ~ License under GPLv3
+  ~ Do NOT remove this note if you want to copy this file.
+  -->
+
+<!--
+  This is the JRebel configuration file. It maps the running application to your IDE workspace, enabling JRebel reloading for this project.
+  Refer to https://manuals.jrebel.com/jrebel/standalone/config.html for more information.
+-->
+<application generated-by="intellij" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.zeroturnaround.com" xsi:schemaLocation="http://www.zeroturnaround.com http://update.zeroturnaround.com/jrebel/rebel-2_3.xsd">
+
+	<id>celestial.main</id>
+
+	<classpath>
+		<dir name="G:/java/celestial/build/resources/main">
+		</dir>
+		<dir name="G:/java/celestial/build/classes/java/main">
+		</dir>
+	</classpath>
+
+</application>

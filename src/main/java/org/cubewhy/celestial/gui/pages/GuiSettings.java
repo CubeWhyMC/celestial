@@ -1,8 +1,11 @@
 package org.cubewhy.celestial.gui.pages;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.extern.slf4j.Slf4j;
+import org.cubewhy.celestial.gui.GuiLauncher;
+import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog;
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout;
 import org.cubewhy.celestial.utils.GuiUtils;
 import org.cubewhy.celestial.utils.SystemUtils;
@@ -17,11 +20,11 @@ import java.awt.event.FocusEvent;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.cubewhy.celestial.Celestial.config;
-import static org.cubewhy.celestial.Celestial.f;
+import static org.cubewhy.celestial.Celestial.*;
 import static org.cubewhy.celestial.gui.GuiLauncher.statusBar;
 
 @Slf4j
@@ -93,43 +96,91 @@ public class GuiSettings extends JScrollPane {
         p2.add(labelRam);
         panelVM.add(p2);
 
+        JPanel p3 = new JPanel();
+        p3.add(new JLabel(f.getString("gui.settings.jvm.wrapper")));
+        JTextField wrapperInput = getAutoSaveTextField("wrapper", config.getConfig());
+        p3.add(wrapperInput);
+        JButton btnSetVMArgs = new JButton(f.getString("gui.settings.jvm.args"));
+        btnSetVMArgs.addActionListener((e) -> {
+            new ArgsConfigDialog("vm-args", config.getConfig()).setVisible(true);
+        });
+        panelVM.add(btnSetVMArgs);
+        panelVM.add(p3);
+
         claim("jre", panelVM);
         claim("ram");
         claim("vm-args");
         claim("wrapper");
 
+        claim("game"); // config in GuiVersionSelect
+        claim("javaagents"); // config in GuiAddonManager
+
+        JPanel panelLauncher = new JPanel();
+        panelLauncher.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
+        panelLauncher.setBorder(new TitledBorder(null, f.getString("gui.settings.launcher"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+        panelLauncher.add(getAutoSaveCheckBox(config.getConfig(), "data-sharing", f.getString("gui.settings.launcher.data-sharing")));
+
+        JPanel p4 = new JPanel();
+        p4.add(new JLabel(f.getString("gui.settings.launcher.theme")));
+        p4.add(getAutoSaveComboBox(config.getConfig(), "theme", List.of(new String[]{"dark", "light"})));
+        panelLauncher.add(p4);
+
+        claim("data-sharing", panelLauncher);
+        claim("theme");
+
         JPanel panelUnclaimed = new JPanel();
         panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         panelUnclaimed.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
-        addUnclaimed(panelUnclaimed);
+        addUnclaimed(panelUnclaimed, config.getConfig());
         panel.add(panelUnclaimed);
     }
 
-    private void addUnclaimed(JPanel basePanel) {
-        for (Map.Entry<String, JsonElement> s : config.getConfig().entrySet()) {
+    private void addUnclaimed(JPanel basePanel, @NotNull JsonObject json) {
+        for (Map.Entry<String, JsonElement> s : json.entrySet()) {
             if (!claimed.contains(s.getKey())) {
                 // unclaimed
                 if (s.getValue().isJsonPrimitive()) {
-                    JPanel p = getSimplePanel(s.getKey(), s.getValue().getAsJsonPrimitive());
+                    JPanel p = getSimplePanel(json, s.getKey());
                     basePanel.add(p);
+                }
+                if (s.getValue().isJsonObject()) {
+                    JPanel subPanel = new JPanel();
+                    subPanel.setBorder(new TitledBorder(null, s.getKey(), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+                    subPanel.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
+                    basePanel.add(subPanel);
+                    addUnclaimed(subPanel, s.getValue().getAsJsonObject());
+                }
+                if (s.getValue().isJsonArray()) {
+                    // TODO valueList
                 }
             }
         }
     }
 
-    private @NotNull JPanel getSimplePanel(String key, @NotNull JsonPrimitive value) {
+    private JComboBox<String> getAutoSaveComboBox(JsonObject json, String key, @NotNull List<String> items) {
+        JComboBox<String> cb = new JComboBox<>();
+        for (String item : items) {
+            cb.addItem(item);
+        }
+        cb.setSelectedItem(json.get(key).getAsString());
+        cb.addActionListener((e) -> {
+            JComboBox<String> source = (JComboBox<String>) e.getSource();
+            String v = (String) source.getSelectedItem();
+            json.addProperty(key, v);
+            config.save();
+        });
+        return cb;
+    }
+
+    private @NotNull JPanel getSimplePanel(@NotNull JsonObject json, String key) {
         JPanel panel = new JPanel();
+        JsonPrimitive value = json.getAsJsonPrimitive(key);
         if (value.isBoolean()) {
-            JCheckBox cb = new JCheckBox(key);
-            cb.setSelected(value.getAsBoolean());
-            cb.addActionListener((e) -> {
-                JCheckBox source = (JCheckBox) e.getSource();
-                config.setValue(key, source.isSelected());
-            });
+            JCheckBox cb = getAutoSaveCheckBox(json, key, key);
             panel.add(cb);
         } else if (value.isString()) {
             panel.add(new JLabel(key));
-            JTextField input = getAutoSaveTextField(key, value);
+            JTextField input = getAutoSaveTextField(key, json);
             panel.add(input);
         } else if (value.isNumber()) {
             panel.add(new JLabel(key));
@@ -140,7 +191,8 @@ public class GuiSettings extends JScrollPane {
             spinner.addChangeListener((e) -> {
                 JSpinner source = (JSpinner) e.getSource();
                 Number v = (Number) source.getValue();
-                config.setValue(key, v);
+                json.addProperty(key, v);
+                config.save();
             });
             textField.setColumns(20);
             panel.add(spinner);
@@ -150,19 +202,36 @@ public class GuiSettings extends JScrollPane {
     }
 
     @NotNull
-    private static JTextField getAutoSaveTextField(String key, @NotNull JsonPrimitive value) {
+    private static JCheckBox getAutoSaveCheckBox(@NotNull JsonObject json, String key, String text) {
+        JCheckBox cb = new JCheckBox(text);
+        JsonPrimitive value = json.getAsJsonPrimitive(key);
+        cb.setSelected(value.getAsBoolean());
+        cb.addActionListener((e) -> {
+            JCheckBox source = (JCheckBox) e.getSource();
+            json.addProperty(key, source.isSelected());
+            config.save();
+        });
+
+        return cb;
+    }
+
+    @NotNull
+    private static JTextField getAutoSaveTextField(String key, @NotNull JsonObject json) {
+        JsonPrimitive value = json.getAsJsonPrimitive(key);
         JTextField input = new JTextField(value.getAsString());
         input.addActionListener((e) -> {
             JTextField source = (JTextField) e.getSource();
             // save value
-            config.setValue(key, source.getText());
+            json.addProperty(key, source.getText());
+            config.save();
         });
         input.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
                 JTextField source = (JTextField) e.getSource();
                 // save value
-                config.setValue(key, source.getText());
+                json.addProperty(key, source.getText());
+                config.save();
             }
         });
         return input;

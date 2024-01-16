@@ -21,6 +21,7 @@ import java.util.jar.JarFile;
 
 import static org.cubewhy.celestial.Celestial.config;
 import static org.cubewhy.celestial.Celestial.f;
+import static org.cubewhy.celestial.files.Downloadable.Type.SHA256;
 
 public final class AddonUtils {
     private AddonUtils() {
@@ -89,7 +90,7 @@ public final class AddonUtils {
             return false;
         }
         // send download
-        DownloadManager.download(new Downloadable(loader, file, hash));
+        DownloadManager.download(new Downloadable(loader, file, hash, SHA256));
         return true;
     }
 }

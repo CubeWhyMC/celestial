@@ -70,11 +70,11 @@ public final class DownloadManager {
      * @param file file instance of the local file
      * @return is success
      */
-    public static boolean download0(URL url, @NotNull File file, String sha1) throws IOException {
+    public static boolean download0(URL url, @NotNull File file, String crcSha, Downloadable.Type type) throws IOException {
         // connect
-        if (file.isFile() && sha1 != null) {
-            // assert sha1
-            if (SecureUtil.sha1(file).equals(sha1)) {
+        if (file.isFile() && crcSha != null) {
+            // assert crcSha
+            if (compareSha(file, crcSha, type)) {
                 return true;
             }
         }
@@ -82,17 +82,17 @@ public final class DownloadManager {
         log.info("Downloading " + url + " to " + file);
         try (Response response = RequestUtils.get(url).execute()) {
             if (!response.isSuccessful() || response.body() == null) {
-                new FileDownloadEvent(file, FileDownloadEvent.Type.FALURE).call();
+                new FileDownloadEvent(file, FileDownloadEvent.Type.FAILURE).call();
                 return false;
             }
             byte[] bytes = response.body().bytes();
             FileUtils.writeByteArrayToFile(file, bytes);
         }
         statusBar.setText("Download " + file.getName() + " success.");
-        if (sha1 != null) {
-            boolean result = SecureUtil.sha1(file).equals(sha1);
+        if (crcSha != null) {
+            boolean result = compareSha(file, crcSha, type);
             if (!result) {
-                new FileDownloadEvent(file, FileDownloadEvent.Type.FALURE).call();
+                new FileDownloadEvent(file, FileDownloadEvent.Type.FAILURE).call();
             }
             return result;
         }
@@ -100,8 +100,12 @@ public final class DownloadManager {
         return true;
     }
 
+    private static boolean compareSha(@NotNull File file, String crcSha, Downloadable.@NotNull Type type) {
+        return type.equals(Downloadable.Type.SHA1) && SecureUtil.sha1(file).equals(crcSha) || type.equals(Downloadable.Type.SHA256) && SecureUtil.sha256(file).equals(crcSha);
+    }
+
     public static boolean download0(URL url, File file) throws IOException {
-        return download0(url, file, null);
+        return download0(url, file, null, Downloadable.Type.SHA1);
     }
 
     public static void download(Downloadable downloadable) {
