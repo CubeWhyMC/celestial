@@ -51,11 +51,12 @@ public class GuiAddonManager extends JPanel {
         loadAgents(agentList);
         loadWeaveMods(weaveList);
         loadLunarCNMods(lunarcnList);
+        loadFabricMods(fabricList);
 
         JList<LunarCNMod> jListLunarCN = new JList<>(lunarcnList);
         JList<WeaveMod> jListWeave = new JList<>(weaveList);
         JList<JavaAgent> jListAgents = new JList<>(agentList);
-        JList<FabricMod> jListFabric = new JList<>();
+        JList<FabricMod> jListFabric = new JList<>(fabricList);
         // menus
         JPopupMenu agentMenu = new JPopupMenu();
         JMenuItem manageArg = new JMenuItem(f.getString("gui.addon.agents.arg"));

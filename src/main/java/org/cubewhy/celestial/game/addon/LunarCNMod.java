@@ -74,4 +74,9 @@ public class LunarCNMod extends BaseAddon {
         statusBar.setText(f.getString("gui.addon.mods.cn.warn"));
         return AddonUtils.downloadLoader("CubeWhyMC/LunarClient-CN", new File(config.getValue("addon").getAsJsonObject().getAsJsonObject("lunarcn").get("installation").getAsString()));
     }
+
+    @Override
+    public String toString() {
+        return this.file.getName();
+    }
 }

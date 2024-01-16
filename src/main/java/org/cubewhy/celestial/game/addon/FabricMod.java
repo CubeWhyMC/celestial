@@ -42,4 +42,9 @@ public class FabricMod extends BaseAddon {
         File target = autoCopy(file, modFolder);
         return (target == null) ? null : new FabricMod(target);
     }
+
+    @Override
+    public String toString() {
+        return this.file.getName();
+    }
 }
