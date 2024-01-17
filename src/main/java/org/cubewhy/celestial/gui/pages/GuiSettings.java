@@ -391,20 +391,34 @@ public class GuiSettings extends JScrollPane {
 
     private @NotNull JComboBox<?> getAutoSaveComboBox(JsonObject json, String key, @NotNull List<?> items) {
         JComboBox<Object> cb = new JComboBox<>();
+        boolean isString = false;
+        boolean isLanguage = false;
         for (Object item : items) {
             if (item instanceof Language) {
-                cb.addItem(((Language) item).getView() + "/" + ((Language) item).getCode());
-            } else {
-                cb.addItem(item);
+                isLanguage = true;
+            }
+            cb.addItem(item);
+            if (item instanceof String) {
+                isString = true;
             }
         }
-        cb.setSelectedItem(json.get(key).getAsString());
+        if (isString) {
+            cb.setSelectedItem(json.get(key).getAsString());
+        } else if (isLanguage) {
+            cb.setSelectedItem(Language.findByCode(json.get(key).getAsString()));
+        }
+        boolean finalIsLanguage = isLanguage;
         cb.addActionListener((e) -> {
             JComboBox<Object> source = (JComboBox<Object>) e.getSource();
             if (source.getSelectedItem() == null) {
                 return;
             }
-            String v = source.getSelectedItem().toString();
+            String v;
+            if (finalIsLanguage) {
+                v = ((Language) source.getSelectedItem()).getCode();
+            } else {
+                v = source.getSelectedItem().toString();
+            }
             json.addProperty(key, v);
             config.save();
         });

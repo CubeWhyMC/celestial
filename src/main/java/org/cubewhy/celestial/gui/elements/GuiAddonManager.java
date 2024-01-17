@@ -349,11 +349,12 @@ public class GuiAddonManager extends JPanel {
         final JPanel panelFabric = new JPanel();
         panelFabric.setName("fabric");
         panelFabric.setLayout(new BoxLayout(panelFabric, BoxLayout.Y_AXIS));
-        panelFabric.add(new JScrollPane(jListFabric));
+        panelFabric.add(new JLabel("Not fully support Fabric yet, please add mods by your self"));
+//        panelFabric.add(new JScrollPane(jListFabric));
         final JPanel btnPanel4 = new JPanel();
         btnPanel4.setLayout(new BoxLayout(btnPanel4, BoxLayout.X_AXIS));
         btnPanel4.add(btnAddFabric);
-        btnPanel4.add(createButtonOpenFolder(f.getString("gui.addon.folder"), FabricMod.modFolder));
+//        btnPanel4.add(createButtonOpenFolder(f.getString("gui.addon.folder"), FabricMod.modFolder));
         panelFabric.add(btnPanel4);
 
         tab.addTab(f.getString("gui.addons.agents"), panelAgents);
