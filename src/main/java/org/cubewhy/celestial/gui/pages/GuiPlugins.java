@@ -36,7 +36,7 @@ public class GuiPlugins extends JPanel {
     private final JTabbedPane tab;
 
     public GuiPlugins() {
-        this.setBorder(new TitledBorder(null, f.getString("gui.plugin.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+        this.setBorder(new TitledBorder(null, f.getString("gui.plugins.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         this.tab = new JTabbedPane();
@@ -49,7 +49,7 @@ public class GuiPlugins extends JPanel {
         addTabs();
 
         // refresh addons
-        JButton btnRefresh = new JButton(f.getString("gui.plugin.refresh"));
+        JButton btnRefresh = new JButton(f.getString("gui.plugins.refresh"));
         btnRefresh.addActionListener((e) -> {
             tab.removeAll();
             addTabs();
@@ -62,7 +62,7 @@ public class GuiPlugins extends JPanel {
     private void addTabs() {
         List<RemoteAddon> addons = launcherData.getPlugins();
         if (addons == null) {
-            this.add(new JLabel(f.getString("gui.plugin.unsupported")));
+            this.add(new JLabel(f.getString("gui.plugins.unsupported")));
             return;
         }
         JPanel panelWeave = new JPanel();
@@ -104,7 +104,7 @@ public class GuiPlugins extends JPanel {
         p.add(new JLabel(addon.getName()));
         File file = new File(folder, addon.getName());
         if (file.exists()) {
-            p.add(new JLabel(f.getString("gui.plugin.exist")));
+            p.add(new JLabel(f.getString("gui.plugins.exist")));
         } else {
             p.add(getDownloadButton(addon.getDownloadURL(), file));
         }
