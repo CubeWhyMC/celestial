@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.cubewhy.celestial.game.addon.LunarCNMod;
 import org.cubewhy.celestial.game.addon.WeaveMod;
+import org.cubewhy.celestial.gui.Language;
 import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog;
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout;
 import org.cubewhy.celestial.utils.GuiUtils;
@@ -170,7 +171,7 @@ public class GuiSettings extends JScrollPane {
         // language
         JPanel p6 = new JPanel();
         p6.add(new JLabel(f.getString("gui.settings.launcher.language")));
-        p6.add(getAutoSaveComboBox(config.getConfig(), "language", List.of(new String[]{"zh", "en", "ja", "ko"})));
+        p6.add(getAutoSaveComboBox(config.getConfig(), "language", List.of((Language[]) Language.values())));
         panelLauncher.add(p6);
         // max threads
         JPanel p7 = new JPanel();
@@ -388,15 +389,22 @@ public class GuiSettings extends JScrollPane {
         }
     }
 
-    private @NotNull JComboBox<String> getAutoSaveComboBox(JsonObject json, String key, @NotNull List<String> items) {
-        JComboBox<String> cb = new JComboBox<>();
-        for (String item : items) {
-            cb.addItem(item);
+    private @NotNull JComboBox<?> getAutoSaveComboBox(JsonObject json, String key, @NotNull List<?> items) {
+        JComboBox<Object> cb = new JComboBox<>();
+        for (Object item : items) {
+            if (item instanceof Language) {
+                cb.addItem(((Language) item).getView() + "/" + ((Language) item).getCode());
+            } else {
+                cb.addItem(item);
+            }
         }
         cb.setSelectedItem(json.get(key).getAsString());
         cb.addActionListener((e) -> {
-            JComboBox<String> source = (JComboBox<String>) e.getSource();
-            String v = (String) source.getSelectedItem();
+            JComboBox<Object> source = (JComboBox<Object>) e.getSource();
+            if (source.getSelectedItem() == null) {
+                return;
+            }
+            String v = source.getSelectedItem().toString();
             json.addProperty(key, v);
             config.save();
         });
