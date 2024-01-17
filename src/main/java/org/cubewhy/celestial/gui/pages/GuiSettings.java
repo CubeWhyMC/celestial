@@ -167,7 +167,7 @@ public class GuiSettings extends JScrollPane {
         // language
         JPanel p6 = new JPanel();
         p6.add(new JLabel(f.getString("gui.settings.launcher.language")));
-        p6.add(getAutoSaveComboBox(config.getConfig(), "language", List.of(new String[]{"zh", "en"})));
+        p6.add(getAutoSaveComboBox(config.getConfig(), "language", List.of(new String[]{"zh", "en", "jp"})));
         panelLauncher.add(p6);
         // max threads
         JPanel p7 = new JPanel();
