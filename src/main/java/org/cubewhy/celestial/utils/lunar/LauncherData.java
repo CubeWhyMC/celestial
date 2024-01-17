@@ -172,16 +172,16 @@ public final class LauncherData {
         List<String> versions = new ArrayList<>();
         JsonArray versionsJson = Objects.requireNonNull(metadata).getAsJsonObject().getAsJsonArray("versions");
         for (JsonElement version : versionsJson) {
-            String versionId = version.getAsJsonObject().get("id").getAsString();
+            String versionId;
             if (version.getAsJsonObject().has("subversions")) {
                 for (JsonElement subVersion : version.getAsJsonObject().get("subversions").getAsJsonArray()) {
                     versionId = subVersion.getAsJsonObject().get("id").getAsString();
+                    if (version.getAsJsonObject().get("default").getAsBoolean()) {
+                        map.put("default", versionId);
+                    }
+                    versions.add(versionId);
                 }
             }
-            if (version.getAsJsonObject().get("default").getAsBoolean()) {
-                map.put("default", versionId);
-            }
-            versions.add(versionId);
         }
         map.put("versions", versions);
         return map;

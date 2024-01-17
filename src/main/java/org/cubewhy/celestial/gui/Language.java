@@ -7,6 +7,9 @@
 package org.cubewhy.celestial.gui;
 
 import lombok.Getter;
+import org.jetbrains.annotations.Nullable;
+
+import javax.management.loading.MLetContent;
 
 @Getter
 public enum Language {
@@ -23,9 +26,27 @@ public enum Language {
         this.code = code;
     }
 
+    public static @Nullable Language findByCode(String code) {
+        for (Language value : values()) {
+            if (value.code.equals(code)) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    public static @Nullable Language findByView(String view) {
+        for (Language value : values()) {
+            if (value.view.equals(view)) {
+                return value;
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public String toString() {
-        return this.code;
+        return this.view + "/" + this.code;
     }
 }
