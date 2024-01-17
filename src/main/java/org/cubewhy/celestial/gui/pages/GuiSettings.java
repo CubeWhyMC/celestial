@@ -301,7 +301,7 @@ public class GuiSettings extends JScrollPane {
     }
 
     @NotNull
-    private JButton getSelectInstallationButton(File Installation, String name, String type) {
+    private JButton getSelectInstallationButton(@NotNull File Installation, String name, String type) {
         JButton btnSelectLunarCNInstallation = new JButton(Installation.getPath());
         btnSelectLunarCNInstallation.addActionListener((e) -> {
             File file = GuiUtils.saveFile(new FileNameExtensionFilter(name, "jar"));
@@ -394,7 +394,7 @@ public class GuiSettings extends JScrollPane {
         }
     }
 
-    private JComboBox<String> getAutoSaveComboBox(JsonObject json, String key, @NotNull List<String> items) {
+    private @NotNull JComboBox<String> getAutoSaveComboBox(JsonObject json, String key, @NotNull List<String> items) {
         JComboBox<String> cb = new JComboBox<>();
         for (String item : items) {
             cb.addItem(item);
