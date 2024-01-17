@@ -44,8 +44,13 @@ public class GuiSettings extends JScrollPane {
 
     private void initGui() {
         // config
-        // jre
         panel.add(new JLabel(f.getString("gui.settings.warn.restart")));
+        JPanel panelFolders = new JPanel();
+        panelFolders.add(GuiUtils.createButtonOpenFolder(f.getString("gui.settings.folder.main"), config.file.getParentFile()));
+        panelFolders.add(GuiUtils.createButtonOpenFolder(f.getString("gui.settings.folder.theme"), themesDir));
+        panelFolders.add(GuiUtils.createButtonOpenFolder(f.getString("gui.settings.folder.log"), launcherLogFile.getParentFile()));
+        panel.add(panelFolders);
+        // jre
         JPanel panelVM = new JPanel();
         panelVM.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
         panelVM.setBorder(new TitledBorder(null, f.getString("gui.settings.jvm"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
@@ -104,9 +109,7 @@ public class GuiSettings extends JScrollPane {
         JTextField wrapperInput = getAutoSaveTextField(config.getConfig(), "wrapper");
         p3.add(wrapperInput);
         JButton btnSetVMArgs = new JButton(f.getString("gui.settings.jvm.args"));
-        btnSetVMArgs.addActionListener((e) -> {
-            new ArgsConfigDialog("vm-args", config.getConfig()).setVisible(true);
-        });
+        btnSetVMArgs.addActionListener((e) -> new ArgsConfigDialog("vm-args", config.getConfig()).setVisible(true));
         panelVM.add(btnSetVMArgs);
         panelVM.add(p3);
 
@@ -167,7 +170,7 @@ public class GuiSettings extends JScrollPane {
         // language
         JPanel p6 = new JPanel();
         p6.add(new JLabel(f.getString("gui.settings.launcher.language")));
-        p6.add(getAutoSaveComboBox(config.getConfig(), "language", List.of(new String[]{"zh", "en", "jp"})));
+        p6.add(getAutoSaveComboBox(config.getConfig(), "language", List.of(new String[]{"zh", "en", "ja", "ko"})));
         panelLauncher.add(p6);
         // max threads
         JPanel p7 = new JPanel();
@@ -229,16 +232,9 @@ public class GuiSettings extends JScrollPane {
         btnGroup.add(btnWeave);
         JRadioButton btnLunarCN = new JRadioButton("LunarCN", isLoaderSelected("cn"));
         btnGroup.add(btnLunarCN);
-        btnLoaderUnset.addActionListener((e) -> {
-            // make weave & cn = false
-            toggleLoader(null);
-        });
-        btnWeave.addActionListener((e) -> {
-            toggleLoader("weave");
-        });
-        btnLunarCN.addActionListener((e) -> {
-            toggleLoader("cn");
-        });
+        btnLoaderUnset.addActionListener((e) -> toggleLoader(null));
+        btnWeave.addActionListener((e) -> toggleLoader("weave"));
+        btnLunarCN.addActionListener((e) -> toggleLoader("cn"));
         p10.add(btnLoaderUnset);
         p10.add(btnWeave);
         p10.add(btnLunarCN);
@@ -375,20 +371,18 @@ public class GuiSettings extends JScrollPane {
                 if (s.getValue().isJsonPrimitive()) {
                     JPanel p = getSimplePanel(json, s.getKey());
                     basePanel.add(p);
-                }
-                if (s.getValue().isJsonObject()) {
+                } else if (s.getValue().isJsonObject()) {
                     JPanel subPanel = new JPanel();
                     subPanel.setBorder(new TitledBorder(null, s.getKey(), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
                     subPanel.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
                     basePanel.add(subPanel);
                     addUnclaimed(subPanel, s.getValue().getAsJsonObject());
-                }
-                if (s.getValue().isJsonArray()) {
+                } else if (s.getValue().isJsonArray()) {
                     JButton btnShowList = new JButton(s.getKey());
-                    btnShowList.addActionListener((e) -> {
-                        new ArgsConfigDialog(s.getKey(), json).setVisible(true);
-                    });
+                    btnShowList.addActionListener((e) -> new ArgsConfigDialog(s.getKey(), json).setVisible(true));
                     basePanel.add(btnShowList);
+                } else if (s.getValue().isJsonNull()) {
+                    basePanel.add(new JLabel(s.getKey() + ": null"));
                 }
             }
         }
@@ -423,7 +417,6 @@ public class GuiSettings extends JScrollPane {
             panel.add(new JLabel(key));
             JSpinner spinner = getAutoSaveSpinner(json, key, Double.MIN_VALUE, Double.MAX_VALUE);
             panel.add(spinner);
-
         }
         return panel;
     }

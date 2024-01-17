@@ -17,11 +17,13 @@ import org.cubewhy.celestial.utils.lunar.LauncherData;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Enumeration;
 import java.util.Map;
 
 import static org.cubewhy.celestial.Celestial.*;
@@ -40,6 +42,11 @@ public class GuiLauncher extends JFrame {
 
         // init icon
         this.resetIcon();
+
+        // init font
+        if (!config.getValue("font").isJsonNull()) {
+            this.initFont(new Font(config.getValue("font").getAsString(), Font.PLAIN, 13));
+        }
 
         this.initGui();
         // show alert
@@ -84,7 +91,6 @@ public class GuiLauncher extends JFrame {
         menu.add(btnNext);
         menu.add(btnDonate);
         menu.add(btnHelp);
-//        menu.add(btnLanguage);
         menu.setSize(100, 20);
 
         this.add(menu, BorderLayout.NORTH);
@@ -106,13 +112,26 @@ public class GuiLauncher extends JFrame {
         this.add(mainPanel); // add MainPanel
 
         // try to find the exist game process
-        new Thread(() ->{
+        new Thread(() -> {
             try {
                 this.findExistGame();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }).start();
+    }
+
+    public void initFont(Font font) {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        ge.registerFont(font);
+        FontUIResource fontRes = new FontUIResource(font);
+        for (Enumeration<Object> keys = UIManager.getDefaults().keys(); keys.hasMoreElements(); ) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value instanceof FontUIResource) {
+                UIManager.put(key, fontRes);
+            }
+        }
     }
 
     public void findExistGame() throws IOException {

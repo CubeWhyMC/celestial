@@ -3,12 +3,12 @@
   <component name="ResourceBundleManager">
     <file url="file://$PROJECT_DIR$/src/main/resources/languages/launcher.properties" />
     <file url="file://$PROJECT_DIR$/src/main/resources/languages/launcher_en.properties" />
-    <file url="file://$PROJECT_DIR$/src/main/resources/languages/launcher_jp.properties" />
     <file url="file://$PROJECT_DIR$/src/main/resources/languages/launcher_zh.properties" />
     <custom-resource-bundle>
       <file value="file://$PROJECT_DIR$/src/main/resources/languages/launcher.properties" />
       <file value="file://$PROJECT_DIR$/src/main/resources/languages/launcher_en.properties" />
-      <file value="file://$PROJECT_DIR$/src/main/resources/languages/launcher_jp.properties" />
+      <file value="file://$PROJECT_DIR$/src/main/resources/languages/launcher_ja.properties" />
+      <file value="file://$PROJECT_DIR$/src/main/resources/languages/launcher_ko.properties" />
       <file value="file://$PROJECT_DIR$/src/main/resources/languages/launcher_zh.properties" />
       <base-name>launcher</base-name>
     </custom-resource-bundle>
