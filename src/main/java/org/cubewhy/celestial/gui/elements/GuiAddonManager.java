@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.cubewhy.celestial.Celestial.f;
+import static org.cubewhy.celestial.utils.GuiUtils.createButtonOpenFolder;
 
 @Slf4j
 public class GuiAddonManager extends JPanel {
@@ -411,21 +412,6 @@ public class GuiAddonManager extends JPanel {
         for (LunarCNMod lunarCNMod : LunarCNMod.findAll()) {
             modList.addElement(lunarCNMod);
         }
-    }
-
-    private @NotNull JButton createButtonOpenFolder(String text, File folder) {
-        JButton btn = new JButton(text);
-        btn.addActionListener(e -> {
-            try {
-                if (folder.mkdirs()) {
-                    log.info("Creating " + folder + " because the folder not exist");
-                }
-                Desktop.getDesktop().open(folder);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-        return btn;
     }
 
     private static void loadWeaveMods(DefaultListModel<WeaveMod> weave) {

@@ -239,6 +239,7 @@ public class Celestial {
 
         config.initValue("jre", "") // leave empty if you want to use the default one
                 .initValue("language", "zh") // en, zh
+                .initValue("font", (JsonElement) null)
                 .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("game", (JsonElement) null)
