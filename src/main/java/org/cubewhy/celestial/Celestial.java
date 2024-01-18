@@ -315,18 +315,20 @@ public class Celestial {
     public static ProcessBuilder launch() throws IOException {
         // wrapper was applied in the script
         log.info("Launching with script");
+        log.info("delete the log file");
+        gameLogFile.delete();
         if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
             // Windows
             // delete the log file
-            log.info("delete the log file");
-            gameLogFile.delete();
             ProcessBuilder builder = new ProcessBuilder();
             builder.command(System.getenv("WINDIR") + "/System32/cmd.exe", "/C \"" + launchScript.getPath() + String.format(" 1>>\"%s\" 2>&1\"", gameLogFile.getPath()));
             return builder;
         } else {
             // others
+            // do chmod
+            Runtime.getRuntime().exec("chmod 777 " + launchScript.getPath());
             ProcessBuilder builder = new ProcessBuilder();
-            builder.command("/bin/bash", "\"" + launchScript.getPath() + "\"");
+            builder.command("/bin/bash", "-c", "\"" + launchScript.getPath() + "\" > \"" + gameLogFile.getPath() + "\"");
             return builder;
         }
     }
