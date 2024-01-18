@@ -168,6 +168,7 @@ public class GuiLauncher extends JFrame {
         switch (themeType) {
             case "light":
                 this.setIconImage("icon-dark");
+                break;
             case "dark":
             default:
                 this.setIconImage("icon-light");
