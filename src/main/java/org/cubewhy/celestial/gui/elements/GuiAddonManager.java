@@ -7,9 +7,7 @@
 package org.cubewhy.celestial.gui.elements;
 
 import lombok.extern.slf4j.Slf4j;
-import org.cubewhy.celestial.event.EventTarget;
 import org.cubewhy.celestial.event.impl.AddonAddEvent;
-import org.cubewhy.celestial.event.impl.CreateLauncherEvent;
 import org.cubewhy.celestial.game.BaseAddon;
 import org.cubewhy.celestial.game.addon.FabricMod;
 import org.cubewhy.celestial.game.addon.JavaAgent;
@@ -25,7 +23,8 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -39,6 +38,10 @@ public class GuiAddonManager extends JPanel {
     private final DefaultListModel<WeaveMod> weaveList = new DefaultListModel<>();
     private final DefaultListModel<JavaAgent> agentList = new DefaultListModel<>();
     private final DefaultListModel<FabricMod> fabricList = new DefaultListModel<>();
+
+    private final JMenuItem toggleWeave = new JMenuItem("toggle");
+    private final JMenuItem toggleCN = new JMenuItem("toggle");
+    private final JMenuItem toggleAgent = new JMenuItem("toggle");
 
     public GuiAddonManager() {
         this.setBorder(new TitledBorder(null, f.getString("gui.addons.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
@@ -58,8 +61,26 @@ public class GuiAddonManager extends JPanel {
         JList<WeaveMod> jListWeave = new JList<>(weaveList);
         JList<JavaAgent> jListAgents = new JList<>(agentList);
         JList<FabricMod> jListFabric = new JList<>(fabricList);
+
+        toggleWeave.addActionListener(e -> {
+            jListWeave.getSelectedValue().toggle();
+            weaveList.removeAllElements();
+            loadWeaveMods(weaveList);
+        });
+        toggleCN.addActionListener(e -> {
+            jListLunarCN.getSelectedValue().toggle();
+            lunarcnList.removeAllElements();
+            loadLunarCNMods(lunarcnList);
+        });
+        toggleAgent.addActionListener(e -> {
+            jListAgents.getSelectedValue().toggle();
+            agentList.removeAllElements();
+            loadAgents(agentList);
+        });
+
         // menus
         JPopupMenu agentMenu = new JPopupMenu();
+        agentMenu.add(toggleAgent);
         JMenuItem manageArg = new JMenuItem(f.getString("gui.addon.agents.arg"));
         JMenuItem removeAgent = new JMenuItem(f.getString("gui.addon.agents.remove"));
         JMenuItem renameAgent = new JMenuItem(f.getString("gui.addon.rename"));
@@ -111,6 +132,7 @@ public class GuiAddonManager extends JPanel {
 
         // weave menu
         JPopupMenu weaveMenu = new JPopupMenu();
+        weaveMenu.add(toggleWeave);
         JMenuItem renameWeaveMod = new JMenuItem(f.getString("gui.addon.rename"));
         JMenuItem removeWeaveMod = new JMenuItem(f.getString("gui.addon.mods.weave.remove"));
         weaveMenu.add(renameWeaveMod);
@@ -141,6 +163,7 @@ public class GuiAddonManager extends JPanel {
         });
 
         JPopupMenu lunarCNMenu = new JPopupMenu();
+        lunarCNMenu.add(toggleCN);
         JMenuItem renameLunarCNMod = new JMenuItem(f.getString("gui.addon.rename"));
         JMenuItem removeLunarCNMod = new JMenuItem(f.getString("gui.addon.mods.cn.remove"));
         lunarCNMenu.add(renameLunarCNMod);
@@ -434,6 +457,16 @@ public class GuiAddonManager extends JPanel {
                 if (SwingUtilities.isRightMouseButton(e)) {
                     int index = list.locationToIndex(e.getPoint());
                     list.setSelectedIndex(index);
+                    BaseAddon current = list.getSelectedValue();
+                    if (current.isEnabled()) {
+                        toggleWeave.setText(f.getString("gui.addon.toggle.disable"));
+                        toggleAgent.setText(f.getString("gui.addon.toggle.disable"));
+                        toggleCN.setText(f.getString("gui.addon.toggle.disable"));
+                    } else {
+                        toggleWeave.setText(f.getString("gui.addon.toggle.enable"));
+                        toggleAgent.setText(f.getString("gui.addon.toggle.enable"));
+                        toggleCN.setText(f.getString("gui.addon.toggle.enable"));
+                    }
                     menu.show(list, e.getX(), e.getY());
                 }
             }

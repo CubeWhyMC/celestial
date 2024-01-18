@@ -49,4 +49,15 @@ public class FabricMod extends BaseAddon {
     public String toString() {
         return this.file.getName();
     }
+
+    @Override
+    public boolean isEnabled() {
+        // TODO fabric: isEnabled
+        return true;
+    }
+
+    @Override
+    public boolean toggle() {
+        return toggle0(file);
+    }
 }

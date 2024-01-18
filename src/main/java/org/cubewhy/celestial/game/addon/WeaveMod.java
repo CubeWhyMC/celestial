@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +40,7 @@ public class WeaveMod extends BaseAddon {
      */
     @NotNull
     @Contract(pure = true)
-    public static List<WeaveMod> findAll() {
+    public static List<WeaveMod> findEnabled() {
         List<WeaveMod> list = new ArrayList<>();
         if (modFolder.isDirectory()) {
             for (File file : Objects.requireNonNull(modFolder.listFiles())) {
@@ -51,12 +52,31 @@ public class WeaveMod extends BaseAddon {
         return list;
     }
 
+    public static @NotNull List<WeaveMod> findDisabled() {
+        List<WeaveMod> list = new ArrayList<>();
+        if (modFolder.isDirectory()) {
+            for (File file : Objects.requireNonNull(modFolder.listFiles())) {
+                if (file.getName().endsWith(".jar.disabled") && file.isFile()) {
+                    list.add(new WeaveMod(file));
+                }
+            }
+        }
+        return list;
+    }
+
+    public static @NotNull List<WeaveMod> findAll() {
+        List<WeaveMod> list = findEnabled();
+        list.addAll(findDisabled());
+        return Collections.unmodifiableList(list);
+    }
+
     public static @Nullable WeaveMod add(@NotNull File file) throws IOException {
         File target = autoCopy(file, modFolder);
         return (target == null) ? null : new WeaveMod(target);
     }
 
-    public static File getInstallation() {
+    @Contract(" -> new")
+    public static @NotNull File getInstallation() {
         return new File(config.getValue("addon").getAsJsonObject().get("weave").getAsJsonObject().get("installation").getAsString());
     }
 
@@ -68,5 +88,15 @@ public class WeaveMod extends BaseAddon {
     public static boolean checkUpdate() throws MalformedURLException {
         log.info("Updating Weave Loader");
         return AddonUtils.downloadLoader("Weave-MC/Weave-Loader", new File(config.getValue("addon").getAsJsonObject().getAsJsonObject("weave").get("installation").getAsString()));
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return file.getName().endsWith(".jar");
+    }
+
+    @Override
+    public boolean toggle() {
+        return toggle0(file);
     }
 }
