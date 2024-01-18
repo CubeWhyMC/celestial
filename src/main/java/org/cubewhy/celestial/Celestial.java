@@ -366,7 +366,7 @@ public class Celestial {
         args.add("-Xmx" + ram + "m");
         args.addAll(LauncherData.getDefaultJvmArgs(json, installation));
         // === javaagents ===
-        List<JavaAgent> javaAgents = JavaAgent.findAll();
+        List<JavaAgent> javaAgents = JavaAgent.findEnabled();
         int size = javaAgents.size();
         if (size != 0) {
             log.info(String.format("Found %s javaagent%s (Except loaders)", size, (size == 1) ? "" : "s"));

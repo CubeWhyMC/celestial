@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -87,18 +88,38 @@ public class JavaAgent extends BaseAddon {
     }
 
     /**
-     * Find all javaagents in the javaagent folder
+     * Find all mods in the weave mods folder
      */
     @NotNull
     @Contract(pure = true)
-    public static List<JavaAgent> findAll() {
+    public static List<JavaAgent> findEnabled() {
         List<JavaAgent> list = new ArrayList<>();
-        for (File file : Objects.requireNonNull(javaAgentFolder.listFiles())) {
-            if (file.getName().endsWith(".jar") && file.isFile()) {
-                list.add(new JavaAgent(file, findAgentArg(file.getName())));
+        if (javaAgentFolder.isDirectory()) {
+            for (File file : Objects.requireNonNull(javaAgentFolder.listFiles())) {
+                if (file.getName().endsWith(".jar") && file.isFile()) {
+                    list.add(new JavaAgent(file));
+                }
             }
         }
         return list;
+    }
+
+    public static @NotNull List<JavaAgent> findDisabled() {
+        List<JavaAgent> list = new ArrayList<>();
+        if (javaAgentFolder.isDirectory()) {
+            for (File file : Objects.requireNonNull(javaAgentFolder.listFiles())) {
+                if (file.getName().endsWith(".jar.disabled") && file.isFile()) {
+                    list.add(new JavaAgent(file));
+                }
+            }
+        }
+        return list;
+    }
+
+    public static @NotNull List<JavaAgent> findAll() {
+        List<JavaAgent> list = findEnabled();
+        list.addAll(findDisabled());
+        return Collections.unmodifiableList(list);
     }
 
     /**
@@ -180,5 +201,15 @@ public class JavaAgent extends BaseAddon {
             result += "=" + this.arg;
         }
         return result;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.file.getName().endsWith(".jar");
+    }
+
+    @Override
+    public boolean toggle() {
+        return toggle0(file);
     }
 }
