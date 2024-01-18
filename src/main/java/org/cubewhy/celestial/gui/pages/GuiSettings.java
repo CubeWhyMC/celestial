@@ -173,10 +173,10 @@ public class GuiSettings extends JScrollPane {
         p6.add(new JLabel(f.getString("gui.settings.launcher.language")));
         p6.add(getAutoSaveComboBox(config.getConfig(), "language", List.of((Language[]) Language.values())));
         panelLauncher.add(p6);
-        // max threads
+        // max-threads
         JPanel p7 = new JPanel();
         p7.add(new JLabel(f.getString("gui.settings.launcher.max-threads")));
-        p7.add(getAutoSaveSpinner(config.getConfig(), "max-threads", 1, 256));
+        p7.add(getAutoSaveSpinner(config.getConfig(), "max-threads", 1, 256, 1));
         panelLauncher.add(p7);
         // installation-dir
         JPanel p8 = new JPanel();
@@ -437,16 +437,16 @@ public class GuiSettings extends JScrollPane {
             panel.add(input);
         } else if (value.isNumber()) {
             panel.add(new JLabel(key));
-            JSpinner spinner = getAutoSaveSpinner(json, key, Double.MIN_VALUE, Double.MAX_VALUE);
+            JSpinner spinner = getAutoSaveSpinner(json, key, Double.MIN_VALUE, Double.MAX_VALUE, 0.01);
             panel.add(spinner);
         }
         return panel;
     }
 
     @NotNull
-    private static JSpinner getAutoSaveSpinner(@NotNull JsonObject json, String key, double min, double max) {
+    private static JSpinner getAutoSaveSpinner(@NotNull JsonObject json, String key, double min, double max, double step) {
         JsonPrimitive value = json.getAsJsonPrimitive(key);
-        JSpinner spinner = new JSpinner(new SpinnerNumberModel(value.getAsDouble(), min, max, 0.01));
+        JSpinner spinner = new JSpinner(new SpinnerNumberModel(value.getAsDouble(), min, max, step));
         spinner.setAutoscrolls(true);
         JComponent editor = spinner.getEditor();
         JFormattedTextField textField = ((JSpinner.DefaultEditor) editor).getTextField();
