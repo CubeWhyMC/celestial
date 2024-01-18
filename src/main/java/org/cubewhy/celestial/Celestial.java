@@ -413,7 +413,11 @@ public class Celestial {
                 natives = new File(installation, artifact.getAsJsonObject().get("name").getAsString());
             }
         }
-        args.add(String.join(";", classpath));
+        if (OSEnum.getCurrent().equals(OSEnum.Windows)) {
+            args.add(String.join(";", classpath));
+        } else {
+            args.add(String.join(":", classpath));
+        }
         // === main class ===
         args.add(LauncherData.getMainClass(json));
         // === game args ===
