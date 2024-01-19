@@ -3,7 +3,6 @@ package org.cubewhy.celestial;
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.formdev.flatlaf.IntelliJTheme;
-import com.formdev.flatlaf.json.Json;
 import com.google.gson.*;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
@@ -239,7 +238,6 @@ public class Celestial {
 
         config.initValue("jre", "") // leave empty if you want to use the default one
                 .initValue("language", "zh") // en, zh
-                .initValue("font", (JsonElement) null)
                 .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("game", (JsonElement) null)
@@ -285,16 +283,10 @@ public class Celestial {
         String themeType = config.getValue("theme").getAsString();
         log.info("Set theme -> " + themeType);
         switch (themeType) {
-            case "dark" -> {
-                FlatDarkLaf.setup();
-            }
-            case "light" -> {
-                FlatLightLaf.setup();
-            }
-            case "unset" -> {
-                // do nothing
-                themed = false;
-            }
+            case "dark" -> FlatDarkLaf.setup();
+            case "light" -> FlatLightLaf.setup();
+            case "unset" -> // do nothing
+                    themed = false;
             default -> {
                 File themeFile = new File(themesDir, themeType);
                 if (!themeFile.exists()) {
