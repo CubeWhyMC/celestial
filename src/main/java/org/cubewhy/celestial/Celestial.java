@@ -276,7 +276,7 @@ public class Celestial {
         if (os.equals(OSEnum.Windows)) {
             return new File(System.getenv("APPDATA"), ".minecraft");
         }
-        return new File(System.getProperty("user.home", ".minecraft"));
+        return new File(System.getProperty("user.home"), ".minecraft");
     }
 
     public static void initTheme() throws IOException {
