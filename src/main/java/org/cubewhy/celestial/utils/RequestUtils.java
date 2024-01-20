@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.net.URL;
 
+import static org.cubewhy.celestial.Celestial.proxy;
+
 public final class RequestUtils {
     public static final OkHttpClient httpClient = new OkHttpClient();
     public static final MediaType JSON = MediaType.get("application/json");
@@ -19,9 +21,10 @@ public final class RequestUtils {
         return get(new URL(url));
     }
 
+    @SneakyThrows
     public static @NotNull Call get(URL url) {
         Request request = new Request.Builder()
-                .url(url)
+                .url(proxy.useMirror(url))
                 .build();
 
         return httpClient.newCall(request);

@@ -59,7 +59,7 @@ public final class AddonUtils {
 
     public static boolean downloadLoader(String repo, File file) throws MalformedURLException {
         String apiJson;
-        try (Response response = RequestUtils.get(String.format("https://%s/repos/%s/releases/latest", f.getString("url.github.api"), repo)).execute()) {
+        try (Response response = RequestUtils.get(String.format("https://api.github.com/repos/%s/releases/latest", repo)).execute()) {
             assert response.body() != null;
             apiJson = response.body().string();
         } catch (Exception e) {
@@ -72,7 +72,6 @@ public final class AddonUtils {
             Assets[] assetsArray = releaseEntity.getAssets().toArray(new Assets[0]);
             for (Assets assets : assetsArray) {
                 URL url = new URL(assets.getBrowser_download_url());
-                url = new URL("https", f.getString("url.github"), 443, url.getPath());
                 if (assets.getName().endsWith(".jar")) {
                     loader = url;
                 }
