@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,8 +18,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.cubewhy.celestial.Celestial.config;
-import static org.cubewhy.celestial.Celestial.configDir;
+import static org.cubewhy.celestial.Celestial.*;
 import static org.cubewhy.celestial.gui.GuiLauncher.statusBar;
 
 @Slf4j
@@ -66,7 +66,7 @@ public final class DownloadManager {
     /**
      * Download a file
      *
-     * @param url  url to the target file (online)
+     * @param url0  url to the target file (online)
      * @param file file instance of the local file
      * @return is success
      */

@@ -13,6 +13,7 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.cubewhy.celestial.Celestial.f;

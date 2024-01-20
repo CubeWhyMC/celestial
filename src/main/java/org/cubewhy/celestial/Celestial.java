@@ -11,6 +11,7 @@ import org.cubewhy.celestial.event.impl.CreateLauncherEvent;
 import org.cubewhy.celestial.files.ConfigFile;
 import org.cubewhy.celestial.files.DownloadManager;
 import org.cubewhy.celestial.files.Downloadable;
+import org.cubewhy.celestial.files.ProxyConfig;
 import org.cubewhy.celestial.game.AuthServer;
 import org.cubewhy.celestial.game.GameArgs;
 import org.cubewhy.celestial.game.GameArgsResult;
@@ -44,6 +45,7 @@ public class Celestial {
     public static final File configDir = new File(System.getProperty("user.home"), ".cubewhy/lunarcn");
     public static final File themesDir = new File(configDir, "themes");
     public static final ConfigFile config = new ConfigFile(new File(configDir, "celestial.json"));
+    public static final ProxyConfig proxy = new ProxyConfig(new File(configDir, "proxy.json"));
     public static Locale locale;
     public static String userLanguage;
     public static ResourceBundle f;
