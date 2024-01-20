@@ -237,7 +237,7 @@ public class Celestial {
         addon.add("lunarcn", lunarcn);
 
         config.initValue("jre", "") // leave empty if you want to use the default one
-                .initValue("language", "zh") // en, zh
+                .initValue("language", Locale.getDefault().getLanguage()) // en, zh, ja, ko
                 .initValue("installation-dir", new File(configDir, "game").getPath())
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("game", (JsonElement) null)
