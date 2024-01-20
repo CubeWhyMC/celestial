@@ -23,27 +23,27 @@ public class ConfigFile {
 
     public ConfigFile setValue(String key, String value) {
         this.config.addProperty(key, value);
-        return this.save();
+        return this;
     }
 
     public ConfigFile setValue(String key, char value) {
         this.config.addProperty(key, value);
-        return this.save();
+        return this;
     }
 
     public ConfigFile setValue(String key, Number value) {
         this.config.addProperty(key, value);
-        return this.save();
+        return this;
     }
 
     public ConfigFile setValue(String key, boolean value) {
         this.config.addProperty(key, value);
-        return this.save();
+        return this;
     }
 
     public ConfigFile setValue(String key, JsonObject value) {
         this.config.add(key, value);
-        return this.save();
+        return this;
     }
 
     public ConfigFile initValue(String key, JsonElement value) {
@@ -51,7 +51,7 @@ public class ConfigFile {
             log.info("Init value " + key + " -> " + value);
             this.config.add(key, value);
         }
-        return this.save();
+        return this;
     }
 
     public ConfigFile initValue(String key, String value) {

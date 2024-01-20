@@ -18,6 +18,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 public class ProxyConfig extends ConfigFile {
+
     @Getter
     public static class Mirror {
 
@@ -53,8 +54,12 @@ public class ProxyConfig extends ConfigFile {
     }
 
     public Proxy getProxy() throws MalformedURLException {
-        URL address = new URL(this.getValue("proxy").getAsString());
+        URL address = new URL(this.getProxyAddress());
         return new Proxy(getType(address.getProtocol()), new InetSocketAddress(address.getHost(), address.getPort()));
+    }
+
+    public String getProxyAddress() {
+        return this.getValue("proxy").getAsString();
     }
 
     private Proxy.Type getType(@NotNull String protocol) {
