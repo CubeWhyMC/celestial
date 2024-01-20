@@ -53,7 +53,7 @@ public class GuiVersionSelect extends JPanel {
 
     public GuiVersionSelect() throws IOException {
         this.setBorder(new TitledBorder(null, f.getString("gui.version-select.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
-        this.setLayout(new GridLayout(4, 2, 5, 5));
+        this.setLayout(new GridLayout(5, 2, 5, 5));
 
         this.initGui();
     }
@@ -122,6 +122,24 @@ public class GuiVersionSelect extends JPanel {
                 log.warn("Failed to attach to the game process");
             }
         });
+
+        JButton btnWipeCache = new JButton(f.getString("gui.version.cache.wipe"));
+
+        btnWipeCache.addActionListener((e) -> {
+            if (JOptionPane.showConfirmDialog(this, f.getString("gui.version.cache.warn"), "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                statusBar.setText(f.getString("gui.version.cache.start"));
+                try {
+                    if (Celestial.wipeCache(null)) {
+                        statusBar.setText(f.getString("gui.version.cache.success"));
+                    } else {
+                        statusBar.setText(f.getString("gui.version.cache.failure"));
+                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+        this.add(btnWipeCache);
     }
 
     private void beforeLaunch() throws IOException, AttachNotSupportedException, InterruptedException {
