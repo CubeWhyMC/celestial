@@ -289,6 +289,23 @@ public class GuiSettings extends JScrollPane {
         claim("program-args", panelGame);
         claim("resize");
 
+        JPanel panelProxy = new JPanel();
+        panelProxy.setBorder(new TitledBorder(null, f.getString("gui.settings.proxy"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
+        panelProxy.setLayout(new VerticalFlowLayout(VerticalFlowLayout.LEFT));
+
+        JPanel p18 = new JPanel();
+        p18.add(new JLabel(f.getString("gui.settings.proxy.address")));
+
+        p18.add(getAutoSaveTextField(proxy.getConfig(), "proxy"));
+        p18.add(getAutoSaveCheckBox(proxy.getConfig(), "state", f.getString("gui.settings.proxy.state")));
+
+        JButton btnMirror = new JButton(f.getString("gui.settings.proxy.mirror"));
+        // TODO GuiMirror
+        panelProxy.add(btnMirror);
+        panelProxy.add(p18);
+
+        panel.add(panelProxy);
+
         if (config.getConfig().keySet().size() != claimed.size()) {
             JPanel panelUnclaimed = new JPanel();
             panelUnclaimed.setBorder(new TitledBorder(null, f.getString("gui.settings.unclaimed"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
@@ -315,7 +332,7 @@ public class GuiSettings extends JScrollPane {
 
     private void setModLoaderInstallation(String key, @NotNull File file) {
         config.getValue("addon").getAsJsonObject().getAsJsonObject(key).addProperty("installation", file.getPath());
-        config.save();
+        
     }
 
     /**
@@ -338,7 +355,7 @@ public class GuiSettings extends JScrollPane {
         JsonObject cn = addon.get("lunarcn").getAsJsonObject();
         weave.addProperty("enable", b1);
         cn.addProperty("enable", b2);
-        config.save();
+        
     }
 
     private boolean isLoaderSelected(String type) {
@@ -353,7 +370,7 @@ public class GuiSettings extends JScrollPane {
             log.warn("Weave cannot load with LunarCN, auto corrected");
             weave.addProperty("enable", false);
             cn.addProperty("enable", false);
-            config.save();
+            
             return isLoaderSelected(null);
         }
         if (type == null) {
@@ -421,7 +438,6 @@ public class GuiSettings extends JScrollPane {
                 v = source.getSelectedItem().toString();
             }
             json.addProperty(key, v);
-            config.save();
         });
         return cb;
     }
@@ -455,7 +471,6 @@ public class GuiSettings extends JScrollPane {
             JSpinner source = (JSpinner) e.getSource();
             Number v = (Number) source.getValue();
             json.addProperty(key, v);
-            config.save();
         });
         textField.setColumns(20);
         return spinner;
@@ -469,7 +484,6 @@ public class GuiSettings extends JScrollPane {
         cb.addActionListener((e) -> {
             JCheckBox source = (JCheckBox) e.getSource();
             json.addProperty(key, source.isSelected());
-            config.save();
         });
         return cb;
     }
@@ -482,7 +496,7 @@ public class GuiSettings extends JScrollPane {
             JTextField source = (JTextField) e.getSource();
             // save value
             json.addProperty(key, source.getText());
-            config.save();
+            
         });
         input.addFocusListener(new FocusAdapter() {
             @Override
@@ -490,7 +504,6 @@ public class GuiSettings extends JScrollPane {
                 JTextField source = (JTextField) e.getSource();
                 // save value
                 json.addProperty(key, source.getText());
-                config.save();
             }
         });
         return input;

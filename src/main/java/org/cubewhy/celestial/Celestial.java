@@ -25,6 +25,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -183,7 +185,22 @@ public class Celestial {
         launcherFrame = new GuiLauncher();
         new CreateLauncherEvent(launcherFrame).call();
         launcherFrame.setVisible(true);
-        launcherFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        launcherFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                log.info("Closing celestial, dumping configs...");
+                // dump configs
+                proxy.save();
+                config.save();
+                launcherFrame.dispose();
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                System.exit(0); // exit java
+            }
+        });
     }
 
     private static void checkJava() throws IOException {
@@ -254,6 +271,7 @@ public class Celestial {
                 .initValue("program-args", new JsonArray()) // args of the game
                 .initValue("javaagents", new JsonObject()); // lc addon
         // init language
+        config.save();
         log.info("Initializing language manager");
         locale = Locale.forLanguageTag(config.getValue("language").getAsString());
         userLanguage = locale.getLanguage();

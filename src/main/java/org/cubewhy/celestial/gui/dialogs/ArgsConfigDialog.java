@@ -85,7 +85,6 @@ public class ArgsConfigDialog extends JDialog {
         this.array.add(arg);
         model.addElement(arg);
         log.info("Add a arg to " + this.key + " -> " + arg);
-        config.save();
     }
 
     private void removeArg(int index, @NotNull DefaultListModel<String> model) {
@@ -93,6 +92,5 @@ public class ArgsConfigDialog extends JDialog {
         model.remove(index);
         this.array.remove(index);
         log.info("Remove a arg to " + this.key + " -> " + arg);
-        config.save();
     }
 }
