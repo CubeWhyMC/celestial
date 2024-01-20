@@ -48,10 +48,13 @@ public class Celestial {
     public static final File themesDir = new File(configDir, "themes");
     public static final ConfigFile config = new ConfigFile(new File(configDir, "celestial.json"));
     public static final ProxyConfig proxy = new ProxyConfig(new File(configDir, "proxy.json"));
+    public static final File gameLogFile = new File(configDir, "logs/game.log");
+    public static final File launcherLogFile = new File(configDir, "logs/launcher.log");
+    public static final boolean isDevelopMode = System.getProperties().containsKey("dev-mode");
+    public static final AtomicLong gamePid = new AtomicLong();
     public static Locale locale;
     public static String userLanguage;
     public static ResourceBundle f;
-
     public static LauncherData launcherData;
     public static JsonObject metadata;
     public static JsonObject minecraftManifest;
@@ -59,10 +62,6 @@ public class Celestial {
     public static boolean themed = true;
     public static String os = System.getProperty("os.name");
     public static final File launchScript = new File(configDir, (os.contains("Windows")) ? "launch.bat" : "launch.sh");
-    public static final File gameLogFile = new File(configDir, "logs/game.log");
-    public static final File launcherLogFile = new File(configDir, "logs/launcher.log");
-    public static final boolean isDevelopMode = System.getProperties().containsKey("dev-mode");
-    public static final AtomicLong gamePid = new AtomicLong();
     public static File sessionFile;
 
     static {
@@ -270,8 +269,8 @@ public class Celestial {
                 .initValue("wrapper", "") // like optirun on linux
                 .initValue("program-args", new JsonArray()) // args of the game
                 .initValue("javaagents", new JsonObject()); // lc addon
-        // init language
         config.save();
+        // init language
         log.info("Initializing language manager");
         locale = Locale.forLanguageTag(config.getValue("language").getAsString());
         userLanguage = locale.getLanguage();
@@ -318,6 +317,23 @@ public class Celestial {
                 IntelliJTheme.setup(stream); // load theme
             }
         }
+    }
+
+    /**
+     * Wipe $game-installation/cache/:id
+     *
+     * @param id cache id
+     */
+    public static boolean wipeCache(@Nullable String id) throws IOException {
+        log.info("Wiping LC cache");
+        File installation = new File(config.getValue("installation-dir").getAsString());
+        File cache;
+        if (id == null) {
+            cache = new File(installation, "cache");
+        } else {
+            cache = new File(installation, "cache/" + id);
+        }
+        return cache.exists() && FileUtils.deleteDir(cache);
     }
 
     /**
