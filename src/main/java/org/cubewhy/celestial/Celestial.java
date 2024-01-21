@@ -260,7 +260,7 @@ public class Celestial {
                 .initValue("game-dir", getMinecraftFolder().getPath()) // the minecraft folder
                 .initValue("game", (JsonElement) null)
                 .initValue("addon", addon)
-                .initValue("ram", 4096)
+                .initValue("ram", SystemUtils.getTotalMem() / 4)
                 .initValue("max-threads", Runtime.getRuntime().availableProcessors()) // recommend: same as your CPU core
                 .initValue("api", "https://api.lunarclient.top") // only support the LunarCN api, Moonsworth's looks like shit :(
                 .initValue("theme", "dark") // dark, light, unset, custom.
