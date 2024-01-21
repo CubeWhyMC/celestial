@@ -25,8 +25,8 @@ public class AuthServer {
         try {
             return method != null ? handleRequest(method, args) : null;
         } catch (Exception e) {
-
-            log.info(TextUtils.dumpTrace(e));
+            log.error("Failed to start the auth server");
+            log.error(TextUtils.dumpTrace(e));
         }
         return null;
     });
