@@ -9,8 +9,10 @@ import org.cubewhy.celestial.game.addon.LunarCNMod;
 import org.cubewhy.celestial.game.addon.WeaveMod;
 import org.cubewhy.celestial.gui.Language;
 import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog;
+import org.cubewhy.celestial.gui.dialogs.MirrorDialog;
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout;
 import org.cubewhy.celestial.utils.GuiUtils;
+import org.cubewhy.celestial.utils.OSEnum;
 import org.cubewhy.celestial.utils.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -60,7 +62,7 @@ public class GuiSettings extends JScrollPane {
         JButton btnSelectPath = new JButton((customJre.isEmpty()) ? SystemUtils.getCurrentJavaExec().getPath() : customJre);
         JButton btnUnset = new JButton(f.getString("gui.settings.jvm.jre.unset"));
         btnSelectPath.addActionListener((e) -> {
-            File file = GuiUtils.chooseFile(new FileNameExtensionFilter("Java Executable", "exe"));
+            File file = GuiUtils.chooseFile((OSEnum.getCurrent().equals(OSEnum.Windows)) ? new FileNameExtensionFilter("Java Executable", "exe") : null);
             if (file != null) {
                 JButton source = (JButton) e.getSource();
                 statusBar.setText(String.format(f.getString("gui.settings.jvm.jre.success"), file));
@@ -300,7 +302,10 @@ public class GuiSettings extends JScrollPane {
         p18.add(getAutoSaveCheckBox(proxy.getConfig(), "state", f.getString("gui.settings.proxy.state")));
 
         JButton btnMirror = new JButton(f.getString("gui.settings.proxy.mirror"));
-        // TODO GuiMirror
+        btnMirror.addActionListener((e) -> {
+            new MirrorDialog().setVisible(true);
+        });
+
         panelProxy.add(btnMirror);
         panelProxy.add(p18);
 
