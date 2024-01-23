@@ -6,17 +6,16 @@
 
 package org.cubewhy.celestial.files;
 
-import cn.hutool.core.net.url.UrlBuilder;
-import cn.hutool.core.net.url.UrlQuery;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.net.*;
-import java.nio.charset.StandardCharsets;
 
+@Slf4j
 public class ProxyConfig extends ConfigFile {
 
     @Getter
@@ -87,5 +86,11 @@ public class ProxyConfig extends ConfigFile {
     public Mirror getMirror(String address) {
         JsonObject json = getValue("mirror").getAsJsonObject();
         return new Mirror(json.get(address).getAsString());
+    }
+
+    public ProxyConfig applyMirrors(JsonObject mirrors) {
+        log.info("apply mirrors");
+        this.setValue("mirror", mirrors);
+        return this;
     }
 }
