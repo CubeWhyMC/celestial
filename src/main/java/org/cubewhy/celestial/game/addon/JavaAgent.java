@@ -97,7 +97,7 @@ public class JavaAgent extends BaseAddon {
         if (javaAgentFolder.isDirectory()) {
             for (File file : Objects.requireNonNull(javaAgentFolder.listFiles())) {
                 if (file.getName().endsWith(".jar") && file.isFile()) {
-                    list.add(new JavaAgent(file));
+                    list.add(new JavaAgent(file, JavaAgent.findAgentArg(file.getName())));
                 }
             }
         }
@@ -109,7 +109,7 @@ public class JavaAgent extends BaseAddon {
         if (javaAgentFolder.isDirectory()) {
             for (File file : Objects.requireNonNull(javaAgentFolder.listFiles())) {
                 if (file.getName().endsWith(".jar.disabled") && file.isFile()) {
-                    list.add(new JavaAgent(file));
+                    list.add(new JavaAgent(file, JavaAgent.findAgentArg(file.getName())));
                 }
             }
         }
@@ -140,7 +140,7 @@ public class JavaAgent extends BaseAddon {
      */
     public static void setArgFor(String name, String arg) {
         JsonObject ja = config.getValue("javaagents").getAsJsonObject();
-        ja.addProperty(name, arg); // leave empty
+        ja.addProperty(name, arg);
         config.setValue("javaagents", ja); // dump
     }
 
@@ -215,6 +215,11 @@ public class JavaAgent extends BaseAddon {
 
     @Override
     public boolean toggle() {
+        if (isEnabled()) {
+            migrate(file.getName(), file.getName() + ".disabled");
+        } else {
+            migrate(file.getName(), file.getName().substring(0, file.getName().length() - 9));
+        }
         return toggle0(file);
     }
 }
