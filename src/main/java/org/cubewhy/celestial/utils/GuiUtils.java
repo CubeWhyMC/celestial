@@ -25,8 +25,10 @@ public final class GuiUtils {
 
     public static @Nullable File chooseFile(FileFilter filter) {
         JFileChooser fileDialog = new JFileChooser();
-        fileDialog.setFileFilter(filter);
-        fileDialog.addChoosableFileFilter(filter);
+        if (filter != null) {
+            fileDialog.setFileFilter(filter);
+            fileDialog.addChoosableFileFilter(filter);
+        }
         fileDialog.setFileSelectionMode(JFileChooser.FILES_ONLY);
         return (fileDialog.showOpenDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION) ? null : fileDialog.getSelectedFile();
     }
