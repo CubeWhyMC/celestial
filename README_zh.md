@@ -1,7 +1,7 @@
 # Celestial
 [English](./README.md)
 
-> Celestial是一个高性能的LunarClient启动其
+> 高性能月球客户端启动器
 
 ## 特性
 
