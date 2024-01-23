@@ -171,7 +171,7 @@ public class JavaAgent extends BaseAddon {
     public static void migrate(String old, String n3w) {
         JsonObject ja = config.getValue("javaagents").getAsJsonObject();
         String arg;
-        if (ja.get(old) == null) {
+        if (ja.get(old) == null && ja.get(old).isJsonNull()) {
             arg = null;
         } else {
             arg = ja.get(old).getAsString();
