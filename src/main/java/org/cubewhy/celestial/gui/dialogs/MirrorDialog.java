@@ -41,7 +41,7 @@ public class MirrorDialog extends JDialog {
 
     private void initGui() {
         this.input = new JTextArea(getHeader());
-        this.add(input);
+        this.add(new JScrollPane(this.input, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 
         JButton btnCheckSyntax = new JButton(f.getString("gui.mirror.syntax"));
 
@@ -56,7 +56,7 @@ public class MirrorDialog extends JDialog {
         });
 
         JPanel buttons = new JPanel();
-        buttons.setLayout(new GridLayout(2, 2));
+        buttons.setLayout(new GridLayout(1, 1));
         buttons.add(btnCheckSyntax);
 
         this.add(buttons, BorderLayout.SOUTH);
