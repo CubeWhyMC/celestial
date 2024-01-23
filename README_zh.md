@@ -1,7 +1,7 @@
 # Celestial
 [English](./README.md)
 
-> 一个第三方的lunarclient启动器
+> Celestial是一个高性能的LunarClient启动其
 
 ## 特性
 
@@ -21,22 +21,12 @@
 ## 获取Celestial
 ### Release
 在[releases](https://github.com/cubewhy/celestial/releases)下载
-### 自行构建
-1. 克隆仓库
-```shell
-git clone https://github.com/CubeWhyMC/celestial.git celestial
-cd ./celestial
-```
-2. 设置gradle
-```shell
-./gradlew clean
-```
-3. Build
-```shell
-./gradlew build
-```
-在build/libs目录里寻找构建结果
 
+### Actions
+
+> actions版本可能无法运行,或者有很多问题,遇到问题请理性反馈
+
+在[Actions](https://github.com/cubewhy/celestial/actions)获取
 
 
 ## 捐赠
