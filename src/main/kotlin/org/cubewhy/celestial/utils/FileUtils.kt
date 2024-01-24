@@ -76,7 +76,7 @@ object FileUtils {
 
                     @Throws(IOException::class)
                     override fun postVisitDirectory(dir: Path, exc: IOException): FileVisitResult {
-                        Files.delete(dir)
+
                         return FileVisitResult.CONTINUE
                     }
                 })
