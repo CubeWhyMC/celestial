@@ -30,18 +30,20 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
         private val log: Logger = LoggerFactory.getLogger(AddonInfoDialog::class.java)
     }
 
+    private val panel = JPanel()
+
     init {
         this.title = f.getString("gui.plugins.info.title")
         this.setSize(600, 600)
-        this.layout = VerticalFlowLayout()
+        this.panel.layout = VerticalFlowLayout()
         this.modalityType = ModalityType.APPLICATION_MODAL
         this.isLocationByPlatform = true
         this.initGui()
     }
 
     private fun initGui() {
-        this.add(JLabel(f.getString("gui.plugins.info.name").format(addon.name)))
-        this.add(JLabel(f.getString("gui.plugins.info.category").format(addon.category)))
+        this.panel.add(JLabel(f.getString("gui.plugins.info.name").format(addon.name)))
+        this.panel.add(JLabel(f.getString("gui.plugins.info.category").format(addon.category)))
         val exist = JLabel(f.getString("gui.plugins.exist"))
 
         val btnDownload = JButton(f.getString("gui.plugins.download"))
@@ -57,11 +59,11 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
             }.start()
         }
 
-        this.add(exist)
+        this.panel.add(exist)
         exist.isVisible = file.exists()
 
-        this.add(btnDownload)
-        this.add(JSeparator())
+        this.panel.add(btnDownload)
+        this.panel.add(JSeparator())
 
         val metaInfo = JPanel()
         metaInfo.layout = VerticalFlowLayout(VerticalFlowLayout.LEFT)
@@ -83,7 +85,8 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
             if (meta.website != null) metaInfo.add(createOpenWebsiteButton(f.getString("gui.plugins.info.meta.website"), meta.website.toURI()))
             if (meta.repository != null) metaInfo.add(createOpenWebsiteButton(f.getString("gui.plugins.info.meta.repo"), meta.repository.toURI()))
         }
-        this.add(metaInfo)
+        this.panel.add(metaInfo)
+        this.add(JScrollPane(this.panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED))
     }
 
     private fun createOpenWebsiteButton(text: String, uri: URI) : JButton {
