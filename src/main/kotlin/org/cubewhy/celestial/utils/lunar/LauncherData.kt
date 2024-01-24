@@ -20,16 +20,10 @@ import java.net.URI
 import java.net.URL
 import java.util.*
 
-class LauncherData
 /**
  * Create a LauncherData instance with the official Launcher API
- */ @JvmOverloads constructor(val api: URI = URI.create("https://api.lunarclientprod.com")) {
-    /**
-     * Create a LauncherData instance with special API resource
-     *
-     * @param api Launcher API
-     */
-
+ */
+class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com")) {
     /**
      * Create a LauncherData instance with special API resource
      *
@@ -137,7 +131,6 @@ class LauncherData
          * @param json Json of the special LunarClient instance
          * @return main class of the LunarClient instance
          */
-        @JvmStatic
         fun getMainClass(json: JsonObject?): String {
             if (json == null) {
                 return "com.moonsworth.lunar.genesis.Genesis"
@@ -167,7 +160,6 @@ class LauncherData
          * @param metadata metadata from api
          * @return a map of the alert (title, message)
          */
-        @JvmStatic
         fun getAlert(metadata: JsonObject): Map<String, String>? {
             if (metadata.has("alert") && !metadata["alert"].isJsonNull) {
                 val alert = metadata.getAsJsonObject("alert")
@@ -186,7 +178,6 @@ class LauncherData
          * @param metadata metadata from api
          * @return a list of blog posts
          */
-        @JvmStatic
         fun getBlogPosts(metadata: JsonObject): JsonArray {
             return metadata.getAsJsonArray("blogPosts")
         }
@@ -212,7 +203,6 @@ class LauncherData
          * @param metadata LC metadata
          * @return Support versions list
          */
-        @JvmStatic
         fun getSupportVersions(metadata: JsonElement): Map<String, Any> {
             val map: MutableMap<String, Any> = HashMap()
             val versions: MutableList<String> = ArrayList()
@@ -261,7 +251,6 @@ class LauncherData
          * @param version  Minecraft version
          * @return Module List
          */
-        @JvmStatic
         @Throws(IOException::class)
         fun getSupportModules(metadata: JsonElement, version: String): Map<String, Any> {
             val map: MutableMap<String, Any> = HashMap()
