@@ -2,7 +2,7 @@
 
 [中文介绍](./README_zh.md)
 
-> A 3rd party Minecraft Launcher
+> Make LunarClient great again. Celestial is a high performance LC Launcher
 
 ## Features
 

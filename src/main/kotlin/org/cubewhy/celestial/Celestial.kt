@@ -68,26 +68,21 @@ object Celestial {
     lateinit var f: ResourceBundle
     lateinit var launcherData: LauncherData
     lateinit var metadata: JsonObject
-    lateinit var minecraftManifest: JsonObject
+    private lateinit var minecraftManifest: JsonObject
     lateinit var launcherFrame: GuiLauncher
-    var themed: Boolean = true
-    var os: String = System.getProperty("os.name")
+    private var themed: Boolean = true
 
     @JvmField
-    val launchScript: File = File(configDir, if ((os.contains("Windows"))) "launch.bat" else "launch.sh")
-    var sessionFile: File? = null
+    val launchScript: File = File(configDir, if ((OSEnum.current == OSEnum.Windows)) "launch.bat" else "launch.sh")
+    private var sessionFile: File = if (OSEnum.current == OSEnum.Windows) {
+        // Microsoft Windows
+        File(System.getenv("APPDATA"), "launcher/sentry/session.json")
+    } else {
+        // Linux, Macos... etc.
+        File(System.getProperty("user.home"), ".config/launcher/sentry/session.json")
+    }
 
     private var log = LoggerFactory.getLogger(GuiUtils::class.java)
-
-    init {
-        if (OSEnum.current == OSEnum.Windows) {
-            // Microsoft Windows
-            sessionFile = File(System.getenv("APPDATA"), "launcher/sentry/session.json")
-        } else {
-            // Linux, Macos... etc.
-            sessionFile = File(System.getProperty("user.home"), ".config/launcher/sentry/session.json")
-        }
-    }
 
     @Throws(Exception::class)
     @JvmStatic
@@ -147,7 +142,7 @@ object Celestial {
         val options = optionParser.parse(*args)
         if (options.has("help")) {
             optionParser.printHelpOn(System.out)
-            System.exit(0)
+            exitProcess(1)
         } else if (options.has("game")) {
             // launch game
             log.info("Celestial - CommandLine")
@@ -175,6 +170,7 @@ object Celestial {
         log.info("Language: $userLanguage")
         checkJava()
         launcherData = LauncherData(config.getValue("api").asString)
+        if (proxy.state) log.info("Use proxy ${proxy.proxy}")
         while (true) {
             try {
                 // I don't know why my computer crashed here if the connection takes too much time :(
@@ -199,6 +195,7 @@ object Celestial {
 
         // start auth server
         AuthServer.instance.startServer()
+
 
         // start gui launcher
         launcherFrame = GuiLauncher()
@@ -239,7 +236,7 @@ object Celestial {
             )
         }
 
-        if (sessionFile!!.exists() && LunarUtils.isReallyOfficial(sessionFile)) {
+        if (sessionFile.exists() && LunarUtils.isReallyOfficial(sessionFile)) {
             log.warn("Detected the official launcher")
             JOptionPane.showMessageDialog(
                 null,
@@ -628,7 +625,7 @@ object Celestial {
     @JvmStatic
     @Throws(IOException::class)
     fun completeSession() {
-        if (!sessionFile!!.exists()) {
+        if (!sessionFile.exists()) {
             log.info("Completing session.json to fix the network error for LunarClient")
             var json: ByteArray?
             org.cubewhy.celestial.utils.FileUtils.inputStreamFromClassPath("/game/session.json").use { stream ->
