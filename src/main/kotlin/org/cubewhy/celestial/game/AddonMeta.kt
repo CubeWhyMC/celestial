@@ -15,7 +15,7 @@ data class AddonMeta(
     val authors: Array<String>,
     val website: String?,
     val repository: String?,
-    val dependents: Array<String>?
+    val dependencies: Array<String>?
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -29,10 +29,10 @@ data class AddonMeta(
         if (!authors.contentEquals(other.authors)) return false
         if (website != other.website) return false
         if (repository != other.repository) return false
-        if (dependents != null) {
-            if (other.dependents == null) return false
-            if (!dependents.contentEquals(other.dependents)) return false
-        } else if (other.dependents != null) return false
+        if (dependencies != null) {
+            if (other.dependencies == null) return false
+            if (!dependencies.contentEquals(other.dependencies)) return false
+        } else if (other.dependencies != null) return false
 
         return true
     }
@@ -44,7 +44,7 @@ data class AddonMeta(
         result = 31 * result + authors.contentHashCode()
         result = 31 * result + (website?.hashCode() ?: 0)
         result = 31 * result + (repository?.hashCode() ?: 0)
-        result = 31 * result + (dependents?.contentHashCode() ?: 0)
+        result = 31 * result + (dependencies?.contentHashCode() ?: 0)
         return result
     }
 }
