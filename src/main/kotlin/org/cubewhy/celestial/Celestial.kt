@@ -295,7 +295,7 @@ object Celestial {
             .initValue("language", Locale.getDefault().language) // en, zh, ja, ko
             .initValue("installation-dir", File(configDir, "game").path)
             .initValue("game-dir", minecraftFolder.path) // the minecraft folder
-            .initValue("game", JsonNull())
+            .initValue("game", null)
             .initValue("addon", addon)
             .initValue("ram", SystemUtils.totalMem / 4)
             .initValue("max-threads", Runtime.getRuntime().availableProcessors()) // recommend: same as your CPU core

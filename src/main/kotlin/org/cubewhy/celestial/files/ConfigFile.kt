@@ -23,32 +23,32 @@ open class ConfigFile(val file: File) {
         this.load()
     }
 
-    fun setValue(key: String?, value: String?): ConfigFile {
+    fun setValue(key: String, value: String): ConfigFile {
         config.addProperty(key, value)
         return this
     }
 
-    fun setValue(key: String?, value: Char): ConfigFile {
+    fun setValue(key: String, value: Char): ConfigFile {
         config.addProperty(key, value)
         return this
     }
 
-    fun setValue(key: String?, value: Number?): ConfigFile {
+    fun setValue(key: String, value: Number): ConfigFile {
         config.addProperty(key, value)
         return this
     }
 
-    fun setValue(key: String?, value: Boolean): ConfigFile {
+    fun setValue(key: String, value: Boolean): ConfigFile {
         config.addProperty(key, value)
         return this
     }
 
-    fun setValue(key: String?, value: JsonObject?): ConfigFile {
+    fun setValue(key: String, value: JsonObject?): ConfigFile {
         config.add(key, value)
         return this
     }
 
-    fun initValue(key: String, value: JsonElement): ConfigFile {
+    fun initValue(key: String, value: JsonElement?): ConfigFile {
         if (!config.has(key)) {
             log.info("Init value $key -> $value")
             config.add(key, value)
@@ -56,7 +56,7 @@ open class ConfigFile(val file: File) {
         return this
     }
 
-    fun initValue(key: String, value: String?): ConfigFile {
+    fun initValue(key: String, value: String): ConfigFile {
         return this.initValue(key, JsonPrimitive(value))
     }
 
