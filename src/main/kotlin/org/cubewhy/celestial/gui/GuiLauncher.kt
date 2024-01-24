@@ -33,6 +33,8 @@ import java.net.URI
 import javax.swing.*
 
 class GuiLauncher : JFrame() {
+    val guiPlugins = GuiPlugins()
+
     init {
         // register with EventManager
         register(this)
@@ -99,7 +101,7 @@ class GuiLauncher : JFrame() {
         // add pages
         mainPanel.add("news", GuiNews())
         mainPanel.add("version", GuiVersion())
-        mainPanel.add("plugins", GuiPlugins())
+        mainPanel.add("plugins", guiPlugins)
         mainPanel.add("settings", GuiSettings())
         mainPanel.add("about", GuiAbout())
 

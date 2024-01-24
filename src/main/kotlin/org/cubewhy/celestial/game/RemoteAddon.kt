@@ -8,11 +8,9 @@ package org.cubewhy.celestial.game
 import org.jetbrains.annotations.Contract
 import java.net.URL
 
-class RemoteAddon(@JvmField var name: String, @JvmField var downloadURL: URL, @JvmField var category: Category) {
+data class RemoteAddon(var name: String, var downloadURL: URL, var category: Category, val meta: AddonMeta?) {
     enum class Category {
-        AGENT,
-        CN,
-        WEAVE;
+        AGENT, CN, WEAVE;
 
 
         companion object {
@@ -29,5 +27,9 @@ class RemoteAddon(@JvmField var name: String, @JvmField var downloadURL: URL, @J
                 }
             }
         }
+    }
+
+    override fun toString(): String {
+        return "RemoteAddon(name='$name', downloadURL=$downloadURL, category=$category, meta=$meta)"
     }
 }
