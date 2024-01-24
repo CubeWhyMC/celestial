@@ -82,6 +82,7 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
             metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.name").format(meta.name)))
             metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.version").format(meta.version)))
             metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.description").format(meta.description)))
+            metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.authors").format(meta.authors.getAuthorsString())))
             if (meta.website != null) metaInfo.add(createOpenWebsiteButton(f.getString("gui.plugins.info.meta.website"), meta.website.toURI()))
             if (meta.repository != null) metaInfo.add(createOpenWebsiteButton(f.getString("gui.plugins.info.meta.repo"), meta.repository.toURI()))
         }
@@ -96,6 +97,18 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
         }
         return button
     }
+}
+
+private fun Array<String>.getAuthorsString(): String {
+    val sb = StringBuilder()
+    this.forEachIndexed { index, author ->
+        if (index != 0) {
+            if (index != this.size - 1) sb.append(", ") else sb.append(" and ")
+        }
+        sb.append(author)
+        if (this.size == 1) return@forEachIndexed
+    }
+    return sb.toString()
 }
 
 fun String.toURI(): URI {
