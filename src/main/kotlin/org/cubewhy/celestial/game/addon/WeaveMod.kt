@@ -29,7 +29,6 @@ class WeaveMod(@JvmField val file: File) : BaseAddon() {
     }
 
     companion object {
-        const val build: String = "Weave-MC/Weave-Loader" // https://github.com/<build>/releases/latest
 
         @JvmField
         val modFolder: File = File(System.getProperty("user.home"), ".weave/mods")
