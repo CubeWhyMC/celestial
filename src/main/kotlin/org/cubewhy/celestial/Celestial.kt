@@ -387,7 +387,7 @@ object Celestial {
         } else {
             File(installation, "cache/$id")
         }
-        return cache.exists() && org.cubewhy.celestial.utils.FileUtils.deleteDir(cache)
+        return cache.exists() && cache.deleteRecursively()
     }
 
     /**
