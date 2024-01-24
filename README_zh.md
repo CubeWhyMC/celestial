@@ -1,7 +1,8 @@
 # Celestial
+
 [English](./README.md)
 
-> 高性能月球客户端启动器
+> 让LunarClient再次辉煌. Celestial是一个高性能的LC启动器,使用Kotlin编写
 
 ## 特性
 
