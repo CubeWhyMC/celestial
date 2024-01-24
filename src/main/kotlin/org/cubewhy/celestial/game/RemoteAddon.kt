@@ -12,7 +12,6 @@ data class RemoteAddon(var name: String, var downloadURL: URL, var category: Cat
     enum class Category {
         AGENT, CN, WEAVE;
 
-
         companion object {
             /**
              * Parse plugin type from a string
