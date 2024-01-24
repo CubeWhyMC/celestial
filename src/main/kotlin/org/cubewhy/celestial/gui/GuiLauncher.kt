@@ -1,133 +1,143 @@
-package org.cubewhy.celestial.gui;
+/*
+ * Celestial Launcher <me@lunarclient.top>
+ * License under GPLv3
+ * Do NOT remove this note if you want to copy this file.
+ */
 
-import com.sun.tools.attach.AttachNotSupportedException;
-import com.sun.tools.attach.VirtualMachine;
-import lombok.extern.slf4j.Slf4j;
-import org.cubewhy.celestial.event.EventManager;
-import org.cubewhy.celestial.event.EventTarget;
-import org.cubewhy.celestial.event.impl.AuthEvent;
-import org.cubewhy.celestial.event.impl.GameStartEvent;
-import org.cubewhy.celestial.event.impl.GameTerminateEvent;
-import org.cubewhy.celestial.gui.elements.StatusBar;
-import org.cubewhy.celestial.gui.pages.*;
-import org.cubewhy.celestial.utils.FileUtils;
-import org.cubewhy.celestial.utils.SystemUtils;
-import org.cubewhy.celestial.utils.TextUtils;
-import org.cubewhy.celestial.utils.lunar.LauncherData;
-import org.jetbrains.annotations.NotNull;
+package org.cubewhy.celestial.gui
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.io.IOException;
-import java.net.URI;
-import java.util.Map;
+import com.sun.tools.attach.AttachNotSupportedException
+import org.cubewhy.celestial.Celestial.config
+import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.Celestial.gamePid
+import org.cubewhy.celestial.Celestial.metadata
+import org.cubewhy.celestial.event.EventManager.register
+import org.cubewhy.celestial.event.EventTarget
+import org.cubewhy.celestial.event.impl.AuthEvent
+import org.cubewhy.celestial.event.impl.GameStartEvent
+import org.cubewhy.celestial.event.impl.GameTerminateEvent
+import org.cubewhy.celestial.gui.elements.StatusBar
+import org.cubewhy.celestial.gui.pages.*
+import org.cubewhy.celestial.utils.FileUtils.inputStreamFromClassPath
+import org.cubewhy.celestial.utils.FileUtils.readBytes
+import org.cubewhy.celestial.utils.SystemUtils.findJava
+import org.cubewhy.celestial.utils.TextUtils.dumpTrace
+import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getAlert
+import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import java.awt.*
+import java.awt.datatransfer.StringSelection
+import java.awt.event.ActionEvent
+import java.io.IOException
+import java.net.URI
+import javax.swing.*
 
-import static org.cubewhy.celestial.Celestial.*;
-
-@Slf4j
-public class GuiLauncher extends JFrame {
-
-    public static final JLabel statusBar = new StatusBar();
-
-    public GuiLauncher() throws IOException {
+class GuiLauncher : JFrame() {
+    init {
         // register with EventManager
-        EventManager.register(this);
+        register(this)
 
-        this.setBounds(100, 100, 1200, 700);
-        this.setTitle(f.getString("gui.launcher.title"));
+        this.setBounds(100, 100, 1200, 700)
+        this.title = f.getString("gui.launcher.title")
 
         // init icon
-        this.resetIcon();
+        this.resetIcon()
 
-        this.initGui();
+        this.initGui()
         // show alert
-        Map<String, String> alert = LauncherData.getAlert(metadata);
+        val alert = getAlert(metadata)
         if (alert != null) {
-            String title = alert.get("title");
-            String message = alert.get("message");
-            log.info(title + ": " + message);
-            JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE);
+            val title = alert["title"]
+            val message = alert["message"]
+            log.info("$title: $message")
+            JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE)
         }
     }
 
     /**
      * Init Celestial Launcher (gui)
      */
-    private void initGui() throws IOException {
-        this.add(statusBar, BorderLayout.SOUTH);
+    @Throws(IOException::class)
+    private fun initGui() {
+        this.add(statusBar, BorderLayout.SOUTH)
         // menu
-        Panel menu = new Panel();
-        JButton btnPrevious = new JButton(f.getString("gui.previous"));
-        JButton btnNext = new JButton(f.getString("gui.next"));
+        val menu = Panel()
+        val btnPrevious: JButton = JButton(f.getString("gui.previous"))
+        val btnNext: JButton = JButton(f.getString("gui.next"))
         // For developers: It is not recommended to remove the Donate button in Celestial Launcher's derivative versions
         // 不建议在衍生版本中删除赞助按钮
         // Celestial 是免费开源的启动器, 请赞助来帮助我们走得更远 (收入会全部用于开发)
         // Celestial is an opensource launcher, please donate to let us go further (All money will be used for development)
-        JButton btnDonate = new JButton(f.getString("gui.donate"));
-        JButton btnHelp = new JButton(f.getString("gui.help"));
-        btnDonate.addActionListener(e -> {
+        val btnDonate: JButton = JButton(f.getString("gui.donate"))
+        val btnHelp: JButton = JButton(f.getString("gui.help"))
+        btnDonate.addActionListener {
             try {
-                Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/donate"));
-            } catch (IOException ignored) {
+                Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/donate"))
+            } catch (ignored: IOException) {
             }
-        });
-        btnHelp.addActionListener(e -> {
+        }
+        btnHelp.addActionListener {
             try {
-                Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/help"));
-            } catch (IOException ignored) {
+                Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/help"))
+            } catch (ignored: IOException) {
             }
-        });
+        }
 
-        menu.add(btnPrevious);
-        menu.add(btnNext);
-        menu.add(btnDonate);
-        menu.add(btnHelp);
-//        menu.add(btnLanguage);
-        menu.setSize(100, 20);
+        menu.add(btnPrevious)
+        menu.add(btnNext)
+        menu.add(btnDonate)
+        menu.add(btnHelp)
+        //        menu.add(btnLanguage);
+        menu.setSize(100, 20)
 
-        this.add(menu, BorderLayout.NORTH);
+        this.add(menu, BorderLayout.NORTH)
         // main panel
-        final Panel mainPanel = new Panel();
-        final CardLayout layout = new CardLayout();
-        mainPanel.setLayout(layout);
+        val mainPanel = Panel()
+        val layout = CardLayout()
+        mainPanel.layout = layout
         // TODO: add enabled pages (from metadata)
         // add pages
-        mainPanel.add("news", new GuiNews());
-        mainPanel.add("version", new GuiVersion());
-        mainPanel.add("plugins", new GuiPlugins());
-        mainPanel.add("settings", new GuiSettings());
-        mainPanel.add("about", new GuiAbout());
+        mainPanel.add("news", GuiNews())
+        mainPanel.add("version", GuiVersion())
+        mainPanel.add("plugins", GuiPlugins())
+        mainPanel.add("settings", GuiSettings())
+        mainPanel.add("about", GuiAbout())
 
         // bind buttons
-        btnPrevious.addActionListener(e -> layout.previous(mainPanel));
-        btnNext.addActionListener(e -> layout.next(mainPanel));
-        this.add(mainPanel); // add MainPanel
+        btnPrevious.addActionListener { layout.previous(mainPanel) }
+        btnNext.addActionListener { layout.next(mainPanel) }
+        this.add(mainPanel) // add MainPanel
 
         // try to find the exist game process
-        new Thread(() -> {
+        Thread {
             try {
-                this.findExistGame();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                this.findExistGame()
+            } catch (e: IOException) {
+                throw RuntimeException(e)
             }
-        }).start();
+        }.start()
     }
 
-    public void findExistGame() throws IOException {
+    @Throws(IOException::class)
+    fun findExistGame() {
         try {
-            VirtualMachine java = SystemUtils.findJava(LauncherData.getMainClass(null));
+            val java = findJava(getMainClass(null))
             if (java != null) {
-                String pid = java.id();
-                log.info("Exist game process found! Pid: " + pid);
-                gamePid.set(Long.parseLong(pid));
-                JOptionPane.showMessageDialog(this, String.format(f.getString("gui.launcher.game.exist.message"), pid), f.getString("gui.launcher.game.exist.title"), JOptionPane.INFORMATION_MESSAGE);
-                java.detach();
+                val pid = java.id()
+                log.info("Exist game process found! Pid: $pid")
+                gamePid.set(pid.toLong())
+                JOptionPane.showMessageDialog(
+                    this,
+                    kotlin.String.format(f.getString("gui.launcher.game.exist.message"), pid),
+                    f.getString("gui.launcher.game.exist.title"),
+                    JOptionPane.INFORMATION_MESSAGE
+                )
+                java.detach()
             }
-        } catch (AttachNotSupportedException e) {
-            log.error("Failed to find the game process, is launched with the official launcher? (attach not support)");
-            log.error(TextUtils.dumpTrace(e));
+        } catch (e: AttachNotSupportedException) {
+            log.error("Failed to find the game process, is launched with the official launcher? (attach not support)")
+            log.error(dumpTrace(e))
         }
     }
 
@@ -137,42 +147,56 @@ public class GuiLauncher extends JFrame {
      *
      * @param name file name
      */
-    public void setIconImage(String name) throws IOException {
-        this.setIconImage(new ImageIcon(FileUtils.readBytes(FileUtils.inputStreamFromClassPath("/images/icons/" + name + ".png"))).getImage());
+    @Throws(IOException::class)
+    fun setIconImage(name: String) {
+        this.iconImage = ImageIcon(
+            readBytes(
+                inputStreamFromClassPath("/images/icons/$name.png")!!
+            )
+        ).image
     }
 
     /**
      * Reset the icon
      */
-    public void resetIcon() throws IOException {
-        String themeType = config.getValue("theme").getAsString();
-        switch (themeType) {
-            case "light":
-                this.setIconImage("icon-dark");
-                break;
-            case "dark":
-            default:
-                this.setIconImage("icon-light");
-                break;
+    @Throws(IOException::class)
+    fun resetIcon() {
+        val themeType: String = config.getValue("theme").asString
+        when (themeType) {
+            "light" -> this.setIconImage("icon-dark")
+            "dark" -> this.setIconImage("icon-light")
+            else -> this.setIconImage("icon-light")
         }
     }
 
     @EventTarget
-    public void onGameStart(GameStartEvent e) throws IOException {
-        this.setIconImage("running");
+    @Throws(IOException::class)
+    fun onGameStart(e: GameStartEvent?) {
+        this.setIconImage("running")
     }
 
     @EventTarget
-    public void onGameTerminate(GameTerminateEvent e) throws IOException {
-        this.resetIcon();
+    @Throws(IOException::class)
+    fun onGameTerminate(e: GameTerminateEvent?) {
+        this.resetIcon()
     }
 
     @EventTarget
-    public void onAuth(@NotNull AuthEvent e) {
-        log.info("Request for login");
-        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(new StringSelection(e.authURL.toString()), null);
-        String link = JOptionPane.showInputDialog(this, f.getString("gui.launcher.auth.message"), f.getString("gui.launcher.auth.title"), JOptionPane.QUESTION_MESSAGE);
-        e.put(link);
+    fun onAuth(e: AuthEvent) {
+        log.info("Request for login")
+        val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+        clipboard.setContents(StringSelection(e.authURL.toString()), null)
+        val link = JOptionPane.showInputDialog(
+            this,
+            f.getString("gui.launcher.auth.message"),
+            f.getString("gui.launcher.auth.title"),
+            JOptionPane.QUESTION_MESSAGE
+        )
+        e.put(link)
+    }
+
+    companion object {
+        val statusBar: JLabel = StatusBar()
+        private val log: Logger = LoggerFactory.getLogger(GuiLauncher::class.java)
     }
 }

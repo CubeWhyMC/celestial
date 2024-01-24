@@ -1,26 +1,43 @@
-package org.cubewhy.celestial.gui.pages;
+/*
+ * Celestial Launcher <me@lunarclient.top>
+ * License under GPLv3
+ * Do NOT remove this note if you want to copy this file.
+ */
 
-import lombok.extern.slf4j.Slf4j;
-import org.cubewhy.celestial.gui.elements.GuiAddonManager;
-import org.cubewhy.celestial.gui.elements.GuiVersionSelect;
+package org.cubewhy.celestial.gui.pages
 
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.io.IOException;
+import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.gui.elements.GuiAddonManager
+import org.cubewhy.celestial.gui.elements.GuiVersionSelect
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import java.awt.Color
+import java.io.IOException
+import javax.swing.JPanel
+import javax.swing.border.TitledBorder
 
-import static org.cubewhy.celestial.Celestial.f;
 
-@Slf4j
-public class GuiVersion extends JPanel {
-    public GuiVersion() throws IOException {
-        this.setBorder(new TitledBorder(null, f.getString("gui.version.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
-//        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.initGui();
+class GuiVersion : JPanel() {
+    init {
+        this.border = TitledBorder(
+            null,
+            f.getString("gui.version.title"),
+            TitledBorder.DEFAULT_JUSTIFICATION,
+            TitledBorder.DEFAULT_POSITION,
+            null,
+            Color.orange
+        )
+        //        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.initGui()
     }
 
-    private void initGui() throws IOException {
-        this.add(new GuiVersionSelect());
-        this.add(new GuiAddonManager());
+    @Throws(IOException::class)
+    private fun initGui() {
+        this.add(GuiVersionSelect())
+        this.add(GuiAddonManager())
+    }
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(GuiVersion::class.java)
     }
 }

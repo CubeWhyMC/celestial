@@ -1,66 +1,74 @@
-package org.cubewhy.celestial.gui.pages;
+package org.cubewhy.celestial.gui.pages
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import lombok.extern.slf4j.Slf4j;
-import org.cubewhy.celestial.files.DownloadManager;
-import org.cubewhy.celestial.gui.LauncherNews;
-import org.cubewhy.celestial.utils.TextUtils;
-import org.cubewhy.celestial.utils.lunar.LauncherData;
+import com.google.gson.JsonArray
+import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.Celestial.metadata
+import org.cubewhy.celestial.files.DownloadManager.cache
+import org.cubewhy.celestial.gui.LauncherNews
+import org.cubewhy.celestial.utils.TextUtils.dumpTrace
+import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getBlogPosts
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import java.awt.Color
+import java.io.IOException
+import java.net.URL
+import javax.swing.BoxLayout
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.border.TitledBorder
 
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED) {
+    private val blogPosts: JsonArray
 
-import static org.cubewhy.celestial.Celestial.f;
-import static org.cubewhy.celestial.Celestial.metadata;
-
-@Slf4j
-public class GuiNews extends JScrollPane {
-    private static final JPanel panel = new JPanel();
-    private final JsonArray blogPosts;
-
-    public GuiNews() throws IOException {
-        super(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        this.setBorder(new TitledBorder(null, f.getString("gui.news.title"), TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, Color.orange));
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        blogPosts = LauncherData.getBlogPosts(metadata);
-        this.initGui();
+    init {
+        this.border = TitledBorder(
+            null,
+            f.getString("gui.news.title"),
+            TitledBorder.DEFAULT_JUSTIFICATION,
+            TitledBorder.DEFAULT_POSITION,
+            null,
+            Color.orange
+        )
+        panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
+        blogPosts = getBlogPosts(metadata)
+        this.initGui()
     }
 
-    private void initGui() {
+    private fun initGui() {
         // render blogPosts
-        this.getVerticalScrollBar().setUnitIncrement(30);
-        log.info("Loading blogPosts (gui)");
-        if (blogPosts.isJsonNull()) {
-            log.error("Failed to load blog posts");
-            this.add(new JLabel("Failed to load news (blogPosts is null)"));
+        getVerticalScrollBar().unitIncrement = 30
+        log.info("Loading blogPosts (gui)")
+        if (blogPosts.isJsonNull) {
+            log.error("Failed to load blog posts")
+            this.add(JLabel("Failed to load news (blogPosts is null)"))
         } else {
-            for (JsonElement blogPost : blogPosts) {
+            for (blogPost in blogPosts) {
                 // cache the image if the image of the news doesn't exist
-                JsonObject json = blogPost.getAsJsonObject();
-                String imageURL = json.get("image").getAsString();
-                String title = json.get("title").getAsString();
+                val json = blogPost.asJsonObject
+                val imageURL = json["image"].asString
+                val title = json["title"].asString
                 try {
-                    if (DownloadManager.cache(new URL(imageURL), "news/" + title + ".png", false)) {
+                    if (cache(URL(imageURL), "news/$title.png", false)) {
                         // load news
-                        panel.add(new LauncherNews(json));
+                        panel.add(LauncherNews(json))
                     }
-                } catch (IOException e) {
-                    log.warn("Failed to cache " + imageURL);
-                    String trace = TextUtils.dumpTrace(e);
-                    log.error(trace);
-                } catch (NullPointerException e) {
+                } catch (e: IOException) {
+                    log.warn("Failed to cache $imageURL")
+                    val trace = dumpTrace(e)
+                    log.error(trace)
+                } catch (e: NullPointerException) {
                     // new API
-                    panel.add(new JLabel(f.getString("gui.news.official")));
-                    log.warn("Failed to load news " + imageURL);
-                    log.error(TextUtils.dumpTrace(e));
+                    panel.add(JLabel(f.getString("gui.news.official")))
+                    log.warn("Failed to load news $imageURL")
+                    log.error(dumpTrace(e))
                 }
             }
         }
+    }
+
+    companion object {
+        private val panel = JPanel()
+        private val log: Logger = LoggerFactory.getLogger(GuiNews::class.java)
     }
 }
