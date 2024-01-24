@@ -8,6 +8,7 @@ package org.cubewhy.celestial.utils.lunar
 
 import com.google.gson.*
 import org.cubewhy.celestial.event.impl.CrashReportUploadEvent
+import org.cubewhy.celestial.game.AddonMeta
 import org.cubewhy.celestial.game.RemoteAddon
 import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.OSEnum
@@ -121,7 +122,8 @@ class LauncherData
                         URL(api.toString() + plugin["downloadLink"].asString),
                         RemoteAddon.Category.parse(
                             plugin["category"].asString
-                        )!!
+                        )!!,
+                        Gson().fromJson(plugin["meta"], AddonMeta::class.java)
                     )
                 )
             }

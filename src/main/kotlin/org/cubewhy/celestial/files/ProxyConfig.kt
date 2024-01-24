@@ -38,10 +38,10 @@ class ProxyConfig(file: File?) : ConfigFile(file!!) {
     val state: Boolean
         get() = this.getValue("state").asBoolean
 
-    val proxy: Proxy
+    val proxy: Proxy?
         get() {
             val address = URL(this.proxyAddress)
-            return Proxy(getType(address.protocol), InetSocketAddress(address.host, address.port))
+            return if (state) Proxy(getType(address.protocol), InetSocketAddress(address.host, address.port)) else null
         }
 
     val proxyAddress: String

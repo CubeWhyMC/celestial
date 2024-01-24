@@ -7,23 +7,26 @@ package org.cubewhy.celestial.gui.pages
 
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.Celestial.launcherData
-import org.cubewhy.celestial.files.DownloadManager.download
-import org.cubewhy.celestial.files.DownloadManager.waitForAll
-import org.cubewhy.celestial.files.Downloadable
 import org.cubewhy.celestial.game.RemoteAddon
 import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
+import org.cubewhy.celestial.gui.dialogs.AddonInfoDialog
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.GridLayout
 import java.io.File
-import java.net.URL
 import javax.swing.*
 import javax.swing.border.TitledBorder
 
 class GuiPlugins : JPanel() {
     private val tab: JTabbedPane
+
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(GuiPlugins::class.java)
+    }
 
     init {
         this.border = TitledBorder(
@@ -48,11 +51,15 @@ class GuiPlugins : JPanel() {
         // refresh addons
         val btnRefresh = JButton(f.getString("gui.plugins.refresh"))
         btnRefresh.addActionListener {
-            tab.removeAll()
-            addTabs()
+            this.refresh()
         }
         this.add(tab)
         this.add(btnRefresh)
+    }
+
+    internal fun refresh() {
+        this.tab.removeAll()
+        this.addTabs()
     }
 
     private fun addTabs() {
@@ -117,25 +124,15 @@ class GuiPlugins : JPanel() {
         p.layout = GridLayout()
         p.add(JLabel(addon.name))
         val file = File(folder, addon.name)
-        if (file.exists()) {
-            p.add(JLabel(f.getString("gui.plugins.exist")))
-        } else {
-            p.add(getDownloadButton(addon.downloadURL, file))
-        }
+        p.add(getInfoButton(addon, file))
         panel.add(p)
     }
 
-    private fun getDownloadButton(url: URL, file: File): JButton {
-        val btn = JButton(String.format(f.getString("gui.plugins.download"), file.name))
+    private fun getInfoButton(addon: RemoteAddon, file: File): JButton {
+        val btn = JButton(String.format(f.getString("gui.plugins.info"), file.name))
         btn.addActionListener {
-            download(Downloadable(url, file, null))
-            Thread {
-                try {
-                    waitForAll()
-                } catch (err: InterruptedException) {
-                    throw RuntimeException(err)
-                }
-            }.start()
+            log.info("Open plugin info dialog for " + addon.name)
+            AddonInfoDialog(addon, file).isVisible = true // show info dialog
         }
         return btn
     }
