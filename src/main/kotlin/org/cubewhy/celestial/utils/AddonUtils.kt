@@ -83,7 +83,7 @@ object AddonUtils {
                     try {
                         RequestUtils.get(url).execute().use { response ->
                             assert(response.body != null)
-                            hash = response.body!!.string().split(" ".toRegex()).dropLastWhile { it.isEmpty() }
+                            hash = response.body!!.string().split(" ").dropLastWhile { it.isEmpty() }
                                 .toTypedArray()[0]
                         }
                     } catch (ignored: Exception) {
