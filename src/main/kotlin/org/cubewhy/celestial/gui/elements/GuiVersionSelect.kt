@@ -18,6 +18,7 @@ import org.cubewhy.celestial.Celestial.launch
 import org.cubewhy.celestial.Celestial.launchScript
 import org.cubewhy.celestial.Celestial.launcherData
 import org.cubewhy.celestial.Celestial.metadata
+import org.cubewhy.celestial.Celestial.proxy
 import org.cubewhy.celestial.Celestial.wipeCache
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
@@ -185,13 +186,29 @@ class GuiVersionSelect : JPanel() {
         val weave: JsonObject = config.getValue("addon").asJsonObject.getAsJsonObject("weave")
         val cn: JsonObject = config.getValue("addon").asJsonObject.getAsJsonObject("lunarcn")
         var checkUpdate = false
-        if (weave["enable"].asBoolean && weave["check-update"].asBoolean) {
-            log.info("Checking update for Weave loader")
-            checkUpdate = WeaveMod.checkUpdate()
-        }
-        if (cn["enable"].asBoolean && cn["check-update"].asBoolean) {
-            log.info("Checking update for LunarCN loader")
-            checkUpdate = LunarCNMod.checkUpdate()
+
+        try {
+            if (weave["enable"].asBoolean && weave["check-update"].asBoolean) {
+                log.info("Checking update for Weave loader")
+                checkUpdate = WeaveMod.checkUpdate()
+            }
+            if (cn["enable"].asBoolean && cn["check-update"].asBoolean) {
+                log.info("Checking update for LunarCN loader")
+                checkUpdate = LunarCNMod.checkUpdate()
+            }
+        } catch (e: Exception) {
+            log.error("Failed to check loader updates")
+            log.error(dumpTrace(e))
+            if (!proxy.hasMirror("github.com:443") && JOptionPane.showConfirmDialog(
+                    this,
+                    f.getString("gui.proxy.suggest.gh"),
+                    "Apply GitHub Mirror",
+                    JOptionPane.YES_NO_OPTION
+                ) == JOptionPane.YES_OPTION
+            ) {
+                log.info("Applying GitHub mirror")
+                proxy.addMirror("github.com:443", "github.ink:443")
+            }
         }
 
         if (checkUpdate) {

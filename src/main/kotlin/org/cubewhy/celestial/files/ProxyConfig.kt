@@ -81,6 +81,14 @@ class ProxyConfig(file: File?) : ConfigFile(file!!) {
         return this
     }
 
+    fun addMirror(source: String, mirror: String) {
+        this.config["mirror"].asJsonObject.addProperty(source, mirror)
+    }
+
+    fun hasMirror(source: String): Boolean {
+        return this.config["mirror"].asJsonObject.has(source)
+    }
+
     companion object {
         private val log: Logger = LoggerFactory.getLogger(ProxyConfig::class.java)
     }
