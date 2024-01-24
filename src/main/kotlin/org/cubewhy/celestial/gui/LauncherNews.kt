@@ -1,3 +1,9 @@
+/*
+ * Celestial Launcher <me@lunarclient.top>
+ * License under GPLv3
+ * Do NOT remove this note if you want to copy this file.
+ */
+
 package org.cubewhy.celestial.gui
 
 import com.google.gson.JsonObject
@@ -5,7 +11,6 @@ import org.cubewhy.celestial.files.DownloadManager.cacheDir
 import java.awt.Color
 import java.awt.Desktop
 import java.awt.Image
-import java.awt.event.ActionEvent
 import java.io.File
 import java.io.IOException
 import java.net.URI

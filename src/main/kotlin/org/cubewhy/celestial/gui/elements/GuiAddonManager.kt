@@ -29,17 +29,14 @@ import org.cubewhy.celestial.utils.AddonUtils.isWeaveMod
 import org.cubewhy.celestial.utils.GuiUtils.chooseFile
 import org.cubewhy.celestial.utils.GuiUtils.createButtonOpenFolder
 import org.cubewhy.celestial.utils.TextUtils.dumpTrace
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import java.awt.event.ActionEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.io.File
 import java.io.IOException
 import javax.swing.*
 import javax.swing.border.TitledBorder
-import javax.swing.event.ChangeEvent
 import javax.swing.filechooser.FileNameExtensionFilter
 
 class GuiAddonManager : JPanel() {

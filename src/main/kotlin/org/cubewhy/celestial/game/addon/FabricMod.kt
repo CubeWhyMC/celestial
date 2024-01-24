@@ -33,6 +33,7 @@ class FabricMod(@JvmField val file: File) : BaseAddon() {
     companion object {
         @JvmField
         val modFolder: File = File(Celestial.config.getValue("installation-dir").asString, "mods")
+
         @JvmStatic
         fun findAll(): List<FabricMod> {
             val list: MutableList<FabricMod> = ArrayList()
