@@ -37,13 +37,6 @@ class LauncherData
     constructor(api: String) : this(URI.create(api))
 
     /**
-     * Create a LauncherData instance with special API resource
-     *
-     * @param api Launcher API
-     */
-    constructor(api: URL) : this(api.toURI())
-
-    /**
      * Get metadata
      *
      * @return Launcher Metadata
