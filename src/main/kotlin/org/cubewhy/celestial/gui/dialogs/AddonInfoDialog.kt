@@ -14,7 +14,9 @@ import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
+import java.awt.Desktop
 import java.io.File
+import java.net.URI
 import javax.swing.*
 import javax.swing.border.TitledBorder
 
@@ -73,8 +75,26 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
         )
         if (addon.meta == null) {
             metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.notfound")))
+        } else {
+            val meta = addon.meta
+            metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.name").format(meta.name)))
+            metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.version").format(meta.version)))
+            metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.description").format(meta.description)))
+            if (meta.website != null) metaInfo.add(createOpenWebsiteButton(f.getString("gui.plugins.info.meta.website"), meta.website.toURI()))
+            if (meta.repository != null) metaInfo.add(createOpenWebsiteButton(f.getString("gui.plugins.info.meta.repo"), meta.repository.toURI()))
         }
-        // TODO meta info
         this.add(metaInfo)
     }
+
+    private fun createOpenWebsiteButton(text: String, uri: URI) : JButton {
+        val button = JButton(text)
+        button.addActionListener {
+            Desktop.getDesktop().browse(uri)
+        }
+        return button
+    }
+}
+
+fun String.toURI(): URI {
+    return URI.create(this)
 }
