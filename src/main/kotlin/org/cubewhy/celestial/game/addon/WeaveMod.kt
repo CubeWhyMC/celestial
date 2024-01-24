@@ -36,6 +36,7 @@ class WeaveMod(@JvmField val file: File) : BaseAddon() {
 
     companion object {
         const val build: String = "Weave-MC/Weave-Loader" // https://github.com/<build>/releases/latest
+
         @JvmField
         val modFolder: File = File(System.getProperty("user.home"), ".weave/mods")
         private val log: Logger = LoggerFactory.getLogger(WeaveMod::class.java)
@@ -86,8 +87,8 @@ class WeaveMod(@JvmField val file: File) : BaseAddon() {
         @get:Contract(" -> new")
         val installation: File
             get() = File(
-                config.getValue("addon").getAsJsonObject().get("weave").getAsJsonObject().get("installation")
-                    .getAsString()
+                config.getValue("addon").asJsonObject.get("weave").asJsonObject.get("installation")
+                    .asString
             )
 
         @JvmStatic
