@@ -16,7 +16,9 @@ import java.io.IOException
 import java.net.URL
 
 object RequestUtils {
-    private val httpClient: OkHttpClient = OkHttpClient()
+    private val httpClient: OkHttpClient = OkHttpClient.Builder()
+        .proxy(proxy.proxy)
+        .build()
     private val JSON: MediaType = "application/json".toMediaType()
 
 
