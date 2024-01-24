@@ -34,8 +34,7 @@ class GameArgs {
         if (if (`this$gameDir` == null) `other$gameDir` != null else `this$gameDir` != `other$gameDir`) return false
         val `this$server`: Any? = this.server
         val `other$server`: Any? = other.server
-        if (if (`this$server` == null) `other$server` != null else `this$server` != `other$server`) return false
-        return true
+        return !if (`this$server` == null) `other$server` != null else `this$server` != `other$server`
     }
 
     protected fun canEqual(other: Any?): Boolean {

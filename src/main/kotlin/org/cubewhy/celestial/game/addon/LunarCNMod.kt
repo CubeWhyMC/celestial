@@ -87,7 +87,7 @@ class LunarCNMod(@JvmField val file: File) : BaseAddon() {
         @get:Contract(" -> new")
         val installation: File
             get() = File(
-                config.getValue("addon").asJsonObject.get("lunarcn").asJsonObject.get("installation") .asString
+                config.getValue("addon").asJsonObject.get("lunarcn").asJsonObject.get("installation").asString
             )
 
         @JvmStatic
@@ -105,8 +105,8 @@ class LunarCNMod(@JvmField val file: File) : BaseAddon() {
             return downloadLoader(
                 "CubeWhyMC/LunarClient-CN",
                 File(
-                    config.getValue("addon").getAsJsonObject().getAsJsonObject("lunarcn").get("installation")
-                        .getAsString()
+                    config.getValue("addon").asJsonObject.getAsJsonObject("lunarcn").get("installation")
+                        .asString
                 )
             )
         }

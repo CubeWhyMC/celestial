@@ -23,7 +23,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.GridLayout
-import java.awt.event.ActionEvent
 import javax.swing.*
 
 class ArgsConfigDialog(private val key: String, private val json: JsonObject) : JDialog() {
@@ -68,7 +67,7 @@ class ArgsConfigDialog(private val key: String, private val json: JsonObject) : 
             val index = args.selectedIndex
             if (index == -1 || JOptionPane.showConfirmDialog(
                     this,
-                    kotlin.String.format(f.getString("gui.settings.args.remove.confirm"), args.selectedValue),
+                    String.format(f.getString("gui.settings.args.remove.confirm"), args.selectedValue),
                     "Confirm",
                     JOptionPane.YES_NO_OPTION
                 ) == JOptionPane.NO_OPTION

@@ -20,7 +20,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.GridLayout
-import java.awt.event.ActionEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.*
@@ -129,7 +128,7 @@ class MirrorDialog : JDialog() {
     }
 
     private fun loadFromJson() {
-        val mirrors: JsonObject = proxy.getValue("mirror").getAsJsonObject()
+        val mirrors: JsonObject = proxy.getValue("mirror").asJsonObject
         for ((source, value) in mirrors.entrySet()) {
             val mirror = value.asString
             input!!.append(String.format("%s %s\n", source, mirror))

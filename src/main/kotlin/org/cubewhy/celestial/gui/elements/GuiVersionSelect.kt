@@ -8,7 +8,6 @@ package org.cubewhy.celestial.gui.elements
 import com.google.gson.JsonObject
 import com.sun.tools.attach.AttachNotSupportedException
 import org.apache.commons.io.FileUtils
-import org.cubewhy.celestial.Celestial
 import org.cubewhy.celestial.Celestial.checkUpdate
 import org.cubewhy.celestial.Celestial.completeSession
 import org.cubewhy.celestial.Celestial.config
@@ -38,7 +37,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.GridLayout
-import java.awt.event.ActionEvent
 import java.io.File
 import java.io.IOException
 import java.io.NotActiveException
@@ -84,7 +82,7 @@ class GuiVersionSelect : JPanel() {
         this.add(branchInput)
 
         // add items
-        val map = getSupportVersions(Celestial.metadata)
+        val map = getSupportVersions(metadata)
         val supportVersions: List<String>? = map["versions"] as ArrayList<String>?
         for (version in supportVersions!!) {
             versionSelect.addItem(version)
@@ -224,7 +222,7 @@ class GuiVersionSelect : JPanel() {
                     gamePid.set(p[0]!!.pid())
                 }
                 log.info("Pid: $gamePid")
-                GuiLauncher.statusBar.text = kotlin.String.format(f.getString("status.launch.started"), gamePid)
+                GuiLauncher.statusBar.text = String.format(f.getString("status.launch.started"), gamePid)
                 GameStartEvent(gamePid.get()).call()
             }
         }
@@ -272,7 +270,7 @@ class GuiVersionSelect : JPanel() {
                     } catch (e: Exception) {
                         JOptionPane.showMessageDialog(
                             this,
-                            kotlin.String.format(
+                            String.format(
                                 f.getString("gui.message.clientCrash2"),
                                 gameLogFile.path,
                                 f.getString("gui.version.crash.tip")

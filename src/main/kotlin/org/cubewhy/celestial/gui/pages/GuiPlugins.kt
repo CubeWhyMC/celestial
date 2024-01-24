@@ -28,7 +28,6 @@ import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import java.awt.Color
 import java.awt.GridLayout
-import java.awt.event.ActionEvent
 import java.io.File
 import java.net.URL
 import javax.swing.*
@@ -105,9 +104,11 @@ class GuiPlugins : JPanel() {
                 RemoteAddon.Category.WEAVE -> {
                     addPlugin(panelWeave, addon, WeaveMod.modFolder)
                 }
+
                 RemoteAddon.Category.AGENT -> {
                     addPlugin(panelAgents, addon, JavaAgent.javaAgentFolder)
                 }
+
                 RemoteAddon.Category.CN -> {
                     addPlugin(panelCN, addon, LunarCNMod.modFolder)
                 }

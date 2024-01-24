@@ -44,21 +44,27 @@ import kotlin.system.exitProcess
 object Celestial {
     @JvmField
     val configDir: File = File(System.getProperty("user.home"), ".cubewhy/lunarcn")
+
     @JvmField
     val themesDir: File = File(configDir, "themes")
+
     @JvmField
     val config: ConfigFile = ConfigFile(File(configDir, "celestial.json"))
+
     @JvmField
     val proxy: ProxyConfig = ProxyConfig(File(configDir, "proxy.json"))
+
     @JvmField
     val gameLogFile: File = File(configDir, "logs/game.log")
+
     @JvmField
     val launcherLogFile: File = File(configDir, "logs/launcher.log")
     val isDevelopMode: Boolean = System.getProperties().containsKey("dev-mode")
+
     @JvmField
     val gamePid: AtomicLong = AtomicLong()
-    lateinit var locale: Locale
-    lateinit var userLanguage: String
+    private lateinit var locale: Locale
+    private lateinit var userLanguage: String
     lateinit var f: ResourceBundle
     lateinit var launcherData: LauncherData
     lateinit var metadata: JsonObject
@@ -66,6 +72,7 @@ object Celestial {
     lateinit var launcherFrame: GuiLauncher
     var themed: Boolean = true
     var os: String = System.getProperty("os.name")
+
     @JvmField
     val launchScript: File = File(configDir, if ((os.contains("Windows"))) "launch.bat" else "launch.sh")
     var sessionFile: File? = null
@@ -435,7 +442,7 @@ object Celestial {
         // === JRE ===
         val wrapper = config.getValue("wrapper").asString
         val customJre = config.getValue("jre").asString
-        if (!wrapper.isBlank()) {
+        if (wrapper.isNotBlank()) {
             log.warn("Launch the game via the wrapper: $wrapper")
             args.add(wrapper)
         }
@@ -498,15 +505,21 @@ object Celestial {
         for (artifact in json
             .getAsJsonObject("launchTypeData")
             .getAsJsonArray("artifacts")) {
-            if (artifact.asJsonObject["type"].asString == "CLASS_PATH") {
-                // is ClassPath
-                classpath.add("\"" + File(installation, artifact.asJsonObject["name"].asString).path + "\"")
-            } else if (artifact.asJsonObject["type"].asString == "EXTERNAL_FILE") {
-                // is external file
-                ichorPath.add("\"" + File(artifact.asJsonObject["name"].asString).path + "\"")
-            } else if (artifact.asJsonObject["type"].asString == "NATIVES") {
-                // natives
-                natives = File(installation, artifact.asJsonObject["name"].asString)
+            when (artifact.asJsonObject["type"].asString) {
+                "CLASS_PATH" -> {
+                    // is ClassPath
+                    classpath.add("\"" + File(installation, artifact.asJsonObject["name"].asString).path + "\"")
+                }
+
+                "EXTERNAL_FILE" -> {
+                    // is external file
+                    ichorPath.add("\"" + File(artifact.asJsonObject["name"].asString).path + "\"")
+                }
+
+                "NATIVES" -> {
+                    // natives
+                    natives = File(installation, artifact.asJsonObject["name"].asString)
+                }
             }
         }
         if (OSEnum.current == OSEnum.Windows) {

@@ -28,7 +28,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.*
 import java.awt.datatransfer.StringSelection
-import java.awt.event.ActionEvent
 import java.io.IOException
 import java.net.URI
 import javax.swing.*
@@ -129,7 +128,7 @@ class GuiLauncher : JFrame() {
                 gamePid.set(pid.toLong())
                 JOptionPane.showMessageDialog(
                     this,
-                    kotlin.String.format(f.getString("gui.launcher.game.exist.message"), pid),
+                    String.format(f.getString("gui.launcher.game.exist.message"), pid),
                     f.getString("gui.launcher.game.exist.title"),
                     JOptionPane.INFORMATION_MESSAGE
                 )

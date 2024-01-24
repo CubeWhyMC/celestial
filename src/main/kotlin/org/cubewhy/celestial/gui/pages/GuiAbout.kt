@@ -1,3 +1,9 @@
+/*
+ * Celestial Launcher <me@lunarclient.top>
+ * License under GPLv3
+ * Do NOT remove this note if you want to copy this file.
+ */
+
 package org.cubewhy.celestial.gui.pages
 
 import org.cubewhy.celestial.Celestial.config
@@ -44,7 +50,7 @@ class GuiAbout : JPanel() {
                 """.trimIndent(),
             buildVersion,
             System.getProperty("java.version"),
-            if (config.getValue("data-sharing").getAsBoolean()) "turn on" else "turn off",
+            if (config.getValue("data-sharing").asBoolean) "turn on" else "turn off",
             buildUser,
             buildUserEmail,
             branch,

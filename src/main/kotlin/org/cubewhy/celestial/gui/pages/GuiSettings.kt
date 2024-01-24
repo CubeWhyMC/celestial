@@ -86,7 +86,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             Color.orange
         )
 
-        val customJre: String = config.getValue("jre").getAsString()
+        val customJre: String = config.getValue("jre").asString
         val btnSelectPath = JButton(if ((customJre.isEmpty())) currentJavaExec.path else customJre)
         val btnUnset: JButton = JButton(f.getString("gui.settings.jvm.jre.unset"))
         btnSelectPath.addActionListener { e: ActionEvent ->
