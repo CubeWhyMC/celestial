@@ -406,6 +406,9 @@ class GuiVersionSelect : JPanel() {
     }
 
     private fun saveModule() {
+        if (moduleSelect.selectedItem == null) {
+            return
+        }
         val module = moduleSelect.selectedItem as String
         log.info("Select module -> $module")
         val game: JsonObject = config.getValue("game").asJsonObject
