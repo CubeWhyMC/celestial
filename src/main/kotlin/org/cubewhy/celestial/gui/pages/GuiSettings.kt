@@ -590,9 +590,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
     }
 
     private fun claim(key: String) {
-        if (claimed.add(key)) {
-            log.debug("Claimed $key")
-        } else {
+        if (!claimed.add(key)) {
             log.warn("Failed to claim $key : always claimed.")
         }
     }

@@ -43,7 +43,7 @@ class ArgsConfigDialog(private val key: String, private val json: JsonObject) : 
         val panelButtons = JPanel()
         panelButtons.layout = GridLayout(1, 2)
         // btnAdd
-        val btnAdd: JButton = JButton(f.getString("gui.settings.args.add"))
+        val btnAdd = JButton(f.getString("gui.settings.args.add"))
         btnAdd.addActionListener {
             val arg = JOptionPane.showInputDialog(this, f.getString("gui.settings.args.add.message"))
             if (arg != null) {
@@ -51,7 +51,7 @@ class ArgsConfigDialog(private val key: String, private val json: JsonObject) : 
             }
         }
         // btnRemove
-        val btnRemove: JButton = JButton(f.getString("gui.settings.args.remove"))
+        val btnRemove = JButton(f.getString("gui.settings.args.remove"))
         btnRemove.addActionListener {
             val index = args.selectedIndex
             if (index == -1 || JOptionPane.showConfirmDialog(
