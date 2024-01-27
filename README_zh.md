@@ -6,6 +6,8 @@
 
 ## 特性
 
+> 警告: Celestial不是破解LunarClient, 且以后也不会更新相关功能!
+
 1. 开源 (GPLv3)
 2. 不使用electron
 3. 轻量, 高性能
