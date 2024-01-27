@@ -16,6 +16,7 @@ import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.AuthEvent
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
+import org.cubewhy.celestial.gui.dialogs.HelpDialog
 import org.cubewhy.celestial.gui.elements.StatusBar
 import org.cubewhy.celestial.gui.pages.*
 import org.cubewhy.celestial.utils.FileUtils.inputStreamFromClassPath
@@ -64,14 +65,14 @@ class GuiLauncher : JFrame() {
         this.add(statusBar, BorderLayout.SOUTH)
         // menu
         val menu = Panel()
-        val btnPrevious: JButton = JButton(f.getString("gui.previous"))
-        val btnNext: JButton = JButton(f.getString("gui.next"))
+        val btnPrevious = JButton(f.getString("gui.previous"))
+        val btnNext = JButton(f.getString("gui.next"))
         // For developers: It is not recommended to remove the Donate button in Celestial Launcher's derivative versions
         // 不建议在衍生版本中删除赞助按钮
         // Celestial 是免费开源的启动器, 请赞助来帮助我们走得更远 (收入会全部用于开发)
         // Celestial is an opensource launcher, please donate to let us go further (All money will be used for development)
-        val btnDonate: JButton = JButton(f.getString("gui.donate"))
-        val btnHelp: JButton = JButton(f.getString("gui.help"))
+        val btnDonate = JButton(f.getString("gui.donate"))
+        val btnHelp = JButton(f.getString("gui.help"))
         btnDonate.addActionListener {
             try {
                 Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/donate"))
@@ -79,10 +80,7 @@ class GuiLauncher : JFrame() {
             }
         }
         btnHelp.addActionListener {
-            try {
-                Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/help"))
-            } catch (ignored: IOException) {
-            }
+            HelpDialog().isVisible = true
         }
 
         menu.add(btnPrevious)
