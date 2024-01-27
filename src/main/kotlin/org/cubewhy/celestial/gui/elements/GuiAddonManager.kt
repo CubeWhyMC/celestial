@@ -25,6 +25,7 @@ import org.cubewhy.celestial.utils.GuiUtils.createButtonOpenFolder
 import org.cubewhy.celestial.utils.TextUtils.dumpTrace
 import org.slf4j.LoggerFactory
 import java.awt.Color
+import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.io.File
@@ -91,9 +92,9 @@ class GuiAddonManager : JPanel() {
         // menus
         val agentMenu = JPopupMenu()
         agentMenu.add(toggleAgent)
-        val manageArg: JMenuItem = JMenuItem(f.getString("gui.addon.agents.arg"))
-        val removeAgent: JMenuItem = JMenuItem(f.getString("gui.addon.agents.remove"))
-        val renameAgent: JMenuItem = JMenuItem(f.getString("gui.addon.rename"))
+        val manageArg = JMenuItem(f.getString("gui.addon.agents.arg"))
+        val removeAgent = JMenuItem(f.getString("gui.addon.agents.remove"))
+        val renameAgent = JMenuItem(f.getString("gui.addon.rename"))
         agentMenu.add(manageArg)
         agentMenu.add(renameAgent)
         agentMenu.addSeparator()
@@ -155,6 +156,7 @@ class GuiAddonManager : JPanel() {
                 loadAgents(agentList)
             }
         }
+
 
         // weave menu
         val weaveMenu = JPopupMenu()
