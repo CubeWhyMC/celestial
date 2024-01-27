@@ -21,7 +21,6 @@ class Assets {
     lateinit var browser_download_url: String
 
 
-
     override fun toString(): String {
         return "Assets(url=" + this.url + ", id=" + this.id + ", node_id=" + this.node_id + ", name=" + this.name + ", label=" + this.label + ", uploader=" + this.uploader + ", content_type=" + this.content_type + ", state=" + this.state + ", size=" + this.size + ", download_count=" + this.download_count + ", created_at=" + this.created_at + ", updated_at=" + this.updated_at + ", browser_download_url=" + this.browser_download_url + ")"
     }

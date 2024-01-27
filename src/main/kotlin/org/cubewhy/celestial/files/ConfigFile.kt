@@ -88,7 +88,7 @@ open class ConfigFile(val file: File) {
         while (!successful) {
             try {
                 bufferedReader = BufferedReader(FileReader(this.file, StandardCharsets.UTF_8))
-                config = with (gson.fromJson(bufferedReader, JsonObject::class.java)) {
+                config = with(gson.fromJson(bufferedReader, JsonObject::class.java)) {
                     this ?: JsonObject()
                 }
                 successful = true

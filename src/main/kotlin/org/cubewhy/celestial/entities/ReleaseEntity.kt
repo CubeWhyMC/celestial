@@ -32,7 +32,6 @@ class ReleaseEntity {
     lateinit var body: String
 
 
-
     override fun toString(): String {
         return "ReleaseEntity(url=" + this.url + ", assets_url=" + this.assets_url + ", upload_url=" + this.upload_url + ", html_url=" + this.html_url + ", id=" + this.id + ", author=" + this.author + ", node_id=" + this.node_id + ", tag_name=" + this.tag_name + ", target_commitish=" + this.target_commitish + ", name=" + this.name + ", draft=" + this.isDraft + ", prerelease=" + this.isPrerelease + ", created_at=" + this.created_at + ", published_at=" + this.published_at + ", assets=" + this.assets + ", tarball_url=" + this.tarball_url + ", zipball_url=" + this.zipball_url + ", body=" + this.body + ")"
     }
