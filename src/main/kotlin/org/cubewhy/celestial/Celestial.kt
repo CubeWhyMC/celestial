@@ -89,7 +89,8 @@ object Celestial {
     fun main(args: Array<String>) {
         // set encoding
         System.setProperty("file.encoding", "UTF-8")
-        log.info("Celestial v" + GitUtils.buildVersion + " build by " + GitUtils.buildUser)
+        log.info("Celestial v${GitUtils.buildVersion} build by ${GitUtils.buildUser}")
+        log.info("Git remote: ${GitUtils.remote} (${GitUtils.branch})")
         try {
             System.setProperty("file.encoding", "UTF-8")
             run(args)
@@ -181,7 +182,7 @@ object Celestial {
             } catch (e: Exception) {
                 val trace = TextUtils.dumpTrace(e)
                 log.error(trace)
-                // shell we switch a api?
+                // shell we switch an api?
                 val input =
                     JOptionPane.showInputDialog(f.getString("api.unreachable"), config.getValue("api").asString)
                 if (input == null) {
