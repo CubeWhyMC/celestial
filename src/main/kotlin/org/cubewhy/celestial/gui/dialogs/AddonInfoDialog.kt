@@ -83,20 +83,65 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
             metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.version").format(meta.version)))
             metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.description").format(meta.description)))
             metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.authors").format(meta.authors.getAuthorsString())))
-            if (meta.website != null) metaInfo.add(createOpenWebsiteButton(f.getString("gui.plugins.info.meta.website"), meta.website.toURI()))
-            if (meta.repository != null) metaInfo.add(createOpenWebsiteButton(f.getString("gui.plugins.info.meta.repo"), meta.repository.toURI()))
+            if (meta.website != null) metaInfo.add(
+                createOpenWebsiteButton(
+                    f.getString("gui.plugins.info.meta.website"),
+                    meta.website.toURI()
+                )
+            )
+            if (meta.repository != null) metaInfo.add(
+                createOpenWebsiteButton(
+                    f.getString("gui.plugins.info.meta.repo"),
+                    meta.repository.toURI()
+                )
+            )
+            if (meta.dependencies != null) {
+                val dependencies = JTextArea()
+                dependencies.border = TitledBorder(
+                    null,
+                    f.getString("gui.plugins.info.meta.dependencies"),
+                    TitledBorder.DEFAULT_JUSTIFICATION,
+                    TitledBorder.DEFAULT_POSITION,
+                    null,
+                    Color.orange
+                )
+                dependencies.isEditable = false
+                val sb = StringBuilder()
+                meta.dependencies.forEachIsEnd { it, isEnd ->
+                    sb.append(it)
+                    if (!isEnd) sb.append("\n")
+                }
+                metaInfo.add(
+                    JScrollPane(
+                        dependencies,
+                        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
+                    )
+                )
+
+            }
         }
         this.panel.add(metaInfo)
-        this.add(JScrollPane(this.panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED))
+        this.add(
+            JScrollPane(
+                this.panel,
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
+            )
+        )
     }
 
-    private fun createOpenWebsiteButton(text: String, uri: URI) : JButton {
+    private fun createOpenWebsiteButton(text: String, uri: URI): JButton {
         val button = JButton(text)
         button.addActionListener {
             Desktop.getDesktop().browse(uri)
         }
         return button
     }
+}
+
+private fun <T> Array<T>.forEachIsEnd(action: (T, Boolean) -> Unit) {
+    this.forEachIndexed { index, t -> action(t, index == this.size - 1) }
 }
 
 private fun Array<String>.getAuthorsString(): String {
