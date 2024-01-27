@@ -203,8 +203,8 @@ class GuiAddonManager : JPanel() {
 
         val lunarCNMenu = JPopupMenu()
         lunarCNMenu.add(toggleCN)
-        val renameLunarCNMod: JMenuItem = JMenuItem(f.getString("gui.addon.rename"))
-        val removeLunarCNMod: JMenuItem = JMenuItem(f.getString("gui.addon.mods.cn.remove"))
+        val renameLunarCNMod = JMenuItem(f.getString("gui.addon.rename"))
+        val removeLunarCNMod = JMenuItem(f.getString("gui.addon.mods.cn.remove"))
         lunarCNMenu.add(renameLunarCNMod)
         lunarCNMenu.addSeparator()
         lunarCNMenu.add(removeLunarCNMod)
@@ -243,8 +243,8 @@ class GuiAddonManager : JPanel() {
         }
 
         val fabricMenu = JPopupMenu()
-        val renameFabricMod: JMenuItem = JMenuItem(f.getString("gui.addon.rename"))
-        val removeFabricMod: JMenuItem = JMenuItem(f.getString("gui.addon.mods.fabric.remove"))
+        val renameFabricMod = JMenuItem(f.getString("gui.addon.rename"))
+        val removeFabricMod = JMenuItem(f.getString("gui.addon.mods.fabric.remove"))
 
         renameFabricMod.addActionListener {
             val currentMod = jListFabric.selectedValue
@@ -292,10 +292,10 @@ class GuiAddonManager : JPanel() {
 
 
         // buttons
-        val btnAddLunarCNMod: JButton = JButton(f.getString("gui.addon.mods.add"))
-        val btnAddWeaveMod: JButton = JButton(f.getString("gui.addon.mods.add"))
-        val btnAddFabric: JButton = JButton(f.getString("gui.addon.mods.add"))
-        val btnAddAgent: JButton = JButton(f.getString("gui.addon.agents.add"))
+        val btnAddLunarCNMod = JButton(f.getString("gui.addon.mods.add"))
+        val btnAddWeaveMod = JButton(f.getString("gui.addon.mods.add"))
+        val btnAddFabric = JButton(f.getString("gui.addon.mods.add"))
+        val btnAddAgent = JButton(f.getString("gui.addon.agents.add"))
 
         btnAddAgent.addActionListener {
             val file = chooseFile(FileNameExtensionFilter("Agent", "jar"))
