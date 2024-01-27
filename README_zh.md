@@ -20,6 +20,7 @@
 10. 支持javaagent (*实验*)
 11. 支持LunarCN (*实验*)
 12. 支持Weave (*实验*)
+13. 将版本Json的响应保存在本地
 
 ## 获取Celestial
 ### Release

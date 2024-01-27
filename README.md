@@ -20,6 +20,7 @@
 10. Javaagent support (Experimental)
 11. LunarCN support (Experimental)
 12. Weave support (Experimental)
+13. Dump version json into local
 
 ## Get celestial
 
