@@ -231,7 +231,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             getAutoSaveComboBox(
                 config.config,
                 "language",
-                java.util.List.of<Language>(*Language.entries.toTypedArray() as Array<Language?>)
+                listOf(*Language.entries.toTypedArray())
             )
         )
         panelLauncher.add(p6)
