@@ -5,6 +5,7 @@
  */
 package org.cubewhy.celestial.gui.elements
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.sun.tools.attach.AttachNotSupportedException
 import org.apache.commons.io.FileUtils
@@ -28,6 +29,7 @@ import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.FileUtils.unzipNatives
+import org.cubewhy.celestial.utils.GuiUtils
 import org.cubewhy.celestial.utils.SystemUtils.callExternalProcess
 import org.cubewhy.celestial.utils.SystemUtils.findJava
 import org.cubewhy.celestial.utils.TextUtils.dumpTrace
@@ -44,6 +46,7 @@ import java.io.NotActiveException
 import java.nio.charset.StandardCharsets
 import javax.swing.*
 import javax.swing.border.TitledBorder
+import javax.swing.filechooser.FileNameExtensionFilter
 
 class GuiVersionSelect : JPanel() {
     private val versionSelect = JComboBox<String>()
@@ -165,6 +168,31 @@ class GuiVersionSelect : JPanel() {
             }
         }
         this.add(btnWipeCache)
+
+        val btnFetchJson = JButton(f.getString("gui.version.fetch"))
+
+        btnFetchJson.addActionListener {
+            // open file save dialog
+            val file = GuiUtils.saveFile(FileNameExtensionFilter("Json (*.json)", "json"))
+            file?.let {
+                log.info("Fetching version json...")
+                val json = launcherData.getVersion(
+                    versionSelect.selectedItem as String,
+                    branchInput.text,
+                    moduleSelect.selectedItem as String,
+                ).asJsonObject
+                val jsonString = Gson().toJson(json)
+                log.info(jsonString)
+                var file1 = it
+                if (!it.name.endsWith(".json")) {
+                    file1 = file + ".json" // add extension
+                }
+                log.info("Fetch OK! Dumping to ${file1.path}")
+                FileUtils.write(file1, jsonString, StandardCharsets.UTF_8)
+            }
+        }
+
+        this.add(btnFetchJson)
     }
 
     @Throws(IOException::class, AttachNotSupportedException::class, InterruptedException::class)
@@ -434,4 +462,8 @@ class GuiVersionSelect : JPanel() {
     companion object {
         private val log: Logger = LoggerFactory.getLogger(GuiVersionSelect::class.java)
     }
+}
+
+private operator fun File.plus(s: String): File {
+    return File(this.path + s)
 }
