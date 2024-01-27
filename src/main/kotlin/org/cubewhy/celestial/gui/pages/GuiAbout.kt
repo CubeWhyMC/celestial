@@ -65,7 +65,7 @@ class GuiAbout : JPanel() {
         //        final JLabel l = new JLabel("<html><body><p>" + f.getString("gui.about").replace("\n", "<br>") + "</p></body></html>");
 //        l.setFont(font);
 //        this.add(l);
-        val textArea: JTextArea = JTextArea(f.getString("gui.about") + "\n" + env)
+        val textArea = JTextArea(f.getString("gui.about") + "\n" + env)
         val font = Font(null, Font.PLAIN, 14)
         textArea.font = font
         textArea.isEditable = false

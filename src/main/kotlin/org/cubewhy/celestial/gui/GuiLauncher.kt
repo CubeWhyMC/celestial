@@ -34,7 +34,7 @@ import java.net.URI
 import javax.swing.*
 
 class GuiLauncher : JFrame() {
-    val guiPlugins = GuiPlugins()
+    private val guiPlugins = GuiPlugins()
 
     init {
         // register with EventManager

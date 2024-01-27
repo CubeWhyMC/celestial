@@ -65,12 +65,12 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         // config
         panel.add(JLabel(f.getString("gui.settings.warn.restart")))
         val panelFolders = JPanel()
-        panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.main"), config.file.getParentFile()))
+        panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.main"), config.file.parentFile))
         panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.theme"), themesDir))
         panelFolders.add(
             createButtonOpenFolder(
                 f.getString("gui.settings.folder.log"),
-                launcherLogFile.getParentFile()
+                launcherLogFile.parentFile
             )
         )
         panel.add(panelFolders)

@@ -32,7 +32,6 @@ class Uploader {
     var isSite_admin: Boolean = false
 
 
-
     override fun toString(): String {
         return "Uploader(login=" + this.login + ", id=" + this.id + ", node_id=" + this.node_id + ", avatar_url=" + this.avatar_url + ", gravatar_id=" + this.gravatar_id + ", url=" + this.url + ", html_url=" + this.html_url + ", followers_url=" + this.followers_url + ", following_url=" + this.following_url + ", gists_url=" + this.gists_url + ", starred_url=" + this.starred_url + ", subscriptions_url=" + this.subscriptions_url + ", organizations_url=" + this.organizations_url + ", repos_url=" + this.repos_url + ", events_url=" + this.events_url + ", received_events_url=" + this.received_events_url + ", type=" + this.type + ", site_admin=" + this.isSite_admin + ")"
     }
