@@ -517,7 +517,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
                     addUnclaimed(subPanel, value.asJsonObject)
                 } else if (value.isJsonArray) {
                     val btnShowList = JButton(key)
-                    btnShowList.addActionListener { e: ActionEvent? -> ArgsConfigDialog(key, json).isVisible = true }
+                    btnShowList.addActionListener { ArgsConfigDialog(key, json).isVisible = true }
                     basePanel.add(btnShowList)
                 } else if (value.isJsonNull) {
                     basePanel.add(JLabel("$key: null"))
