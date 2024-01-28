@@ -24,7 +24,9 @@
 
 ## Get celestial
 
-Download at [releases](https://github.com/cubewhy/celestial/releases)
+Get celestial at [GitHub Actions] (https://github.com/CubeWhyMC/celestial/actions) (recommended)
+
+Download at [releases](https://github.com/cubewhy/celestial/releases) (often outdated)
 
 
 ## Donate
