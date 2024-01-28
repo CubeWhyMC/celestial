@@ -23,14 +23,18 @@
 13. 将版本Json的响应保存在本地
 
 ## 获取Celestial
-### Release
-在[releases](https://github.com/cubewhy/celestial/releases)下载
 
-### Actions
+### 从Actions获取
 
 > actions版本可能无法运行,或者有很多问题,遇到问题请理性反馈
 
-在[Actions](https://github.com/cubewhy/celestial/actions)获取
+在[Actions](https://github.com/cubewhy/celestial/actions)获取 (十分推荐)
+
+### 从Releases获取
+
+> 虽然稳定, 但是更新速度慢
+
+在[releases](https://github.com/cubewhy/celestial/releases)下载 (可能是过期的版本)
 
 
 ## 捐赠
