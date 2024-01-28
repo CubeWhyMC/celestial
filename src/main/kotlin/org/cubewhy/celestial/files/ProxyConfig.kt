@@ -44,7 +44,7 @@ class ProxyConfig(file: File?) : ConfigFile(file!!) {
             return if (state) Proxy(getType(address.protocol), InetSocketAddress(address.host, address.port)) else null
         }
 
-    val proxyAddress: String
+    private val proxyAddress: String
         get() = this.getValue("proxy").asString
 
     private fun getType(protocol: String): Proxy.Type {
@@ -70,7 +70,7 @@ class ProxyConfig(file: File?) : ConfigFile(file!!) {
         return src
     }
 
-    fun getMirror(address: String?): Mirror {
+    private fun getMirror(address: String?): Mirror {
         val json = getValue("mirror").asJsonObject
         return Mirror(json[address].asString)
     }

@@ -1,5 +1,6 @@
 package org.cubewhy.celestial.gui.pages
 
+import cn.hutool.crypto.SecureUtil
 import com.google.gson.JsonArray
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.Celestial.metadata
@@ -49,7 +50,7 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
                 val imageURL = json["image"].asString
                 val title = json["title"].asString
                 try {
-                    if (cache(URL(imageURL), "news/$title.png", false)) {
+                    if (cache(URL(imageURL), "news/${SecureUtil.sha1(title)}", false)) {
                         // load news
                         panel.add(LauncherNews(json))
                     }

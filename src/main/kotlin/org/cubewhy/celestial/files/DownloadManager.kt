@@ -71,7 +71,7 @@ object DownloadManager {
     /**
      * Download a file
      *
-     * @param url0 url to the target file (online)
+     * @param url url to the target file (online)
      * @param file file instance of the local file
      * @return is success
      */

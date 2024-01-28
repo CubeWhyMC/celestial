@@ -6,6 +6,8 @@
 
 package org.cubewhy.celestial.gui
 
+import cn.hutool.core.util.HashUtil
+import cn.hutool.crypto.SecureUtil
 import com.google.gson.JsonObject
 import org.cubewhy.celestial.files.DownloadManager.cacheDir
 import java.awt.Color
@@ -18,7 +20,7 @@ import javax.swing.*
 import javax.swing.border.TitledBorder
 
 class LauncherNews(val json: JsonObject) : JPanel() {
-    private val image = File(cacheDir, "news/" + json["title"].asString + ".png")
+    private val image = File(cacheDir, "news/" + SecureUtil.sha1(json["title"].asString))
 
     init {
         this.layout = BoxLayout(this, BoxLayout.Y_AXIS)
@@ -34,7 +36,14 @@ class LauncherNews(val json: JsonObject) : JPanel() {
     }
 
     private fun initGui() {
-        val textLabel = JLabel(json["excerpt"].asString + " - " + json["author"].asString)
+        val isMoonsworth = !json.has("excerpt")
+
+        val textLabel: JLabel = if (isMoonsworth) {
+            JLabel(json["title"].asString)
+        } else {
+            JLabel(json["excerpt"].asString + " - " + json["author"].asString)
+        }
+
         this.add(textLabel)
 
         val image = ImageIcon(image.path)
@@ -42,11 +51,17 @@ class LauncherNews(val json: JsonObject) : JPanel() {
             JLabel(ImageIcon(image.image.getScaledInstance(400, 200, Image.SCALE_DEFAULT)), SwingConstants.CENTER)
         this.add(imageLabel)
 
-        val jsonBtnText = json["button_text"]
-        var text: String? = "View"
-        if (!jsonBtnText.isJsonNull) {
-            text = jsonBtnText.asString
+        val text = if (isMoonsworth) {
+            "View"
+        } else {
+            val jsonBtnText = json["button_text"]
+            if (!jsonBtnText.isJsonNull) {
+                jsonBtnText.asString
+            } else {
+                "View"
+            }
         }
+
         val button = JButton(text)
         button.addActionListener {
             try {
