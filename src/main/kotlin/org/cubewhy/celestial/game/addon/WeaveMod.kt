@@ -70,7 +70,7 @@ class WeaveMod(@JvmField val file: File) : BaseAddon() {
         }
 
         @JvmStatic
-        @Throws(IOException::class)
+        
         fun add(file: File): WeaveMod? {
             val target = autoCopy(file, modFolder)
             return if ((target == null)) null else WeaveMod(target)
@@ -85,7 +85,7 @@ class WeaveMod(@JvmField val file: File) : BaseAddon() {
             )
 
         @JvmStatic
-        @Throws(MalformedURLException::class)
+
         fun checkUpdate(): Boolean {
             log.info("Updating Weave Loader")
             return downloadLoader(

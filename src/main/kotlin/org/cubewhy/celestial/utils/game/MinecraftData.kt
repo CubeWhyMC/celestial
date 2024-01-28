@@ -26,7 +26,7 @@ object MinecraftData {
         }
     }
 
-    @Throws(IOException::class)
+    
     fun manifest(): JsonObject {
         get(versionManifest).execute().use { response ->
             assert(response.body != null)
@@ -40,7 +40,7 @@ object MinecraftData {
      * @param version version id
      * @return version json
      */
-    @Throws(IOException::class)
+    
     fun getVersion(version: String, json: JsonElement): JsonObject? {
         val versionsArray = json.asJsonObject.getAsJsonArray("versions")
         for (element in versionsArray) {
@@ -61,7 +61,7 @@ object MinecraftData {
      * @param json json object from MinecraftData.getVersion
      * @return json of texture index
      */
-    @Throws(IOException::class)
+    
     fun getTextureIndex(json: JsonElement): JsonObject {
         val url = URL(json.asJsonObject.getAsJsonObject("assetIndex")["url"].asString)
         get(url).execute().use { response ->

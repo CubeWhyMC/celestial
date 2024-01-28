@@ -60,7 +60,7 @@ class GuiLauncher : JFrame() {
     /**
      * Init Celestial Launcher (gui)
      */
-    @Throws(IOException::class)
+    
     private fun initGui() {
         this.add(statusBar, BorderLayout.SOUTH)
         // menu
@@ -118,7 +118,7 @@ class GuiLauncher : JFrame() {
         }.start()
     }
 
-    @Throws(IOException::class)
+    
     fun findExistGame() {
         try {
             val java = findJava(getMainClass(null))
@@ -146,7 +146,7 @@ class GuiLauncher : JFrame() {
      *
      * @param name file name
      */
-    @Throws(IOException::class)
+    
     fun setIconImage(name: String) {
         this.iconImage = ImageIcon(
             readBytes(
@@ -158,7 +158,7 @@ class GuiLauncher : JFrame() {
     /**
      * Reset the icon
      */
-    @Throws(IOException::class)
+    
     fun resetIcon() {
         val themeType: String = config.getValue("theme").asString
         when (themeType) {
@@ -169,13 +169,13 @@ class GuiLauncher : JFrame() {
     }
 
     @EventTarget
-    @Throws(IOException::class)
+    
     fun onGameStart(e: GameStartEvent?) {
         this.setIconImage("running")
     }
 
     @EventTarget
-    @Throws(IOException::class)
+    
     fun onGameTerminate(e: GameTerminateEvent?) {
         this.resetIcon()
     }

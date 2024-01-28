@@ -31,7 +31,7 @@ class GuiVersion : JPanel() {
         this.initGui()
     }
 
-    @Throws(IOException::class)
+    
     private fun initGui() {
         this.add(GuiVersionSelect())
         this.add(GuiAddonManager())

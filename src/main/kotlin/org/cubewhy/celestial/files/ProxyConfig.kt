@@ -55,7 +55,6 @@ class ProxyConfig(file: File?) : ConfigFile(file!!) {
         }
     }
 
-    @Throws(MalformedURLException::class, URISyntaxException::class)
     fun useMirror(src: URL): URL {
         val host = src.host
         var port = src.port

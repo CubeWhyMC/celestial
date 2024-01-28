@@ -42,7 +42,7 @@ class FabricMod(@JvmField val file: File) : BaseAddon() {
         }
 
         @JvmStatic
-        @Throws(IOException::class)
+        
         fun add(file: File?): FabricMod? {
             val target = autoCopy(file!!, modFolder)
             return if ((target == null)) null else FabricMod(target)

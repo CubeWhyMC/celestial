@@ -85,14 +85,14 @@ class LunarCNMod(@JvmField val file: File) : BaseAddon() {
             )
 
         @JvmStatic
-        @Throws(IOException::class)
+        
         fun add(file: File?): LunarCNMod? {
             val target = autoCopy(file!!, modFolder)
             return if ((target == null)) null else LunarCNMod(target)
         }
 
         @JvmStatic
-        @Throws(MalformedURLException::class)
+
         fun checkUpdate(): Boolean {
             log.info("Updating LunarCN Loader...")
             GuiLauncher.statusBar.text = f.getString("gui.addon.mods.cn.warn")

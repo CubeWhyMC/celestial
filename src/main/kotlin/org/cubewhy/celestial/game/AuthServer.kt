@@ -39,7 +39,6 @@ class AuthServer private constructor() {
      *
      * @return json of callbackInfo
      */
-    @Throws(MalformedURLException::class)
     private fun handleRequest(method: String, args: Any?): Map<String, String> {
         val result = HashMap<String, String>()
         if (method == "open-window" && args is JSONObject) {
