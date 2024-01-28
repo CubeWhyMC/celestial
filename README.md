@@ -14,12 +14,12 @@
 4. No installation needed
 5. Ready out of the box
 6. External browser login support
-7. Cross-platform (Experimental)
-8. Custom API address ([LunarCN API](https://github.com/CubeWhyMC/website) only)
+7. Cross-platform (*Experimental* Not fully support Microsoft Windows)
+8. Custom API address (fully support [LunarCN API](https://github.com/CubeWhyMC/website) only)
 9. Multi version, one jre
-10. Javaagent support (Experimental)
-11. LunarCN support (Experimental)
-12. Weave support (Experimental)
+10. Javaagent support (*Experimental*)
+11. LunarCN support (*Experimental*)
+12. Weave support (*Experimental*)
 13. Dump version json into local
 
 ## Get celestial
