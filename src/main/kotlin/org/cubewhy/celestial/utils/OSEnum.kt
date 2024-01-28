@@ -31,7 +31,7 @@ enum class OSEnum(val os: String, @JvmField val jsName: String = os.lowercase(Lo
          *
          * @param osString os.name
          */
-        @JvmStatic
+        
         fun find(osString: String): OSEnum? {
             for (value in entries) {
                 if (osString.contains(value.os)) {
@@ -41,7 +41,7 @@ enum class OSEnum(val os: String, @JvmField val jsName: String = os.lowercase(Lo
             return null
         }
 
-        @JvmStatic
+        
         val current: OSEnum?
             get() = find(System.getProperty("os.name"))
     }

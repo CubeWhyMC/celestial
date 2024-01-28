@@ -248,7 +248,7 @@ object Celestial {
     }
 
     
-    fun initLauncher() {
+    private fun initLauncher() {
         metadata = launcherData.metadata()
         minecraftManifest = MinecraftData.manifest()
         if (metadata.has("error")) {
@@ -345,7 +345,7 @@ object Celestial {
         }
 
     
-    fun initTheme() {
+    private fun initTheme() {
         val themeType = config.getValue("theme").asString
         log.info("Set theme -> $themeType")
         when (themeType) {
@@ -377,8 +377,7 @@ object Celestial {
      *
      * @param id cache id
      */
-    @JvmStatic
-    
+
     fun wipeCache(id: String?): Boolean {
         log.info("Wiping LC cache")
         val installation = File(config.getValue("installation-dir").asString)
@@ -393,7 +392,7 @@ object Celestial {
     /**
      * Launch LunarClient offline
      */
-    @JvmStatic
+    
     
     fun launch(): ProcessBuilder {
         // wrapper was applied in the script
@@ -422,7 +421,7 @@ object Celestial {
     /**
      * Get args
      */
-    @JvmStatic
+    
     
     fun getArgs(
         version: String,
@@ -569,7 +568,7 @@ object Celestial {
      * @param branch  Git branch (LunarClient)
      * @return natives file
      */
-    @JvmStatic
+    
     
     fun launch(version: String, branch: String?, module: String?): File? {
         val installationDir = File(config.getValue("installation-dir").asString)
@@ -622,7 +621,7 @@ object Celestial {
     /**
      * Patching network disabling for LunarClient
      */
-    @JvmStatic
+    
     
     fun completeSession() {
         if (!sessionFile.exists()) {
@@ -648,7 +647,7 @@ object Celestial {
      * @param module  LunarClient module
      * @param branch  Git branch (LunarClient)
      */
-    @JvmStatic
+    
     @Synchronized
     
     fun checkUpdate(version: String, module: String?, branch: String?) {

@@ -62,21 +62,21 @@ class WeaveMod(@JvmField val file: File) : BaseAddon() {
             return list
         }
 
-        @JvmStatic
+        
         fun findAll(): List<WeaveMod> {
             val list = findEnabled()
             list.addAll(findDisabled())
             return Collections.unmodifiableList(list)
         }
 
-        @JvmStatic
+        
         
         fun add(file: File): WeaveMod? {
             val target = autoCopy(file, modFolder)
             return if ((target == null)) null else WeaveMod(target)
         }
 
-        @JvmStatic
+        
         @get:Contract(" -> new")
         val installation: File
             get() = File(
@@ -84,7 +84,7 @@ class WeaveMod(@JvmField val file: File) : BaseAddon() {
                     .asString
             )
 
-        @JvmStatic
+        
 
         fun checkUpdate(): Boolean {
             log.info("Updating Weave Loader")

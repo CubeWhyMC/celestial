@@ -14,7 +14,7 @@ import java.lang.management.ManagementFactory
 
 // from hmcl launcher
 object SystemUtils {
-    @JvmStatic
+    
     fun callExternalProcess(processBuilder: ProcessBuilder): Process {
         val managedProcess = ManagedProcess(processBuilder)
         //        managedProcess.pumpInputStream(SystemUtils::onLogLine);
@@ -22,7 +22,7 @@ object SystemUtils {
         return managedProcess.process
     }
 
-    @JvmStatic
+    
     fun findJava(mainClass: String?): VirtualMachine? {
         for (descriptor in VirtualMachine.list()) {
             if (descriptor.displayName().startsWith(mainClass!!)) {
@@ -32,7 +32,7 @@ object SystemUtils {
         return null
     }
 
-    @JvmStatic
+    
     val currentJavaExec: File
         get() {
             var exec = System.getProperty("java.home") + "/bin/java"
@@ -42,7 +42,7 @@ object SystemUtils {
             return File(exec)
         }
 
-    @JvmStatic
+    
     val totalMem: Int
         /**
          * Get total RAM (MB)

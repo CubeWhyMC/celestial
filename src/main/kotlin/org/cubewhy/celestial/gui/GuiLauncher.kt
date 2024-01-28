@@ -170,13 +170,13 @@ class GuiLauncher : JFrame() {
 
     @EventTarget
     
-    fun onGameStart(e: GameStartEvent?) {
+    fun onGameStart(e: GameStartEvent) {
         this.setIconImage("running")
     }
 
     @EventTarget
     
-    fun onGameTerminate(e: GameTerminateEvent?) {
+    fun onGameTerminate(e: GameTerminateEvent) {
         this.resetIcon()
     }
 

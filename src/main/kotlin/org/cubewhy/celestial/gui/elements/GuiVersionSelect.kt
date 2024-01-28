@@ -87,8 +87,8 @@ class GuiVersionSelect : JPanel() {
 
         // add items
         val map = getSupportVersions(metadata)
-        val supportVersions: List<String>? = map["versions"] as ArrayList<String>?
-        for (version in supportVersions!!) {
+        val supportVersions: List<String> = map["versions"] as ArrayList<String>
+        for (version in supportVersions) {
             versionSelect.addItem(version)
         }
         versionSelect.addActionListener {

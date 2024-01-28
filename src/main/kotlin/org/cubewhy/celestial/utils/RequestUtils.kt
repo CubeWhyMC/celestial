@@ -22,12 +22,12 @@ object RequestUtils {
     private val JSON: MediaType = "application/json".toMediaType()
 
 
-    @JvmStatic
+    
     fun get(url: String?): Call {
         return get(URL(url))
     }
 
-    @JvmStatic
+    
     fun get(url: URL): Call {
         val request: Request = Request.Builder()
             .url(proxy.useMirror(url))
@@ -40,7 +40,7 @@ object RequestUtils {
         return httpClient.newCall(request)
     }
 
-    @JvmStatic
+    
     
     fun post(url: String, json: String): Call {
         val body: RequestBody = json.toRequestBody(JSON) // MUST be JSON in the latest LC-API
@@ -51,7 +51,7 @@ object RequestUtils {
         return httpClient.newCall(request)
     }
 
-    @JvmStatic
+    
     
     fun post(url: String, json: JsonElement): Call {
         val gson = Gson()
