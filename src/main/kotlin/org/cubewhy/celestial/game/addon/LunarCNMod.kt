@@ -70,28 +70,28 @@ class LunarCNMod(@JvmField val file: File) : BaseAddon() {
             return list
         }
 
-        @JvmStatic
+        
         fun findAll(): List<LunarCNMod> {
             val list = findEnabled()
             list.addAll(findDisabled())
             return Collections.unmodifiableList(list)
         }
 
-        @JvmStatic
+        
         @get:Contract(" -> new")
         val installation: File
             get() = File(
                 config.getValue("addon").asJsonObject.get("lunarcn").asJsonObject.get("installation").asString
             )
 
-        @JvmStatic
+        
         
         fun add(file: File?): LunarCNMod? {
             val target = autoCopy(file!!, modFolder)
             return if ((target == null)) null else LunarCNMod(target)
         }
 
-        @JvmStatic
+        
 
         fun checkUpdate(): Boolean {
             log.info("Updating LunarCN Loader...")

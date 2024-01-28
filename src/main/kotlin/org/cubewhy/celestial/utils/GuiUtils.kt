@@ -19,7 +19,7 @@ import javax.swing.filechooser.FileNameExtensionFilter
 object GuiUtils {
     private val log: Logger = LoggerFactory.getLogger(GuiUtils::class.java)
 
-    @JvmStatic
+    
     fun chooseFile(filter: FileFilter?): File? {
         val fileDialog = JFileChooser()
         if (filter != null) {
@@ -30,14 +30,14 @@ object GuiUtils {
         return if ((fileDialog.showOpenDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
     }
 
-    @JvmStatic
+    
     fun chooseFolder(): File? {
         val fileDialog = JFileChooser()
         fileDialog.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
         return if ((fileDialog.showOpenDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
     }
 
-    @JvmStatic
+    
     fun saveFile(filter: FileNameExtensionFilter?): File? {
         val fileDialog = JFileChooser()
         fileDialog.fileFilter = filter
@@ -46,7 +46,7 @@ object GuiUtils {
         return if ((fileDialog.showSaveDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
     }
 
-    @JvmStatic
+    
     fun createButtonOpenFolder(text: String?, folder: File): JButton {
         val btn = JButton(text)
         btn.addActionListener {

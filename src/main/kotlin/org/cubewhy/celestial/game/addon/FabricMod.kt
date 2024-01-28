@@ -8,7 +8,6 @@ package org.cubewhy.celestial.game.addon
 import org.cubewhy.celestial.Celestial
 import org.cubewhy.celestial.game.BaseAddon
 import java.io.File
-import java.io.IOException
 import java.util.*
 
 class FabricMod(@JvmField val file: File) : BaseAddon() {
@@ -28,7 +27,7 @@ class FabricMod(@JvmField val file: File) : BaseAddon() {
         @JvmField
         val modFolder: File = File(Celestial.config.getValue("installation-dir").asString, "mods")
 
-        @JvmStatic
+        
         fun findAll(): List<FabricMod> {
             val list: MutableList<FabricMod> = ArrayList()
             if (modFolder.isDirectory) {
@@ -41,7 +40,7 @@ class FabricMod(@JvmField val file: File) : BaseAddon() {
             return list
         }
 
-        @JvmStatic
+        
         
         fun add(file: File?): FabricMod? {
             val target = autoCopy(file!!, modFolder)

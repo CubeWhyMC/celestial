@@ -15,18 +15,18 @@ import java.util.zip.ZipInputStream
 object FileUtils {
     private val log: Logger = LoggerFactory.getLogger(FileUtils::class.java)
 
-    @JvmStatic
+    
     fun inputStreamFromClassPath(path: String): InputStream? {
         return FileUtils::class.java.getResourceAsStream(path)
     }
 
-    @JvmStatic
+    
     
     fun readBytes(inputStream: InputStream): ByteArray {
         return inputStream.readAllBytes()
     }
 
-    @JvmStatic
+    
     
     fun unzipNatives(nativesZip: File, baseDir: File?) {
         log.info("Unzipping natives")

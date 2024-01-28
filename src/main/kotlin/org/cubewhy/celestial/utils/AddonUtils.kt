@@ -16,7 +16,7 @@ import java.net.URL
 import java.util.jar.JarFile
 
 object AddonUtils {
-    @JvmStatic
+    
     
     fun isWeaveMod(file: File): Boolean {
         return isWeaveMod(JarFile(file))
@@ -33,7 +33,7 @@ object AddonUtils {
         return jar.getJarEntry("weave.mod.json") != null
     }
 
-    @JvmStatic
+    
     
     fun isLunarCNMod(file: File): Boolean {
         return isLunarCNMod(JarFile(file))
@@ -50,7 +50,7 @@ object AddonUtils {
         return jar.getJarEntry(/* name = */ "lunarcn.mod.json") != null
     }
 
-    @JvmStatic
+    
     fun downloadLoader(repo: String?, file: File?): Boolean {
         var apiJson: String
         try {

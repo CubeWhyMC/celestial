@@ -36,7 +36,7 @@ object DownloadManager {
         }
     }
 
-    @JvmStatic
+    
     fun waitForAll() {
         pool!!.shutdown()
         while (!pool!!.awaitTermination(1, TimeUnit.SECONDS)) {
@@ -55,7 +55,7 @@ object DownloadManager {
      * @param override allow override?
      * @return status (true=success, false=failure)
      */
-    @JvmStatic
+    
     
     fun cache(url: URL, name: String, override: Boolean): Boolean {
         val file = File(cacheDir, name)
@@ -116,7 +116,7 @@ object DownloadManager {
         return download0(url, file, null, Downloadable.Type.SHA1)
     }
 
-    @JvmStatic
+    
     fun download(downloadable: Downloadable) {
         if (pool == null || pool!!.isTerminated) {
             pool = Executors.newFixedThreadPool(config.getValue("max-threads").asInt, DownloadThreadFactory())

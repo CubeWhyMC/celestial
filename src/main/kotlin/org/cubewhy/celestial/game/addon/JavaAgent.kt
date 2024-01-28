@@ -149,7 +149,7 @@ class JavaAgent : BaseAddon {
             return list
         }
 
-        @JvmStatic
+        
         fun findAll(): List<JavaAgent> {
             val list = findEnabled()
             list.addAll(findDisabled())
@@ -162,7 +162,7 @@ class JavaAgent : BaseAddon {
          * @param agent the agent
          * @param arg   param of the agent
          */
-        @JvmStatic
+        
         fun setArgFor(agent: JavaAgent, arg: String?) {
             setArgFor(agent.file.name, arg)
         }
@@ -189,7 +189,7 @@ class JavaAgent : BaseAddon {
             return ja[name].asString
         }
 
-        @JvmStatic
+        
         
         fun add(file: File, arg: String?): JavaAgent? {
             val target = autoCopy(file, javaAgentFolder)
@@ -205,7 +205,7 @@ class JavaAgent : BaseAddon {
          * @param old name of the old agent
          * @param n3w name of the new agent
          */
-        @JvmStatic
+        
         fun migrate(old: String?, n3w: String?) {
             val ja: JsonObject = config.getValue("javaagents").asJsonObject
             val arg = if (ja[old] == null && ja[old].isJsonNull) {
