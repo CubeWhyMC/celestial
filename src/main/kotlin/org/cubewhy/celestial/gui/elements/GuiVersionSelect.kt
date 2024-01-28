@@ -58,7 +58,7 @@ class GuiVersionSelect : JPanel() {
     private var isLaunching = false
 
     private fun interface CreateProcess {
-        @Throws(IOException::class)
+        
         fun create(): Process?
     }
 
@@ -76,7 +76,7 @@ class GuiVersionSelect : JPanel() {
         this.initGui()
     }
 
-    @Throws(IOException::class)
+    
     private fun initGui() {
         this.add(JLabel(f.getString("gui.version-select.label.version")))
         this.add(versionSelect)
@@ -195,7 +195,7 @@ class GuiVersionSelect : JPanel() {
         this.add(btnFetchJson)
     }
 
-    @Throws(IOException::class, AttachNotSupportedException::class, InterruptedException::class)
+    
     private fun beforeLaunch() {
         if (gamePid.get() != 0L) {
             if (findJava(getMainClass(null)) != null) {
@@ -245,7 +245,7 @@ class GuiVersionSelect : JPanel() {
         }
     }
 
-    @Throws(RuntimeException::class)
+
     private fun runGame(cp: CreateProcess, run: Runnable?) {
         val p = arrayOfNulls<Process>(1) // create process
 
@@ -337,7 +337,7 @@ class GuiVersionSelect : JPanel() {
         }.start()
     }
 
-    @Throws(IOException::class, AttachNotSupportedException::class, InterruptedException::class)
+    
     private fun online() {
         if (isLaunching) {
             JOptionPane.showMessageDialog(
@@ -402,7 +402,6 @@ class GuiVersionSelect : JPanel() {
         }
     }
 
-    @Throws(IOException::class, InterruptedException::class, AttachNotSupportedException::class)
     private fun offline() {
         beforeLaunch()
         val process = launch()
@@ -445,7 +444,7 @@ class GuiVersionSelect : JPanel() {
     }
 
 
-    @Throws(IOException::class)
+    
     private fun refreshModuleSelect(reset: Boolean) {
         moduleSelect.removeAllItems()
         val map = getSupportModules(metadata, (versionSelect.selectedItem as String))

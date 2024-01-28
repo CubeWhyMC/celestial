@@ -84,7 +84,7 @@ object Celestial {
 
     private var log = LoggerFactory.getLogger(GuiUtils::class.java)
 
-    @Throws(Exception::class)
+    
     @JvmStatic
     fun main(args: Array<String>) {
         // set encoding
@@ -119,7 +119,6 @@ object Celestial {
     }
 
 
-    @Throws(Exception::class)
     private fun run(args: Array<String>) {
         // init config
         initConfig()
@@ -218,7 +217,7 @@ object Celestial {
         })
     }
 
-    @Throws(IOException::class)
+    
     private fun checkJava() {
         val javaVersion = System.getProperty("java.specification.version")
         log.info(
@@ -248,7 +247,7 @@ object Celestial {
         }
     }
 
-    @Throws(IOException::class)
+    
     fun initLauncher() {
         metadata = launcherData.metadata()
         minecraftManifest = MinecraftData.manifest()
@@ -345,7 +344,7 @@ object Celestial {
             return File(System.getProperty("user.home"), ".minecraft")
         }
 
-    @Throws(IOException::class)
+    
     fun initTheme() {
         val themeType = config.getValue("theme").asString
         log.info("Set theme -> $themeType")
@@ -379,7 +378,7 @@ object Celestial {
      * @param id cache id
      */
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun wipeCache(id: String?): Boolean {
         log.info("Wiping LC cache")
         val installation = File(config.getValue("installation-dir").asString)
@@ -395,7 +394,7 @@ object Celestial {
      * Launch LunarClient offline
      */
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun launch(): ProcessBuilder {
         // wrapper was applied in the script
         log.info("Launching with script")
@@ -424,7 +423,7 @@ object Celestial {
      * Get args
      */
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun getArgs(
         version: String,
         branch: String?,
@@ -571,7 +570,7 @@ object Celestial {
      * @return natives file
      */
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun launch(version: String, branch: String?, module: String?): File? {
         val installationDir = File(config.getValue("installation-dir").asString)
 
@@ -624,7 +623,7 @@ object Celestial {
      * Patching network disabling for LunarClient
      */
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun completeSession() {
         if (!sessionFile.exists()) {
             log.info("Completing session.json to fix the network error for LunarClient")
@@ -651,7 +650,7 @@ object Celestial {
      */
     @JvmStatic
     @Synchronized
-    @Throws(IOException::class)
+    
     fun checkUpdate(version: String, module: String?, branch: String?) {
         log.info("Checking update")
         val installation = File(config.getValue("installation-dir").asString)

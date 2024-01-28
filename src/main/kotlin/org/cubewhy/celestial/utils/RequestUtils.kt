@@ -41,7 +41,7 @@ object RequestUtils {
     }
 
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun post(url: String, json: String): Call {
         val body: RequestBody = json.toRequestBody(JSON) // MUST be JSON in the latest LC-API
         val request: Request = Request.Builder()
@@ -52,7 +52,7 @@ object RequestUtils {
     }
 
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun post(url: String, json: JsonElement): Call {
         val gson = Gson()
         val realJson = gson.toJson(json)

@@ -15,7 +15,6 @@ import java.lang.management.ManagementFactory
 // from hmcl launcher
 object SystemUtils {
     @JvmStatic
-    @Throws(IOException::class, InterruptedException::class)
     fun callExternalProcess(processBuilder: ProcessBuilder): Process {
         val managedProcess = ManagedProcess(processBuilder)
         //        managedProcess.pumpInputStream(SystemUtils::onLogLine);
@@ -24,7 +23,6 @@ object SystemUtils {
     }
 
     @JvmStatic
-    @Throws(IOException::class, AttachNotSupportedException::class)
     fun findJava(mainClass: String?): VirtualMachine? {
         for (descriptor in VirtualMachine.list()) {
             if (descriptor.displayName().startsWith(mainClass!!)) {

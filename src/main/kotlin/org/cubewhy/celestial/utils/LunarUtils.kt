@@ -12,7 +12,7 @@ import java.io.IOException
 import java.nio.charset.StandardCharsets
 
 object LunarUtils {
-    @Throws(IOException::class)
+    
     fun isReallyOfficial(session: File?): Boolean {
         val json = JsonParser.parseString(FileUtils.readFileToString(session, StandardCharsets.UTF_8)).asJsonObject
         return !json.has("celestial")

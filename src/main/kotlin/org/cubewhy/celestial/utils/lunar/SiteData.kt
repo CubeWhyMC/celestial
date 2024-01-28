@@ -16,7 +16,7 @@ class SiteData
      * @param api Launcher API
      */
 
-    @Throws(IOException::class)
+    
     fun metadata(): JsonObject {
         get("$api/site/metadata").execute().use { response ->
             assert(response.code == 200) {

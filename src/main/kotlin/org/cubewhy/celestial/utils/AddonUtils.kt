@@ -17,7 +17,7 @@ import java.util.jar.JarFile
 
 object AddonUtils {
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun isWeaveMod(file: File): Boolean {
         return isWeaveMod(JarFile(file))
     }
@@ -34,7 +34,7 @@ object AddonUtils {
     }
 
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun isLunarCNMod(file: File): Boolean {
         return isLunarCNMod(JarFile(file))
     }
@@ -47,11 +47,10 @@ object AddonUtils {
      */
     fun isLunarCNMod(jar: JarFile): Boolean {
         // find lunarcn.mod.json
-        return jar.getJarEntry("lunarcn.mod.json") != null
+        return jar.getJarEntry(/* name = */ "lunarcn.mod.json") != null
     }
 
     @JvmStatic
-    @Throws(MalformedURLException::class)
     fun downloadLoader(repo: String?, file: File?): Boolean {
         var apiJson: String
         try {

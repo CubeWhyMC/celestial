@@ -21,13 +21,13 @@ object FileUtils {
     }
 
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun readBytes(inputStream: InputStream): ByteArray {
         return inputStream.readAllBytes()
     }
 
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun unzipNatives(nativesZip: File, baseDir: File?) {
         log.info("Unzipping natives")
         val dir = File(baseDir, "natives")
@@ -38,7 +38,7 @@ object FileUtils {
         log.info("Natives unzipped.")
     }
 
-    @Throws(IOException::class)
+    
     fun unZip(input: File, outputDir: File?) {
         val zipFile = ZipFile(input)
         val zipInputStream = ZipInputStream(Files.newInputStream(input.toPath()))

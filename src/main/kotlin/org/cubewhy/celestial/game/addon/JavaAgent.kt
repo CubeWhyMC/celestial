@@ -190,7 +190,7 @@ class JavaAgent : BaseAddon {
         }
 
         @JvmStatic
-        @Throws(IOException::class)
+        
         fun add(file: File, arg: String?): JavaAgent? {
             val target = autoCopy(file, javaAgentFolder)
             if (arg != null) {

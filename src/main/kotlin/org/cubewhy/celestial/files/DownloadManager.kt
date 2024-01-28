@@ -37,7 +37,6 @@ object DownloadManager {
     }
 
     @JvmStatic
-    @Throws(InterruptedException::class)
     fun waitForAll() {
         pool!!.shutdown()
         while (!pool!!.awaitTermination(1, TimeUnit.SECONDS)) {
@@ -57,7 +56,7 @@ object DownloadManager {
      * @return status (true=success, false=failure)
      */
     @JvmStatic
-    @Throws(IOException::class)
+    
     fun cache(url: URL, name: String, override: Boolean): Boolean {
         val file = File(cacheDir, name)
         if (file.exists() && !override) {
@@ -75,7 +74,7 @@ object DownloadManager {
      * @param file file instance of the local file
      * @return is success
      */
-    @Throws(IOException::class)
+    
     fun download0(url: URL, file: File, crcSha: String?, type: Downloadable.Type): Boolean {
         // connect
         if (file.isFile && crcSha != null) {
@@ -112,7 +111,7 @@ object DownloadManager {
         ) == crcSha
     }
 
-    @Throws(IOException::class)
+    
     fun download0(url: URL, file: File): Boolean {
         return download0(url, file, null, Downloadable.Type.SHA1)
     }
