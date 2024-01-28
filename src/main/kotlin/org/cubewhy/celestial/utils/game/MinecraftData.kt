@@ -9,7 +9,6 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import org.cubewhy.celestial.utils.RequestUtils.get
-import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 
@@ -26,7 +25,7 @@ object MinecraftData {
         }
     }
 
-    
+
     fun manifest(): JsonObject {
         get(versionManifest).execute().use { response ->
             assert(response.body != null)
@@ -40,7 +39,7 @@ object MinecraftData {
      * @param version version id
      * @return version json
      */
-    
+
     fun getVersion(version: String, json: JsonElement): JsonObject? {
         val versionsArray = json.asJsonObject.getAsJsonArray("versions")
         for (element in versionsArray) {
@@ -61,7 +60,7 @@ object MinecraftData {
      * @param json json object from MinecraftData.getVersion
      * @return json of texture index
      */
-    
+
     fun getTextureIndex(json: JsonElement): JsonObject {
         val url = URL(json.asJsonObject.getAsJsonObject("assetIndex")["url"].asString)
         get(url).execute().use { response ->

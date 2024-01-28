@@ -107,7 +107,7 @@ object EventManager {
         }
     }
 
-    
+
     fun register(o: Any) {
         for (method in o.javaClass.methods) {
             if (!isMethodBad(method)) {

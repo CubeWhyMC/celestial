@@ -7,7 +7,6 @@ package org.cubewhy.celestial.game
 
 import org.apache.commons.io.FileUtils
 import java.io.File
-import java.io.IOException
 
 abstract class BaseAddon {
     abstract val isEnabled: Boolean
@@ -27,8 +26,8 @@ abstract class BaseAddon {
     }
 
     companion object {
-        
-        
+
+
         @JvmStatic
         protected fun autoCopy(file: File, folder: File?): File? {
             var name = file.name

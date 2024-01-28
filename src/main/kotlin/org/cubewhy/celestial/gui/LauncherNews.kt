@@ -6,7 +6,6 @@
 
 package org.cubewhy.celestial.gui
 
-import cn.hutool.core.util.HashUtil
 import cn.hutool.crypto.SecureUtil
 import com.google.gson.JsonObject
 import org.cubewhy.celestial.files.DownloadManager.cacheDir

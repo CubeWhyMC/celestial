@@ -3,7 +3,6 @@ package org.cubewhy.celestial.utils.lunar
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import org.cubewhy.celestial.utils.RequestUtils.get
-import java.io.IOException
 import java.net.URI
 
 class SiteData
@@ -16,7 +15,7 @@ class SiteData
      * @param api Launcher API
      */
 
-    
+
     fun metadata(): JsonObject {
         get("$api/site/metadata").execute().use { response ->
             assert(response.code == 200) {

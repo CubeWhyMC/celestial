@@ -10,7 +10,9 @@ import com.google.gson.JsonPrimitive
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.net.*
+import java.net.InetSocketAddress
+import java.net.Proxy
+import java.net.URL
 
 class ProxyConfig(file: File?) : ConfigFile(file!!) {
     class Mirror(address: String) {

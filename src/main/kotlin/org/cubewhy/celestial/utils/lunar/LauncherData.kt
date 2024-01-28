@@ -36,7 +36,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
      *
      * @return Launcher Metadata
      */
-    
+
     fun metadata(): JsonObject {
         // do request with fake system info
         get("$api/launcher/metadata?installation_id=469a9de3-49b1-489f-ad67-ec55b9e0e727&os=NMSLOS&arch=x64&launcher_version=114.514.191&branch=master&branch_changed=true&private=true&os_release=114.514").execute()
@@ -49,7 +49,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
             }
     }
 
-    
+
     fun getVersion(version: String?, branch: String?, module: String?): JsonObject {
         val json = JsonObject()
         json.addProperty("hwid", "HWID-PUBLIC")
@@ -69,7 +69,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         }
     }
 
-    
+
     fun uploadCrashReport(trace: String?, type: CrashReportType, launchScript: String?): Map<String, String> {
         val map: MutableMap<String, String> = HashMap()
         // do request
@@ -144,7 +144,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          *
          * @return true (always)
          */
-        
+
         fun getIchorState(json: JsonObject): Boolean {
             return if (json.getAsJsonObject("launchTypeData").has("ichor")) {
                 json
@@ -229,7 +229,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @param version version name
          * @return version json
          */
-        
+
         fun getVersionInMetadata(metadata: JsonElement, version: String): JsonObject? {
             val metadata1 = metadata.asJsonObject
             for (version1 in metadata1["versions"].asJsonArray) {
@@ -251,7 +251,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @param version  Minecraft version
          * @return Module List
          */
-        
+
         fun getSupportModules(metadata: JsonElement, version: String): Map<String, Any> {
             val map: MutableMap<String, Any> = HashMap()
             val modules: MutableList<String> = ArrayList()
@@ -275,7 +275,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @param version artifacts json
          * @return artifact map {"fileName": {url, sha1, type}}
          */
-        
+
         fun getArtifacts(version: JsonElement): Map<String, Map<String, String>> {
             val out: MutableMap<String, Map<String, String>> = HashMap()
 
@@ -304,7 +304,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @param version version info
          * @return textures' index
          */
-        
+
         fun getLunarTexturesIndex(version: JsonElement): Map<String, String>? {
             val versionJson = version.asJsonObject
             val indexUrl = versionJson.getAsJsonObject("textures")["indexUrl"].asString

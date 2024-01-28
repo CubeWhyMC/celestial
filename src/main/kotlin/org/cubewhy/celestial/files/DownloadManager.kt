@@ -16,7 +16,6 @@ import org.cubewhy.celestial.utils.RequestUtils.get
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.io.IOException
 import java.net.URL
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -36,7 +35,7 @@ object DownloadManager {
         }
     }
 
-    
+
     fun waitForAll() {
         pool!!.shutdown()
         while (!pool!!.awaitTermination(1, TimeUnit.SECONDS)) {
@@ -55,8 +54,8 @@ object DownloadManager {
      * @param override allow override?
      * @return status (true=success, false=failure)
      */
-    
-    
+
+
     fun cache(url: URL, name: String, override: Boolean): Boolean {
         val file = File(cacheDir, name)
         if (file.exists() && !override) {
@@ -74,7 +73,7 @@ object DownloadManager {
      * @param file file instance of the local file
      * @return is success
      */
-    
+
     fun download0(url: URL, file: File, crcSha: String?, type: Downloadable.Type): Boolean {
         // connect
         if (file.isFile && crcSha != null) {
@@ -111,12 +110,12 @@ object DownloadManager {
         ) == crcSha
     }
 
-    
+
     fun download0(url: URL, file: File): Boolean {
         return download0(url, file, null, Downloadable.Type.SHA1)
     }
 
-    
+
     fun download(downloadable: Downloadable) {
         if (pool == null || pool!!.isTerminated) {
             pool = Executors.newFixedThreadPool(config.getValue("max-threads").asInt, DownloadThreadFactory())

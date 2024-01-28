@@ -27,7 +27,7 @@ class FabricMod(@JvmField val file: File) : BaseAddon() {
         @JvmField
         val modFolder: File = File(Celestial.config.getValue("installation-dir").asString, "mods")
 
-        
+
         fun findAll(): List<FabricMod> {
             val list: MutableList<FabricMod> = ArrayList()
             if (modFolder.isDirectory) {
@@ -40,8 +40,7 @@ class FabricMod(@JvmField val file: File) : BaseAddon() {
             return list
         }
 
-        
-        
+
         fun add(file: File?): FabricMod? {
             val target = autoCopy(file!!, modFolder)
             return if ((target == null)) null else FabricMod(target)

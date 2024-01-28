@@ -15,8 +15,6 @@ import org.jetbrains.annotations.Contract
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.io.IOException
-import java.net.MalformedURLException
 import java.util.*
 
 class LunarCNMod(@JvmField val file: File) : BaseAddon() {
@@ -70,28 +68,26 @@ class LunarCNMod(@JvmField val file: File) : BaseAddon() {
             return list
         }
 
-        
+
         fun findAll(): List<LunarCNMod> {
             val list = findEnabled()
             list.addAll(findDisabled())
             return Collections.unmodifiableList(list)
         }
 
-        
+
         @get:Contract(" -> new")
         val installation: File
             get() = File(
                 config.getValue("addon").asJsonObject.get("lunarcn").asJsonObject.get("installation").asString
             )
 
-        
-        
+
         fun add(file: File?): LunarCNMod? {
             val target = autoCopy(file!!, modFolder)
             return if ((target == null)) null else LunarCNMod(target)
         }
 
-        
 
         fun checkUpdate(): Boolean {
             log.info("Updating LunarCN Loader...")
