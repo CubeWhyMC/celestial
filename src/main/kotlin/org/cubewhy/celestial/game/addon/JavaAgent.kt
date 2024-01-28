@@ -13,7 +13,6 @@ import org.jetbrains.annotations.Contract
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.io.IOException
 import java.util.*
 
 class JavaAgent : BaseAddon {
@@ -149,7 +148,7 @@ class JavaAgent : BaseAddon {
             return list
         }
 
-        
+
         fun findAll(): List<JavaAgent> {
             val list = findEnabled()
             list.addAll(findDisabled())
@@ -162,7 +161,7 @@ class JavaAgent : BaseAddon {
          * @param agent the agent
          * @param arg   param of the agent
          */
-        
+
         fun setArgFor(agent: JavaAgent, arg: String?) {
             setArgFor(agent.file.name, arg)
         }
@@ -189,8 +188,7 @@ class JavaAgent : BaseAddon {
             return ja[name].asString
         }
 
-        
-        
+
         fun add(file: File, arg: String?): JavaAgent? {
             val target = autoCopy(file, javaAgentFolder)
             if (arg != null) {
@@ -205,7 +203,7 @@ class JavaAgent : BaseAddon {
          * @param old name of the old agent
          * @param n3w name of the new agent
          */
-        
+
         fun migrate(old: String?, n3w: String?) {
             val ja: JsonObject = config.getValue("javaagents").asJsonObject
             val arg = if (ja[old] == null && ja[old].isJsonNull) {

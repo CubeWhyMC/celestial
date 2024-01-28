@@ -12,8 +12,6 @@ import org.jetbrains.annotations.Contract
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
-import java.io.IOException
-import java.net.MalformedURLException
 import java.util.*
 
 class WeaveMod(@JvmField val file: File) : BaseAddon() {
@@ -62,21 +60,20 @@ class WeaveMod(@JvmField val file: File) : BaseAddon() {
             return list
         }
 
-        
+
         fun findAll(): List<WeaveMod> {
             val list = findEnabled()
             list.addAll(findDisabled())
             return Collections.unmodifiableList(list)
         }
 
-        
-        
+
         fun add(file: File): WeaveMod? {
             val target = autoCopy(file, modFolder)
             return if ((target == null)) null else WeaveMod(target)
         }
 
-        
+
         @get:Contract(" -> new")
         val installation: File
             get() = File(
@@ -84,7 +81,6 @@ class WeaveMod(@JvmField val file: File) : BaseAddon() {
                     .asString
             )
 
-        
 
         fun checkUpdate(): Boolean {
             log.info("Updating Weave Loader")

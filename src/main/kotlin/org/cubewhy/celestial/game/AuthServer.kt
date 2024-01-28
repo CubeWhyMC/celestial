@@ -12,7 +12,6 @@ import org.cubewhy.celestial.utils.TextUtils.dumpTrace
 import org.json.JSONObject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.MalformedURLException
 import java.net.URL
 
 class AuthServer private constructor() {

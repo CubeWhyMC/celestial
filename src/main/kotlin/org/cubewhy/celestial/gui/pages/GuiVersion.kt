@@ -12,7 +12,6 @@ import org.cubewhy.celestial.gui.elements.GuiVersionSelect
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import java.io.IOException
 import javax.swing.JPanel
 import javax.swing.border.TitledBorder
 
@@ -31,7 +30,7 @@ class GuiVersion : JPanel() {
         this.initGui()
     }
 
-    
+
     private fun initGui() {
         this.add(GuiVersionSelect())
         this.add(GuiAddonManager())

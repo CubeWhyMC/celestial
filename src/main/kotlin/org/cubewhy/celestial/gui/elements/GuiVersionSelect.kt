@@ -58,7 +58,7 @@ class GuiVersionSelect : JPanel() {
     private var isLaunching = false
 
     private fun interface CreateProcess {
-        
+
         fun create(): Process?
     }
 
@@ -76,7 +76,7 @@ class GuiVersionSelect : JPanel() {
         this.initGui()
     }
 
-    
+
     private fun initGui() {
         this.add(JLabel(f.getString("gui.version-select.label.version")))
         this.add(versionSelect)
@@ -145,7 +145,7 @@ class GuiVersionSelect : JPanel() {
             }
         }
 
-        val btnWipeCache: JButton = JButton(f.getString("gui.version.cache.wipe"))
+        val btnWipeCache = JButton(f.getString("gui.version.cache.wipe"))
 
         btnWipeCache.addActionListener {
             if (JOptionPane.showConfirmDialog(
@@ -195,7 +195,7 @@ class GuiVersionSelect : JPanel() {
         this.add(btnFetchJson)
     }
 
-    
+
     private fun beforeLaunch() {
         if (gamePid.get() != 0L) {
             if (findJava(getMainClass(null)) != null) {
@@ -337,7 +337,7 @@ class GuiVersionSelect : JPanel() {
         }.start()
     }
 
-    
+
     private fun online() {
         if (isLaunching) {
             JOptionPane.showMessageDialog(
@@ -444,7 +444,6 @@ class GuiVersionSelect : JPanel() {
     }
 
 
-    
     private fun refreshModuleSelect(reset: Boolean) {
         moduleSelect.removeAllItems()
         val map = getSupportModules(metadata, (versionSelect.selectedItem as String))
