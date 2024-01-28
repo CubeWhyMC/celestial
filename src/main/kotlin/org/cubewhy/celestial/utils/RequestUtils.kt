@@ -12,7 +12,6 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.cubewhy.celestial.Celestial.proxy
-import java.io.IOException
 import java.net.URL
 
 object RequestUtils {
@@ -22,12 +21,11 @@ object RequestUtils {
     private val JSON: MediaType = "application/json".toMediaType()
 
 
-    
     fun get(url: String?): Call {
         return get(URL(url))
     }
 
-    
+
     fun get(url: URL): Call {
         val request: Request = Request.Builder()
             .url(proxy.useMirror(url))
@@ -40,8 +38,7 @@ object RequestUtils {
         return httpClient.newCall(request)
     }
 
-    
-    
+
     fun post(url: String, json: String): Call {
         val body: RequestBody = json.toRequestBody(JSON) // MUST be JSON in the latest LC-API
         val request: Request = Request.Builder()
@@ -51,8 +48,7 @@ object RequestUtils {
         return httpClient.newCall(request)
     }
 
-    
-    
+
     fun post(url: String, json: JsonElement): Call {
         val gson = Gson()
         val realJson = gson.toJson(json)

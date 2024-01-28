@@ -10,14 +10,12 @@ import org.cubewhy.celestial.entities.ReleaseEntity
 import org.cubewhy.celestial.files.DownloadManager
 import org.cubewhy.celestial.files.Downloadable
 import java.io.File
-import java.io.IOException
-import java.net.MalformedURLException
 import java.net.URL
 import java.util.jar.JarFile
 
 object AddonUtils {
-    
-    
+
+
     fun isWeaveMod(file: File): Boolean {
         return isWeaveMod(JarFile(file))
     }
@@ -33,8 +31,7 @@ object AddonUtils {
         return jar.getJarEntry("weave.mod.json") != null
     }
 
-    
-    
+
     fun isLunarCNMod(file: File): Boolean {
         return isLunarCNMod(JarFile(file))
     }
@@ -50,7 +47,7 @@ object AddonUtils {
         return jar.getJarEntry(/* name = */ "lunarcn.mod.json") != null
     }
 
-    
+
     fun downloadLoader(repo: String?, file: File?): Boolean {
         var apiJson: String
         try {

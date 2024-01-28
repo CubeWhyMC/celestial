@@ -6,15 +6,13 @@
 package org.cubewhy.celestial.utils
 
 import com.sun.management.OperatingSystemMXBean
-import com.sun.tools.attach.AttachNotSupportedException
 import com.sun.tools.attach.VirtualMachine
 import java.io.File
-import java.io.IOException
 import java.lang.management.ManagementFactory
 
 // from hmcl launcher
 object SystemUtils {
-    
+
     fun callExternalProcess(processBuilder: ProcessBuilder): Process {
         val managedProcess = ManagedProcess(processBuilder)
         //        managedProcess.pumpInputStream(SystemUtils::onLogLine);
@@ -22,7 +20,7 @@ object SystemUtils {
         return managedProcess.process
     }
 
-    
+
     fun findJava(mainClass: String?): VirtualMachine? {
         for (descriptor in VirtualMachine.list()) {
             if (descriptor.displayName().startsWith(mainClass!!)) {
@@ -32,7 +30,7 @@ object SystemUtils {
         return null
     }
 
-    
+
     val currentJavaExec: File
         get() {
             var exec = System.getProperty("java.home") + "/bin/java"
@@ -42,7 +40,7 @@ object SystemUtils {
             return File(exec)
         }
 
-    
+
     val totalMem: Int
         /**
          * Get total RAM (MB)

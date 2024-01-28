@@ -12,7 +12,7 @@ import java.io.StringWriter
 import java.util.*
 
 object TextUtils {
-    
+
     fun dumpTrace(e: Exception): String {
         val s = StringWriter()
         val stream = PrintWriter(s)
