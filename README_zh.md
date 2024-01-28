@@ -14,8 +14,8 @@
 4. 不需要安装
 5. 开箱即用
 6. 浏览器登录微软账号支持
-7. 跨平台 (*实验*)
-8. 自定义API地址 (仅[LunarCN API](https://github.com/CubeWhyMC/website))
+7. 跨平台 (*实验* 不完全支持Windows)
+8. 自定义API地址 (仅完全支持[LunarCN API](https://github.com/CubeWhyMC/website))
 9. 多版本，单java环境
 10. 支持javaagent (*实验*)
 11. 支持LunarCN (*实验*)
