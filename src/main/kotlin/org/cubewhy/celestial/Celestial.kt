@@ -31,7 +31,6 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.File
 import java.io.FileWriter
-import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
 import java.nio.charset.StandardCharsets
@@ -84,7 +83,7 @@ object Celestial {
 
     private var log = LoggerFactory.getLogger(GuiUtils::class.java)
 
-    
+
     @JvmStatic
     fun main(args: Array<String>) {
         // set encoding
@@ -217,7 +216,7 @@ object Celestial {
         })
     }
 
-    
+
     private fun checkJava() {
         val javaVersion = System.getProperty("java.specification.version")
         log.info(
@@ -247,7 +246,7 @@ object Celestial {
         }
     }
 
-    
+
     private fun initLauncher() {
         metadata = launcherData.metadata()
         minecraftManifest = MinecraftData.manifest()
@@ -344,7 +343,7 @@ object Celestial {
             return File(System.getProperty("user.home"), ".minecraft")
         }
 
-    
+
     private fun initTheme() {
         val themeType = config.getValue("theme").asString
         log.info("Set theme -> $themeType")
@@ -392,8 +391,8 @@ object Celestial {
     /**
      * Launch LunarClient offline
      */
-    
-    
+
+
     fun launch(): ProcessBuilder {
         // wrapper was applied in the script
         log.info("Launching with script")
@@ -421,8 +420,8 @@ object Celestial {
     /**
      * Get args
      */
-    
-    
+
+
     fun getArgs(
         version: String,
         branch: String?,
@@ -568,8 +567,8 @@ object Celestial {
      * @param branch  Git branch (LunarClient)
      * @return natives file
      */
-    
-    
+
+
     fun launch(version: String, branch: String?, module: String?): File? {
         val installationDir = File(config.getValue("installation-dir").asString)
 
@@ -621,8 +620,8 @@ object Celestial {
     /**
      * Patching network disabling for LunarClient
      */
-    
-    
+
+
     fun completeSession() {
         if (!sessionFile.exists()) {
             log.info("Completing session.json to fix the network error for LunarClient")
@@ -647,9 +646,9 @@ object Celestial {
      * @param module  LunarClient module
      * @param branch  Git branch (LunarClient)
      */
-    
+
     @Synchronized
-    
+
     fun checkUpdate(version: String, module: String?, branch: String?) {
         log.info("Checking update")
         val installation = File(config.getValue("installation-dir").asString)

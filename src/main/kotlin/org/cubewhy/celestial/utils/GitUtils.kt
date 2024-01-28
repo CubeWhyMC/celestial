@@ -18,36 +18,36 @@ object GitUtils {
         }
     }
 
-    
+
     val buildVersion: String
         get() = info.getProperty("git.build.version")
 
-    
+
     val branch: String
         get() = info.getProperty("git.branch")
 
-    
+
     val remote: String
         get() = info.getProperty("git.remote.origin.url")
 
-    
+
     fun getCommitId(shortID: Boolean): String {
         return if (shortID) info.getProperty("git.commit.id.abbrev") else info.getProperty("git.commit.id")
     }
 
-    
+
     val buildUser: String
         get() = info.getProperty("git.build.user.name")
 
-    
+
     val buildUserEmail: String
         get() = info.getProperty("git.build.user.email")
 
-    
+
     val commitMessage: String
         get() = info.getProperty("git.commit.message.full")
 
-    
+
     val commitTime: String
         get() = info.getProperty("git.commit.time")
 }
