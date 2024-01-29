@@ -539,7 +539,7 @@ class GuiAddonManager : JPanel() {
                 if (SwingUtilities.isRightMouseButton(e)) {
                     val index = list.locationToIndex(e.point)
                     list.selectedIndex = index
-                    val current = list.selectedValue
+                    val current = list.selectedValue ?: return
                     if (current.isEnabled) {
                         toggleWeave.text = f.getString("gui.addon.toggle.disable")
                         toggleAgent.text = f.getString("gui.addon.toggle.disable")
