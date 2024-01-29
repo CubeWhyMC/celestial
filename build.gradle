@@ -38,9 +38,6 @@ dependencies {
     include 'commons-io:commons-io:2.15.1'
     include 'cn.hutool:hutool-crypto:5.8.25'
     include "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-
-    testCompileOnly 'org.projectlombok:lombok:1.18.30'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 shadowJar {
