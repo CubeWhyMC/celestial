@@ -95,7 +95,7 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
                     meta.repository.toURI()
                 )
             )
-            if (meta.dependencies != null) {
+            if (!meta.dependencies.isNullOrEmpty()) {
                 val dependencies = JTextArea()
                 dependencies.border = TitledBorder(
                     null,
