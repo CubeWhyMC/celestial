@@ -62,9 +62,9 @@ class GuiAddonManager : JPanel() {
 
     private fun initGui() {
         // load items
-        loadAgents(agentList)
-        loadWeaveMods(weaveList)
-        loadLunarCNMods(lunarcnList)
+        loadAgents()
+        loadWeaveMods()
+        loadLunarCNMods()
         loadFabricMods(fabricList)
 
         val jListLunarCN = JList(lunarcnList)
@@ -75,17 +75,17 @@ class GuiAddonManager : JPanel() {
         toggleWeave.addActionListener {
             jListWeave.selectedValue.toggle()
             weaveList.removeAllElements()
-            loadWeaveMods(weaveList)
+            loadWeaveMods()
         }
         toggleCN.addActionListener {
             jListLunarCN.selectedValue.toggle()
             lunarcnList.removeAllElements()
-            loadLunarCNMods(lunarcnList)
+            loadLunarCNMods()
         }
         toggleAgent.addActionListener {
             jListAgents.selectedValue.toggle()
             agentList.removeAllElements()
-            loadAgents(agentList)
+            loadAgents()
         }
 
         // menus
@@ -117,7 +117,7 @@ class GuiAddonManager : JPanel() {
                     )
                 }
                 agentList.clear()
-                loadAgents(agentList)
+                loadAgents()
             }
         }
 
@@ -133,7 +133,7 @@ class GuiAddonManager : JPanel() {
             ) {
                 GuiLauncher.statusBar.text = String.format(f.getString("gui.addon.agents.remove.success"), name)
                 agentList.clear()
-                loadAgents(agentList)
+                loadAgents()
             }
         }
 
@@ -152,7 +152,7 @@ class GuiAddonManager : JPanel() {
                 // rename the name in the config
                 migrate(name, "$newName.jar")
                 agentList.clear()
-                loadAgents(agentList)
+                loadAgents()
             }
         }
 
@@ -179,7 +179,7 @@ class GuiAddonManager : JPanel() {
                 log.info(String.format("Rename weave mod %s -> %s", name, "$newName.jar"))
                 GuiLauncher.statusBar.text = String.format(f.getString("gui.addon.rename.success"), newName)
                 weaveList.clear()
-                loadWeaveMods(weaveList)
+                loadWeaveMods()
             }
         }
 
@@ -196,7 +196,7 @@ class GuiAddonManager : JPanel() {
                 GuiLauncher.statusBar.text =
                     String.format(f.getString("gui.addon.mods.weave.remove.success"), name)
                 weaveList.clear()
-                loadWeaveMods(weaveList)
+                loadWeaveMods()
             }
         }
 
@@ -221,7 +221,7 @@ class GuiAddonManager : JPanel() {
                 log.info(String.format("Rename LunarCN mod %s -> %s", name, "$newName.jar"))
                 GuiLauncher.statusBar.text = String.format(f.getString("gui.addon.rename.success"), newName)
                 lunarcnList.clear()
-                loadLunarCNMods(lunarcnList)
+                loadLunarCNMods()
             }
         }
 
@@ -237,7 +237,7 @@ class GuiAddonManager : JPanel() {
             ) {
                 GuiLauncher.statusBar.text = String.format(f.getString("gui.addon.mods.cn.remove.success"), name)
                 lunarcnList.clear()
-                loadLunarCNMods(lunarcnList)
+                loadLunarCNMods()
             }
         }
 
@@ -310,7 +310,7 @@ class GuiAddonManager : JPanel() {
                     AddonAddEvent(AddonAddEvent.Type.JAVAAGENT, agent)
                     GuiLauncher.statusBar.text = f.getString("gui.addon.agents.add.success")
                     agentList.clear()
-                    loadAgents(agentList)
+                    loadAgents()
                 } else {
                     JOptionPane.showMessageDialog(
                         this,
@@ -348,7 +348,7 @@ class GuiAddonManager : JPanel() {
                     AddonAddEvent(AddonAddEvent.Type.WEAVE, mod)
                     GuiLauncher.statusBar.text = f.getString("gui.addon.mods.weave.add.success")
                     weaveList.clear()
-                    loadWeaveMods(weaveList)
+                    loadWeaveMods()
                 } else {
                     JOptionPane.showMessageDialog(
                         this,
@@ -386,7 +386,7 @@ class GuiAddonManager : JPanel() {
                     AddonAddEvent(AddonAddEvent.Type.LUNARCN, mod)
                     GuiLauncher.statusBar.text = f.getString("gui.addon.mods.cn.add.success")
                     weaveList.clear()
-                    loadWeaveMods(weaveList)
+                    loadWeaveMods()
                 } else {
                     JOptionPane.showMessageDialog(
                         this,
@@ -501,17 +501,17 @@ class GuiAddonManager : JPanel() {
         when (name) {
             "agents" -> {
                 agentList.clear()
-                loadAgents(agentList)
+                loadAgents()
             }
 
             "weave" -> {
                 weaveList.clear()
-                loadWeaveMods(weaveList)
+                loadWeaveMods()
             }
 
             "cn" -> {
                 lunarcnList.clear()
-                loadLunarCNMods(lunarcnList)
+                loadLunarCNMods()
             }
 
             "fabric" -> {
@@ -527,9 +527,9 @@ class GuiAddonManager : JPanel() {
         }
     }
 
-    private fun loadLunarCNMods(modList: DefaultListModel<LunarCNMod>) {
+    private fun loadLunarCNMods() {
         for (lunarCNMod in LunarCNMod.findAll()) {
-            modList.addElement(lunarCNMod)
+            lunarcnList.addElement(lunarCNMod)
         }
     }
 
@@ -555,17 +555,15 @@ class GuiAddonManager : JPanel() {
         })
     }
 
-    companion object {
-        private fun loadWeaveMods(weave: DefaultListModel<WeaveMod>) {
-            for (weaveMod in WeaveMod.findAll()) {
-                weave.addElement(weaveMod)
-            }
+    private fun loadWeaveMods() {
+        for (weaveMod in WeaveMod.findAll()) {
+            weaveList.addElement(weaveMod)
         }
+    }
 
-        private fun loadAgents(agentList: DefaultListModel<JavaAgent>) {
-            for (javaAgent in JavaAgent.findAll()) {
-                agentList.addElement(javaAgent)
-            }
+    private fun loadAgents() {
+        for (javaAgent in JavaAgent.findAll()) {
+            agentList.addElement(javaAgent)
         }
     }
 }

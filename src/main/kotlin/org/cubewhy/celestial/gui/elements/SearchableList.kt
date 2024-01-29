@@ -12,16 +12,17 @@ import java.awt.Color
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
 import javax.swing.*
+import javax.swing.event.ListDataEvent
+import javax.swing.event.ListDataListener
 
 class SearchableList<T>(private val model: DefaultListModel<T>, baseList: JList<T>) : JPanel() {
 
     private var list = ArrayList<T>()
 
+    private var isInternalChange = false
+
     init {
         this.layout = BorderLayout(0, 0)
-        model.elements().asIterator().forEach {
-            list.add(it)
-        }
         val searchBar = JTextField("Search")
         searchBar.foreground = Color.GRAY
         searchBar.addFocusListener(object : FocusAdapter() {
@@ -45,13 +46,35 @@ class SearchableList<T>(private val model: DefaultListModel<T>, baseList: JList<
         }
         this.add(searchBar, BorderLayout.NORTH)
 
-        baseList.addPropertyChangeListener {
+        fun refresh() {
             // reload items
+            if (isInternalChange) return
             list = ArrayList()
             model.elements().asIterator().forEach {
                 list.add(it)
             }
         }
+
+        baseList.addPropertyChangeListener {
+            refresh()
+        }
+
+        model.addListDataListener(object : ListDataListener {
+
+            override fun intervalAdded(e: ListDataEvent?) {
+                refresh()
+            }
+
+            override fun intervalRemoved(e: ListDataEvent?) {
+                refresh()
+            }
+            override fun contentsChanged(e: ListDataEvent?) {
+                refresh()
+            }
+        })
+
+        refresh()
+
 
         this.add(
             JScrollPane(
@@ -63,6 +86,7 @@ class SearchableList<T>(private val model: DefaultListModel<T>, baseList: JList<
     }
 
     private fun search(text: String) {
+        isInternalChange = true
         if (text.isEmpty()) {
             model.removeAllElements()
             model.addAll(list)
@@ -74,6 +98,7 @@ class SearchableList<T>(private val model: DefaultListModel<T>, baseList: JList<
                 model.addElement(it)
             }
         }
+        isInternalChange = false
     }
 }
 
