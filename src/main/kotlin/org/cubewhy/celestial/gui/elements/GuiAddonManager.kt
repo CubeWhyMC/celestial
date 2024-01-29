@@ -445,7 +445,7 @@ class GuiAddonManager : JPanel() {
         val panelLunarCN = JPanel()
         panelLunarCN.name = "cn"
         panelLunarCN.layout = BoxLayout(panelLunarCN, BoxLayout.Y_AXIS)
-        panelLunarCN.add(JScrollPane(jListLunarCN))
+        panelLunarCN.add(SearchableList(lunarcnList, jListLunarCN))
         val btnPanel1 = JPanel()
         btnPanel1.layout = BoxLayout(btnPanel1, BoxLayout.X_AXIS)
         btnPanel1.add(btnAddLunarCNMod)
@@ -455,7 +455,7 @@ class GuiAddonManager : JPanel() {
         val panelWeave = JPanel()
         panelWeave.name = "weave"
         panelWeave.layout = BoxLayout(panelWeave, BoxLayout.Y_AXIS)
-        panelWeave.add(JScrollPane(jListWeave))
+        panelWeave.add(SearchableList(weaveList, jListWeave))
         val btnPanel2 = JPanel()
         btnPanel2.layout = BoxLayout(btnPanel2, BoxLayout.X_AXIS)
         btnPanel2.add(btnAddWeaveMod)
@@ -465,7 +465,7 @@ class GuiAddonManager : JPanel() {
         val panelAgents = JPanel()
         panelAgents.name = "agents"
         panelAgents.layout = BoxLayout(panelAgents, BoxLayout.Y_AXIS)
-        panelAgents.add(JScrollPane(jListAgents))
+        panelAgents.add(SearchableList(agentList, jListAgents))
         val btnPanel3 = JPanel()
         btnPanel3.layout = BoxLayout(btnPanel3, BoxLayout.X_AXIS)
         btnPanel3.add(btnAddAgent)

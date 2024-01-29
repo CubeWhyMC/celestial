@@ -57,7 +57,7 @@ class GuiPlugins : JPanel() {
         this.add(btnRefresh)
     }
 
-    internal fun refresh() {
+    private fun refresh() {
         this.tab.removeAll()
         this.addTabs()
     }
