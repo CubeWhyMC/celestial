@@ -9,9 +9,11 @@ package org.cubewhy.celestial.gui.elements
 import java.awt.Color
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JScrollPane
+import javax.swing.JTextArea
 import javax.swing.border.TitledBorder
 
-open class HelpPage(private val documentName: String) : JPanel() {
+open class HelpPage(val documentName: String) : JPanel() {
     init {
         this.name = documentName
         this.border = TitledBorder(
@@ -28,4 +30,26 @@ open class HelpPage(private val documentName: String) : JPanel() {
     override fun toString(): String {
         return this.documentName
     }
+}
+
+/**
+ * HelpPage with a scrollbar
+ * */
+internal class HelpPageX(base: HelpPage) : JScrollPane(base, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED) {
+    private var documentName: String
+
+    init {
+        this.name = base.name
+        this.documentName = base.documentName
+        this.verticalScrollBar.unitIncrement = 30
+    }
+
+    override fun toString(): String {
+        return this.documentName
+    }
+}
+
+fun JTextArea.readOnly(): JTextArea {
+    this.isEditable = false
+    return this
 }
