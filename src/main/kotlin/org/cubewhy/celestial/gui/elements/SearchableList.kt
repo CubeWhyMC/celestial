@@ -77,6 +77,6 @@ class SearchableList<T>(private val model: DefaultListModel<T>, baseList: JList<
     }
 }
 
-fun <T : SwingConstants> AWTEvent.source() : T {
+fun <T : SwingConstants> AWTEvent.source(): T {
     return this.source as T
 }

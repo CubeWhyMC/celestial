@@ -36,7 +36,7 @@ class JavaAgent : BaseAddon {
      * @param path Path to JavaAgent
      * @param arg  Arg of the JavaAgent
      */
-    constructor(path: String?, arg: String?) {
+    constructor(path: String, arg: String? = null) {
         this.file = File(path)
         this.arg = arg
     }
@@ -47,27 +47,9 @@ class JavaAgent : BaseAddon {
      * @param file File of the JavaAgent
      * @param arg  Arg of the JavaAgent
      */
-    constructor(file: File, arg: String?) {
+    constructor(file: File, arg: String? = null) {
         this.file = file
         this.arg = arg
-    }
-
-    /**
-     * Create a instance
-     *
-     * @param file File of the JavaAgent
-     */
-    constructor(file: File) {
-        this.file = file
-    }
-
-    /**
-     * Create a instance
-     *
-     * @param path Path to JavaAgent
-     */
-    constructor(path: String?) {
-        this.file = File(path)
     }
 
     val jvmArg: String
@@ -78,7 +60,7 @@ class JavaAgent : BaseAddon {
          */
         get() {
             var jvmArgs = "-javaagent:\"" + file.absolutePath + "\""
-            if (!arg!!.isEmpty()) {
+            if (arg?.isNotEmpty() == true) {
                 jvmArgs += if (arg!!.contains(" ")) {
                     "=\"" + this.arg + "\""
                 } else {
@@ -90,7 +72,7 @@ class JavaAgent : BaseAddon {
 
     override fun toString(): String {
         var result = file.name
-        if (!arg!!.isBlank()) {
+        if (arg?.isNotBlank() == true) {
             result += "=" + this.arg
         }
         return result
@@ -204,7 +186,7 @@ class JavaAgent : BaseAddon {
          * @param n3w name of the new agent
          */
 
-        fun migrate(old: String?, n3w: String?) {
+        fun migrate(old: String, n3w: String) {
             val ja: JsonObject = config.getValue("javaagents").asJsonObject
             val arg = if (ja[old] == null && ja[old].isJsonNull) {
                 null
