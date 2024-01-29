@@ -6,25 +6,18 @@
 
 package org.cubewhy.celestial.gui.elements.help
 
-import org.cubewhy.celestial.Celestial
 import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.Celestial.launcherLogFile
 import org.cubewhy.celestial.gui.elements.HelpPage
 import org.cubewhy.celestial.gui.elements.readOnly
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
-import java.awt.CardLayout
-import javax.swing.JButton
-import javax.swing.JLabel
+import org.cubewhy.celestial.utils.GuiUtils
 import javax.swing.JTextArea
 
-class HelpApi : HelpPage("API") {
+class HelpLog : HelpPage("Log") {
     init {
         this.layout = VerticalFlowLayout()
-        this.add(JTextArea(f.getString("gui.help.api")).readOnly())
-        this.add(JButton(f.getString("gui.settings.title")).let {
-            it.addActionListener {
-                Celestial.launcherFrame.layoutX.show(Celestial.launcherFrame.mainPanel, "settings")
-            }
-            it
-        })
+        this.add(JTextArea(f.getString("gui.help.log")).readOnly())
+        this.add(GuiUtils.createButtonOpenFolder(f.getString("gui.settings.folder.log"), launcherLogFile.parentFile))
     }
 }
