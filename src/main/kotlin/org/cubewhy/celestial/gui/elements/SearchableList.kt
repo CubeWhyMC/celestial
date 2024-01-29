@@ -11,6 +11,7 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
+import java.util.EventObject
 import javax.swing.*
 import javax.swing.event.ListDataEvent
 import javax.swing.event.ListDataListener
@@ -90,6 +91,7 @@ class SearchableList<T>(private val model: DefaultListModel<T>, baseList: JList<
         if (text.isEmpty()) {
             model.removeAllElements()
             model.addAll(list)
+            isInternalChange = false
             return
         }
         model.removeAllElements()
@@ -102,6 +104,6 @@ class SearchableList<T>(private val model: DefaultListModel<T>, baseList: JList<
     }
 }
 
-fun <T : SwingConstants> AWTEvent.source(): T {
+fun <T : SwingConstants> EventObject.source(): T {
     return this.source as T
 }

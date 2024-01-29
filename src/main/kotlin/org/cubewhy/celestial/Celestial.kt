@@ -38,6 +38,7 @@ import java.nio.file.Files
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import javax.swing.JOptionPane
+import javax.swing.UIManager
 import kotlin.system.exitProcess
 
 object Celestial {
@@ -352,7 +353,6 @@ object Celestial {
             "light" -> FlatLightLaf.setup()
             "unset" ->  // do nothing
                 themed = false
-
             else -> {
                 val themeFile = File(themesDir, themeType)
                 if (!themeFile.exists()) {
