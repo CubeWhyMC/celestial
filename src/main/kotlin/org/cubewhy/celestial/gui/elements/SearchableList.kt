@@ -88,7 +88,7 @@ class SearchableList<T>(private val model: DefaultListModel<T>, baseList: JList<
 
     private fun search(text: String) {
         isInternalChange = true
-        if (text.isEmpty()) {
+        if (text.isBlank()) {
             model.removeAllElements()
             model.addAll(list)
             isInternalChange = false
