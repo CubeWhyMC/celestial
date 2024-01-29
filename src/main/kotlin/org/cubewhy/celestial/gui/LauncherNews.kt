@@ -63,11 +63,7 @@ class LauncherNews(val json: JsonObject) : JPanel() {
 
         val button = JButton(text)
         button.addActionListener {
-            try {
-                Desktop.getDesktop().browse(URI.create(json["link"].asString))
-            } catch (ex: IOException) {
-                throw RuntimeException(ex)
-            }
+            Desktop.getDesktop().browse(URI.create(json["link"].asString))
         }
         this.add(button)
 

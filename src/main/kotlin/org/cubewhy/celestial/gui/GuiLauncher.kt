@@ -36,6 +36,9 @@ import javax.swing.*
 class GuiLauncher : JFrame() {
     private val guiPlugins = GuiPlugins()
 
+    lateinit var layoutX: CardLayout
+    lateinit var mainPanel: JPanel
+
     init {
         // register with EventManager
         register(this)
@@ -92,9 +95,9 @@ class GuiLauncher : JFrame() {
 
         this.add(menu, BorderLayout.NORTH)
         // main panel
-        val mainPanel = Panel()
-        val layout = CardLayout()
-        mainPanel.layout = layout
+        mainPanel = JPanel()
+        layoutX = CardLayout()
+        mainPanel.layout = layoutX
         // TODO: add enabled pages (from metadata)
         // add pages
         mainPanel.add("news", GuiNews())
@@ -104,8 +107,8 @@ class GuiLauncher : JFrame() {
         mainPanel.add("about", GuiAbout())
 
         // bind buttons
-        btnPrevious.addActionListener { layout.previous(mainPanel) }
-        btnNext.addActionListener { layout.next(mainPanel) }
+        btnPrevious.addActionListener { layoutX.previous(mainPanel) }
+        btnNext.addActionListener { layoutX.next(mainPanel) }
         this.add(mainPanel) // add MainPanel
 
         // try to find the exist game process
