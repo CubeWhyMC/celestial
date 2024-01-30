@@ -32,13 +32,12 @@ class ProxyConfig(file: File?) : ConfigFile(file!!) {
         return this
     }
 
-    fun setState(state: Boolean): ProxyConfig {
-        this.setValue("state", state)
-        return this
-    }
 
-    val state: Boolean
+    var state: Boolean
         get() = this.getValue("state").asBoolean
+        set(value) {
+            this.setValue("state", value)
+        }
 
     val proxy: Proxy?
         get() {

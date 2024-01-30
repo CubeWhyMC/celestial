@@ -19,6 +19,7 @@ import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.border.TitledBorder
 
+
 class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED) {
     private val blogPosts: JsonArray
 

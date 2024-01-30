@@ -23,8 +23,10 @@ import javax.swing.JPanel
 import javax.swing.JTextArea
 import javax.swing.border.TitledBorder
 
+
 class GuiAbout : JPanel() {
     init {
+        this.name = "about"
         this.border = TitledBorder(
             null,
             f.getString("gui.about.title"),
