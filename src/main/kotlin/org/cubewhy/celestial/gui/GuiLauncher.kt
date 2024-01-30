@@ -34,8 +34,6 @@ import java.net.URI
 import javax.swing.*
 
 class GuiLauncher : JFrame() {
-    private val guiPlugins = GuiPlugins()
-
     lateinit var layoutX: CardLayout
     lateinit var mainPanel: JPanel
 
@@ -98,11 +96,11 @@ class GuiLauncher : JFrame() {
         mainPanel = JPanel()
         layoutX = CardLayout()
         mainPanel.layout = layoutX
-        // TODO: add enabled pages (from metadata)
+
         // add pages
         mainPanel.add("news", GuiNews())
         mainPanel.add("version", GuiVersion())
-        mainPanel.add("plugins", guiPlugins)
+        mainPanel.add("plugins", GuiPlugins())
         mainPanel.add("settings", GuiSettings())
         mainPanel.add("about", GuiAbout())
 

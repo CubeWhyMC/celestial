@@ -36,6 +36,12 @@
 
 在[releases](https://github.com/cubewhy/celestial/releases)下载 (可能是过期的版本)
 
+## 排除错误
+
+> 帮助文档在[这里](https://www.lunarclient.top/help)
+
+运行 `java -cp celestial.jar org.cubewhy.celestial.Troubleshoot` 开启排查错误指南
+
 
 ## 捐赠
 
