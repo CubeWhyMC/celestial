@@ -614,6 +614,10 @@ object Celestial {
         }
         log.info("Args was dumped to $launchScript")
         log.info("Natives file: $natives")
+        // check non-ascii chars on Microsoft Windows
+        if (OSEnum.current == OSEnum.Windows && argsString.hasNonAscii()) {
+            JOptionPane.showMessageDialog(this.launcherFrame, f.getString("gui.non-ascii.warn"), "Warning", JOptionPane.WARNING_MESSAGE)
+        }
         return natives // success
     }
 
@@ -710,4 +714,14 @@ object Celestial {
             DownloadManager.download(Downloadable(finalURL, finalFile, hash))
         }
     }
+}
+
+private fun String.hasNonAscii(): Boolean {
+    // todo make it high performance
+    this.toCharArray().forEach {
+        if (it.code !in 0..127) {
+            return false
+        }
+    }
+    return true
 }
