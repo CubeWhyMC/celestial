@@ -54,8 +54,6 @@ object DownloadManager {
      * @param override allow override?
      * @return status (true=success, false=failure)
      */
-
-
     fun cache(url: URL, name: String, override: Boolean): Boolean {
         val file = File(cacheDir, name)
         if (file.exists() && !override) {
@@ -111,7 +109,7 @@ object DownloadManager {
     }
 
 
-    fun download0(url: URL, file: File): Boolean {
+    private fun download0(url: URL, file: File): Boolean {
         return download0(url, file, null, Downloadable.Type.SHA1)
     }
 
