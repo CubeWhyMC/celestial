@@ -5,15 +5,11 @@ import com.google.gson.JsonParser
 import org.cubewhy.celestial.utils.RequestUtils.get
 import java.net.URI
 
-class SiteData
 /**
- * Create a SiteData instance with the official Launcher API
- */ @JvmOverloads constructor(val api: URI = URI.create("https://api.lunarclientprod.com")) {
-    /**
-     * Create a SiteData instance with special API resource
-     *
-     * @param api Launcher API
-     */
+ * Create a SiteData instance
+ * @param api Launcher API
+ */
+class SiteData(val api: URI = URI.create("https://api.lunarclientprod.com")) {
 
 
     fun metadata(): JsonObject {
