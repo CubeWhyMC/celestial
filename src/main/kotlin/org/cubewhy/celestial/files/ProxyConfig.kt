@@ -41,6 +41,7 @@ class ProxyConfig(file: File?) : ConfigFile(file!!) {
 
     val proxy: Proxy?
         get() {
+            if (this.proxyAddress.isBlank()) return null
             val address = URL(this.proxyAddress)
             return if (state) Proxy(getType(address.protocol), InetSocketAddress(address.host, address.port)) else null
         }
