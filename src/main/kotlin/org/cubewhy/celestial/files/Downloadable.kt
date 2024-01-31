@@ -5,6 +5,7 @@
  */
 package org.cubewhy.celestial.files
 
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URL
 
@@ -14,6 +15,7 @@ class Downloadable(
     private val crcSha: String?,
     private val type: Type
 ) : Runnable {
+
     constructor(url: URL, file: File, sha1: String?) : this(url, file, sha1, Type.SHA1)
 
 
@@ -34,6 +36,7 @@ class Downloadable(
                     file, this.crcSha, this.type
                 )
             } catch (e: Exception) {
+                log.error("Download ${this.url} failed, try again... [$i/$FALL_BACK]")
                 continue  // try again
             }
             break // no error
@@ -41,6 +44,7 @@ class Downloadable(
     }
 
     companion object {
+        private val log = LoggerFactory.getLogger(Downloadable::class.java)
         const val FALL_BACK: Int = 5
     }
 }
