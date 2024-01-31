@@ -38,7 +38,6 @@ import java.nio.file.Files
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import javax.swing.JOptionPane
-import javax.swing.UIManager
 import kotlin.system.exitProcess
 
 object Celestial {
@@ -59,7 +58,6 @@ object Celestial {
 
     @JvmField
     val launcherLogFile: File = File(configDir, "logs/launcher.log")
-    val isDevelopMode: Boolean = System.getProperties().containsKey("dev-mode")
 
     @JvmField
     val gamePid: AtomicLong = AtomicLong()
@@ -683,7 +681,6 @@ object Celestial {
 
         val minecraftFolder = File(config.getValue("game-dir").asString)
 
-        // TODO vanilla Minecraft textures
         GuiLauncher.statusBar.text = "Complete textures for vanilla Minecraft"
         val textureIndex = MinecraftData.getVersion(
             version,
