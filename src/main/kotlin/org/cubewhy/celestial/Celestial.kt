@@ -24,6 +24,7 @@ import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.game.MinecraftData
+import org.cubewhy.celestial.utils.game.ModrinthData
 import org.cubewhy.celestial.utils.lunar.LauncherData
 import org.jetbrains.annotations.Contract
 import org.slf4j.LoggerFactory
@@ -66,6 +67,7 @@ object Celestial {
     lateinit var f: ResourceBundle
     lateinit var launcherData: LauncherData
     lateinit var metadata: JsonObject
+    lateinit var modrinth: ModrinthData
     private lateinit var minecraftManifest: JsonObject
     lateinit var launcherFrame: GuiLauncher
     private var themed: Boolean = true
@@ -249,6 +251,7 @@ object Celestial {
     private fun initLauncher() {
         metadata = launcherData.metadata()
         minecraftManifest = MinecraftData.manifest()
+        modrinth = ModrinthData("https://api.modrinth.com".toURL())
         if (metadata.has("error")) {
             // trouble here
             log.error("Metadata info: $metadata")
@@ -712,6 +715,9 @@ object Celestial {
         }
     }
 }
+
+private fun String.toURL(): URL =
+    URL(this)
 
 private fun String.hasNonAscii(): Boolean {
     // todo make it high performance

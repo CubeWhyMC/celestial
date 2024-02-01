@@ -14,6 +14,7 @@ import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.OSEnum
 import org.cubewhy.celestial.utils.RequestUtils.get
 import org.cubewhy.celestial.utils.RequestUtils.post
+import org.cubewhy.celestial.utils.game.json
 import java.io.File
 import java.io.IOException
 import java.net.URI
@@ -45,7 +46,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
                     "Code = " + response.code // check success
                 }
                 assert(response.body != null) { "ResponseBody was null" }
-                return JsonParser.parseString(response.body!!.string()).asJsonObject
+                return response.json!!.asJsonObject
             }
     }
 
@@ -65,7 +66,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
 
         post("$api/launcher/launch", Gson().toJson(json)).execute().use { response ->
             assert(response.body != null) { "ResponseBody was null" }
-            return JsonParser.parseString(response.body!!.string()).asJsonObject
+            return  response.json!!.asJsonObject
         }
     }
 
@@ -79,7 +80,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         request.addProperty("launchScript", launchScript)
         post("$api/launcher/uploadCrashReport", request).execute().use { response ->
             if (response.isSuccessful && response.body != null) {
-                val json = JsonParser.parseString(response.body!!.string()).asJsonObject.getAsJsonObject("data")
+                val json =  response.json!!.asJsonObject.getAsJsonObject("data")
                 val id = json["id"].asString
                 val url = json["url"].asString
                 map["id"] = id
@@ -91,7 +92,6 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         return map
     }
 
-    @get:Throws(IOException::class)
     val plugins: List<RemoteAddon>?
         /**
          * Get the plugin list
@@ -103,7 +103,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
             try {
                 get(info).execute().use { response ->
                     assert(response.body != null)
-                    json = JsonParser.parseString(response.body!!.string()).asJsonObject.getAsJsonArray("data")
+                    json =  response.json!!.asJsonObject.getAsJsonArray("data")
                 }
             } catch (e: JsonSyntaxException) {
                 return null // official api
@@ -229,7 +229,6 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @param version version name
          * @return version json
          */
-
         fun getVersionInMetadata(metadata: JsonElement, version: String): JsonObject? {
             val metadata1 = metadata.asJsonObject
             for (version1 in metadata1["versions"].asJsonArray) {
@@ -245,13 +244,22 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         }
 
         /**
+         * Get bundled modPacks
+         *
+         * @param metadata Metadata
+         *
+         * @return List of mod packs
+         * */
+        fun getModPacks(metadata: JsonElement) =
+            if (metadata.asJsonObject.has("modpacks")) metadata.asJsonObject.getAsJsonArray("modpacks") else null
+
+        /**
          * Get support addons
          *
          * @param metadata LC metadata
          * @param version  Minecraft version
          * @return Module List
          */
-
         fun getSupportModules(metadata: JsonElement, version: String): Map<String, Any> {
             val map: MutableMap<String, Any> = HashMap()
             val modules: MutableList<String> = ArrayList()
