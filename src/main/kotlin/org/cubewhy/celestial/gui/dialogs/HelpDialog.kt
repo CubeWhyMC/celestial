@@ -10,10 +10,6 @@ import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.gui.elements.HelpPage
 import org.cubewhy.celestial.gui.elements.HelpPageX
 import org.cubewhy.celestial.gui.elements.SearchableList
-import org.cubewhy.celestial.gui.elements.help.HelpApi
-import org.cubewhy.celestial.gui.elements.help.HelpLog
-import org.cubewhy.celestial.gui.elements.help.HelpLogin
-import org.cubewhy.celestial.gui.elements.help.HelpWelcome
 import org.cubewhy.celestial.utils.ClassUtils
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
@@ -23,7 +19,6 @@ import javax.swing.DefaultListModel
 import javax.swing.JDialog
 import javax.swing.JList
 import javax.swing.JPanel
-import javax.swing.JScrollPane
 
 class HelpDialog : JDialog() {
     init {

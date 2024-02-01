@@ -7,9 +7,8 @@ package org.cubewhy.celestial.utils.game
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import org.cubewhy.celestial.json
 import org.cubewhy.celestial.utils.RequestUtils.get
-import java.net.MalformedURLException
 import java.net.URL
 
 object MinecraftData {

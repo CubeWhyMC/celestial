@@ -10,13 +10,12 @@ import com.google.gson.*
 import org.cubewhy.celestial.event.impl.CrashReportUploadEvent
 import org.cubewhy.celestial.game.AddonMeta
 import org.cubewhy.celestial.game.RemoteAddon
+import org.cubewhy.celestial.json
 import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.OSEnum
 import org.cubewhy.celestial.utils.RequestUtils.get
 import org.cubewhy.celestial.utils.RequestUtils.post
-import org.cubewhy.celestial.utils.game.json
 import java.io.File
-import java.io.IOException
 import java.net.URI
 import java.net.URL
 import java.util.*

@@ -30,7 +30,6 @@ import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.FileUtils.unzipNatives
 import org.cubewhy.celestial.utils.GuiUtils
-import org.cubewhy.celestial.utils.OSEnum
 import org.cubewhy.celestial.utils.SystemUtils.callExternalProcess
 import org.cubewhy.celestial.utils.SystemUtils.findJava
 import org.cubewhy.celestial.utils.TextUtils.dumpTrace

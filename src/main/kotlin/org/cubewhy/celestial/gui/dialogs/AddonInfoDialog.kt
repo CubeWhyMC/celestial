@@ -9,8 +9,11 @@ package org.cubewhy.celestial.gui.dialogs
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.files.DownloadManager
 import org.cubewhy.celestial.files.Downloadable
+import org.cubewhy.celestial.forEachIsEnd
+import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.RemoteAddon
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
+import org.cubewhy.celestial.toURI
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
@@ -42,8 +45,8 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
     }
 
     private fun initGui() {
-        this.panel.add(JLabel(f.getString("gui.plugins.info.name").format(addon.name)))
-        this.panel.add(JLabel(f.getString("gui.plugins.info.category").format(addon.category)))
+        this.panel.add(JLabel(f.format("gui.plugins.info.name", addon.name)))
+        this.panel.add(JLabel(f.format("gui.plugins.info.category", addon.category)))
         val exist = JLabel(f.getString("gui.plugins.exist"))
 
         val btnDownload = JButton(f.getString("gui.plugins.download"))
@@ -79,10 +82,10 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
             metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.notfound")))
         } else {
             val meta = addon.meta
-            metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.name").format(meta.name)))
-            metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.version").format(meta.version)))
-            metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.description").format(meta.description)))
-            metaInfo.add(JLabel(f.getString("gui.plugins.info.meta.authors").format(meta.authors.getAuthorsString())))
+            metaInfo.add(JLabel(f.format("gui.plugins.info.meta.name", meta.name)))
+            metaInfo.add(JLabel(f.format("gui.plugins.info.meta.version", meta.version)))
+            metaInfo.add(JLabel(f.format("gui.plugins.info.meta.description", meta.description)))
+            metaInfo.add(JLabel(f.format("gui.plugins.info.meta.authors", meta.authors.getAuthorsString())))
             if (meta.website != null) metaInfo.add(
                 createOpenWebsiteButton(
                     f.getString("gui.plugins.info.meta.website"),
@@ -140,10 +143,6 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
     }
 }
 
-private fun <T> Array<T>.forEachIsEnd(action: (T, Boolean) -> Unit) {
-    this.forEachIndexed { index, t -> action(t, index == this.size - 1) }
-}
-
 private fun Array<String>.getAuthorsString(): String {
     val sb = StringBuilder()
     this.forEachIndexed { index, author ->
@@ -156,6 +155,4 @@ private fun Array<String>.getAuthorsString(): String {
     return sb.toString()
 }
 
-fun String.toURI(): URI {
-    return URI.create(this)
-}
+

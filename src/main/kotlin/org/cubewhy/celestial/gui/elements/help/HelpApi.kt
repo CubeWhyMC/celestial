@@ -9,11 +9,9 @@ package org.cubewhy.celestial.gui.elements.help
 import org.cubewhy.celestial.Celestial
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.gui.elements.HelpPage
-import org.cubewhy.celestial.gui.elements.readOnly
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
-import java.awt.CardLayout
+import org.cubewhy.celestial.readOnly
 import javax.swing.JButton
-import javax.swing.JLabel
 import javax.swing.JTextArea
 
 class HelpApi : HelpPage("API") {

@@ -9,8 +9,8 @@ package org.cubewhy.celestial.gui.elements.help
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.Celestial.launcherLogFile
 import org.cubewhy.celestial.gui.elements.HelpPage
-import org.cubewhy.celestial.gui.elements.readOnly
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
+import org.cubewhy.celestial.readOnly
 import org.cubewhy.celestial.utils.GuiUtils
 import javax.swing.JTextArea
 
