@@ -48,7 +48,7 @@ object AddonUtils {
     }
 
 
-    fun downloadLoader(repo: String?, file: File?): Boolean {
+    fun downloadLoader(repo: String, file: File): Boolean {
         var apiJson: String
         try {
             RequestUtils.get(String.format("https://api.github.com/repos/%s/releases/latest", repo)).execute()
@@ -86,7 +86,7 @@ object AddonUtils {
             return false
         }
         // send download
-        DownloadManager.download(Downloadable(loader, file!!, hash!!, Downloadable.Type.SHA256))
+        DownloadManager.download(Downloadable(loader, file, hash!!, Downloadable.Type.SHA256))
         return true
     }
 }

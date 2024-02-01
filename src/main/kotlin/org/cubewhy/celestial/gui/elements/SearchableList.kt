@@ -6,12 +6,11 @@
 
 package org.cubewhy.celestial.gui.elements
 
-import java.awt.AWTEvent
+import org.cubewhy.celestial.source
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.event.FocusAdapter
 import java.awt.event.FocusEvent
-import java.util.EventObject
 import javax.swing.*
 import javax.swing.event.ListDataEvent
 import javax.swing.event.ListDataListener
@@ -102,8 +101,4 @@ class SearchableList<T>(private val model: DefaultListModel<T>, baseList: JList<
         }
         isInternalChange = false
     }
-}
-
-fun <T : SwingConstants> EventObject.source(): T {
-    return this.source as T
 }

@@ -6,16 +6,12 @@
 
 package org.cubewhy.celestial
 
-import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.Celestial.proxy
-import org.cubewhy.celestial.gui.dialogs.toURI
 import org.cubewhy.celestial.utils.GitUtils
 import org.slf4j.LoggerFactory
 import java.awt.Desktop
 import java.net.URL
-import java.util.ResourceBundle
-import java.util.Scanner
-import kotlin.system.exitProcess
+import java.util.*
 
 object Troubleshoot {
     private val log = LoggerFactory.getLogger(Troubleshoot::class.java)
@@ -28,7 +24,7 @@ object Troubleshoot {
         log.info("Document: https://www.lunarclient.top/help")
         System.setProperty("file.encoding", "UTF-8")
         with(Scanner(System.`in`)) {
-            println(f.getString("welcome").format(GitUtils.buildVersion))
+            println(f.format("welcome", GitUtils.buildVersion))
             println(
                 """
                 ============================

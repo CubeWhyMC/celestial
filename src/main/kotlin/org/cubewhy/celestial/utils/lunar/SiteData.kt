@@ -1,9 +1,8 @@
 package org.cubewhy.celestial.utils.lunar
 
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
+import org.cubewhy.celestial.json
 import org.cubewhy.celestial.utils.RequestUtils.get
-import org.cubewhy.celestial.utils.game.json
 import java.net.URI
 
 /**
@@ -15,10 +14,6 @@ class SiteData(val api: URI = URI.create("https://api.lunarclientprod.com")) {
 
     fun metadata(): JsonObject {
         get("$api/site/metadata").execute().use { response ->
-            assert(response.code == 200) {
-                "Code = " + response.code // check success
-            }
-            assert(response.body != null) { "ResponseBody was null" }
             return response.json!!.asJsonObject
         }
     }

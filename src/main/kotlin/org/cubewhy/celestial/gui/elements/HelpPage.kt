@@ -7,10 +7,8 @@
 package org.cubewhy.celestial.gui.elements
 
 import java.awt.Color
-import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JScrollPane
-import javax.swing.JTextArea
 import javax.swing.border.TitledBorder
 
 open class HelpPage(val documentName: String) : JPanel() {
@@ -47,9 +45,4 @@ internal class HelpPageX(base: HelpPage) : JScrollPane(base, VERTICAL_SCROLLBAR_
     override fun toString(): String {
         return this.documentName
     }
-}
-
-fun JTextArea.readOnly(): JTextArea {
-    this.isEditable = false
-    return this
 }

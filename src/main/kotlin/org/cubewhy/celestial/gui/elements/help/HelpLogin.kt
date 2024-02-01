@@ -8,7 +8,7 @@ package org.cubewhy.celestial.gui.elements.help
 
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.gui.elements.HelpPage
-import org.cubewhy.celestial.gui.elements.readOnly
+import org.cubewhy.celestial.readOnly
 import javax.swing.JTextArea
 
 class HelpLogin : HelpPage(f.getString("gui.help.login.title")) {
