@@ -13,23 +13,14 @@ import java.net.MalformedURLException
 import java.net.URL
 
 object MinecraftData {
-    private var versionManifest: URL
-    var texture: URL? = null
-
-    init {
-        try {
-            versionManifest = URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json")
-            texture = URL("https://resources.download.minecraft.net")
-        } catch (e: MalformedURLException) {
-            throw RuntimeException(e)
-        }
-    }
+    private var versionManifest: URL = URL("https://launchermeta.mojang.com/mc/game/version_manifest_v2.json")
+    var texture: URL = URL("https://resources.download.minecraft.net")
 
 
     fun manifest(): JsonObject {
         get(versionManifest).execute().use { response ->
             assert(response.body != null)
-            return JsonParser.parseString(response.body!!.string()).asJsonObject
+            return response.json!!.asJsonObject
         }
     }
 
@@ -46,8 +37,7 @@ object MinecraftData {
             if (element.asJsonObject["id"].asString == version) {
                 val url = element.asJsonObject["url"].asString
                 get(url).execute().use { response ->
-                    assert(response.body != null)
-                    return JsonParser.parseString(response.body!!.string()).asJsonObject
+                    return response.json!!.asJsonObject
                 }
             }
         }
@@ -65,7 +55,7 @@ object MinecraftData {
         val url = URL(json.asJsonObject.getAsJsonObject("assetIndex")["url"].asString)
         get(url).execute().use { response ->
             assert(response.body != null)
-            return JsonParser.parseString(response.body!!.string()).asJsonObject
+            return response.json!!.asJsonObject
         }
     }
 }
