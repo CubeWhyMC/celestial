@@ -72,6 +72,7 @@ object Troubleshoot {
                 }
             }
         }
+        proxy.save()
     }
 
     fun Scanner.confirm(prompt: String): Boolean {
