@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.cubewhy.celestial'
-version = '1.8-pre1-SNAPSHOT'
+version = '1.8-SNAPSHOT'
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 println('Celestial Launcher -> https://www.lunarclient.top/')
@@ -34,7 +34,6 @@ dependencies {
     include 'com.google.code.gson:gson:2.10.1'
     include 'net.sf.jopt-simple:jopt-simple:6.0-alpha-3'
     include 'com.formdev:flatlaf:3.4-SNAPSHOT'
-    include 'co.gongzh.procbridge:procbridge:1.1'
     include 'commons-io:commons-io:2.15.1'
     include 'cn.hutool:hutool-crypto:5.8.25'
     include "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
