@@ -42,25 +42,16 @@ import javax.swing.JOptionPane
 import kotlin.system.exitProcess
 
 object Celestial {
-    @JvmField
     val configDir: File = File(System.getProperty("user.home"), ".cubewhy/lunarcn")
-
-    @JvmField
     val themesDir: File = File(configDir, "themes")
 
-    @JvmField
     val config: ConfigFile = ConfigFile(File(configDir, "celestial.json"))
 
     @JvmField
     val proxy: ProxyConfig = ProxyConfig(File(configDir, "proxy.json"))
-
-    @JvmField
     val gameLogFile: File = File(configDir, "logs/game.log")
-
-    @JvmField
     val launcherLogFile: File = File(configDir, "logs/launcher.log")
 
-    @JvmField
     val gamePid: AtomicLong = AtomicLong()
     private lateinit var locale: Locale
     private lateinit var userLanguage: String
@@ -72,7 +63,6 @@ object Celestial {
     lateinit var launcherFrame: GuiLauncher
     private var themed: Boolean = true
 
-    @JvmField
     val launchScript: File = File(configDir, if ((OSEnum.current == OSEnum.Windows)) "launch.bat" else "launch.sh")
     private var sessionFile: File = if (OSEnum.current == OSEnum.Windows) {
         // Microsoft Windows

@@ -26,7 +26,7 @@ import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.files.DownloadManager.waitForAll
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
-import org.cubewhy.celestial.gui.GuiLauncher
+import org.cubewhy.celestial.gui.GuiLauncher.Companion.statusBar
 import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.FileUtils.unzipNatives
 import org.cubewhy.celestial.utils.GuiUtils
@@ -155,12 +155,12 @@ class GuiVersionSelect : JPanel() {
                     JOptionPane.YES_NO_OPTION
                 ) == JOptionPane.YES_OPTION
             ) {
-                GuiLauncher.statusBar.text = f.getString("gui.version.cache.start")
+                statusBar.text = f.getString("gui.version.cache.start")
                 try {
                     if (wipeCache(null)) {
-                        GuiLauncher.statusBar.text = f.getString("gui.version.cache.success")
+                        statusBar.text = f.getString("gui.version.cache.success")
                     } else {
-                        GuiLauncher.statusBar.text = f.getString("gui.version.cache.failure")
+                        statusBar.text = f.getString("gui.version.cache.failure")
                     }
                 } catch (ex: IOException) {
                     throw RuntimeException(ex)
@@ -207,6 +207,7 @@ class GuiVersionSelect : JPanel() {
                 )
             } else {
                 gamePid.set(0)
+                statusBar.isRunningGame = false
             }
         }
         completeSession()
@@ -240,7 +241,7 @@ class GuiVersionSelect : JPanel() {
         }
 
         if (checkUpdate) {
-            GuiLauncher.statusBar.text = f.getString("gui.addon.update")
+            statusBar.text = f.getString("gui.addon.update")
             waitForAll()
         }
     }
@@ -251,10 +252,7 @@ class GuiVersionSelect : JPanel() {
 
         val threadGetId = Thread {
             // find the game process
-            try {
-                Thread.sleep(3000) // sleep 3s
-            } catch (ignored: InterruptedException) {
-            }
+            Thread.sleep(3000) // sleep 3s
             if (p[0]!!.isAlive) {
                 try {
                     val java = findJava(getMainClass(null))!!
@@ -267,7 +265,7 @@ class GuiVersionSelect : JPanel() {
                     gamePid.set(p[0]!!.pid())
                 }
                 log.info("Pid: $gamePid")
-                GuiLauncher.statusBar.text = String.format(f.getString("status.launch.started"), gamePid)
+                statusBar.text = String.format(f.getString("status.launch.started"), gamePid)
                 GameStartEvent(gamePid.get()).call()
             }
         }
@@ -278,12 +276,12 @@ class GuiVersionSelect : JPanel() {
                 threadGetId.start()
                 val code = p[0]!!.waitFor()
                 log.info("Game terminated")
-                GuiLauncher.statusBar.text = f.getString("status.launch.terminated")
+                statusBar.text = f.getString("status.launch.terminated")
                 gamePid.set(0)
                 GameTerminateEvent().call()
                 if (code != 0) {
                     // upload crash report
-                    GuiLauncher.statusBar.text = f.getString("status.launch.crashed")
+                    statusBar.text = f.getString("status.launch.crashed")
                     log.info("Client looks crashed")
                     try {
                         if (config.config.has("data-sharing") && config.getValue("data-sharing").asBoolean) {
@@ -362,7 +360,7 @@ class GuiVersionSelect : JPanel() {
         }
         runGame({
             try {
-                GuiLauncher.statusBar.text = f.getString("status.launch.call-process")
+                statusBar.text = f.getString("status.launch.call-process")
                 return@runGame callExternalProcess(launch())
             } catch (e: InterruptedException) {
                 throw RuntimeException(e)
@@ -370,7 +368,7 @@ class GuiVersionSelect : JPanel() {
         }) {
             try {
                 isLaunching = true
-                GuiLauncher.statusBar.text = f.getString("status.launch.begin")
+                statusBar.text = f.getString("status.launch.begin")
                 checkUpdate(
                     (versionSelect.selectedItem as String),
                     moduleSelect.selectedItem as String,
@@ -378,7 +376,7 @@ class GuiVersionSelect : JPanel() {
                 )
                 waitForAll()
                 try {
-                    GuiLauncher.statusBar.text = f.getString("status.launch.natives")
+                    statusBar.text = f.getString("status.launch.natives")
                     unzipNatives(natives, File(config.getValue("installation-dir").asString))
                 } catch (e: Exception) {
                     val trace = dumpTrace(e)
@@ -407,7 +405,7 @@ class GuiVersionSelect : JPanel() {
         val process = launch()
         runGame({
             try {
-                GuiLauncher.statusBar.text = f.getString("status.launch.call-process")
+                statusBar.text = f.getString("status.launch.call-process")
                 return@runGame callExternalProcess(process)
             } catch (e: IOException) {
                 throw RuntimeException(e)
