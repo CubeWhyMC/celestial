@@ -37,16 +37,14 @@ fun String.hasNonAscii(): Boolean {
     return true
 }
 
-fun Container.addWithScrollbars(
-    component: Component,
+fun Component.withScroller(
     vsbPolicy: Int = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
     hsbPolicy: Int = JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
-) {
-    this.add(JScrollPane(component, vsbPolicy, hsbPolicy).let {
+) =
+    JScrollPane(this, vsbPolicy, hsbPolicy).let {
         it.verticalScrollBar.unitIncrement = 30
         it
-    })
-}
+    }
 
 val Response.json: JsonElement?
     get() {

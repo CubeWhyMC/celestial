@@ -8,7 +8,7 @@ package org.cubewhy.celestial.gui.dialogs
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.cubewhy.celestial.Celestial.f
-import org.cubewhy.celestial.addWithScrollbars
+import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
@@ -30,7 +30,7 @@ class ArgsConfigDialog(private val key: String, json: JsonObject) : JDialog() {
 
         this.title = f.getString("gui.settings.args.title")
         input = JTextArea(array.toSplitArgs())
-        this.addWithScrollbars(input)
+        this.add(input.withScroller())
 
         this.addWindowListener(object: WindowAdapter() {
             override fun windowClosing(e: WindowEvent?) {
