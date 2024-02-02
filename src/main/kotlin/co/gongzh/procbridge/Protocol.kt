@@ -1,5 +1,6 @@
 package co.gongzh.procbridge
 
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import java.io.ByteArrayOutputStream
@@ -169,7 +170,7 @@ internal object Protocol {
     fun writeGoodResponse(stream: OutputStream, payload: Any?) {
         val body = JsonObject()
         if (payload != null) {
-            body.addProperty(Keys.PAYLOAD, payload as String?)
+            body.add(Keys.PAYLOAD, Gson().toJsonTree(payload, Map::class.java))
         }
         write(stream, StatusCode.GOOD_RESPONSE, body)
     }
