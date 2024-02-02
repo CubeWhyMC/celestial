@@ -7,6 +7,7 @@
 package org.cubewhy.celestial.gui.elements
 
 import org.cubewhy.celestial.source
+import org.cubewhy.celestial.withScroller
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.event.FocusAdapter
@@ -76,13 +77,7 @@ class SearchableList<T>(private val model: DefaultListModel<T>, baseList: JList<
         refresh()
 
 
-        this.add(
-            JScrollPane(
-                baseList,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
-            )
-        )
+        this.add(baseList.withScroller())
     }
 
     private fun search(text: String) {

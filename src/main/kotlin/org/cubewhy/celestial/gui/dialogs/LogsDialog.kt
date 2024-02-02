@@ -7,6 +7,7 @@
 package org.cubewhy.celestial.gui.dialogs
 
 import org.cubewhy.celestial.readOnly
+import org.cubewhy.celestial.withScroller
 import javax.swing.JDialog
 import javax.swing.JTextArea
 
@@ -19,7 +20,7 @@ class LogsDialog(gaveTitle: String) : JDialog() {
         this.setSize(600, 600)
         this.isLocationByPlatform = true
         this.modalityType = ModalityType.APPLICATION_MODAL
-        this.contentPane = area
+        this.contentPane = area.withScroller()
     }
 
     fun addMessage(msg: String) {

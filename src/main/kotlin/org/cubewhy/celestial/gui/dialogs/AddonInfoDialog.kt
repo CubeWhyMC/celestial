@@ -14,6 +14,7 @@ import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.RemoteAddon
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.toURI
+import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
@@ -114,24 +115,11 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
                     sb.append(it)
                     if (!isEnd) sb.append("\n")
                 }
-                metaInfo.add(
-                    JScrollPane(
-                        dependencies,
-                        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
-                    )
-                )
-
+                metaInfo.add(dependencies.withScroller())
             }
         }
         this.panel.add(metaInfo)
-        this.add(
-            JScrollPane(
-                this.panel,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
-            )
-        )
+        this.add(this.panel.withScroller())
     }
 
     private fun createOpenWebsiteButton(text: String, uri: URI): JButton {

@@ -13,6 +13,7 @@ import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.gui.dialogs.AddonInfoDialog
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
+import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
@@ -74,15 +75,9 @@ class GuiPlugins : JPanel() {
         panelAgents.layout = VerticalFlowLayout()
         val panelCN = JPanel()
         panelCN.layout = VerticalFlowLayout()
-        val sp1 = JScrollPane(panelWeave)
-        sp1.verticalScrollBar.unitIncrement = 30
-        val sp2 = JScrollPane(panelAgents)
-        sp2.verticalScrollBar.unitIncrement = 30
-        val sp3 = JScrollPane(panelCN)
-        sp3.verticalScrollBar.unitIncrement = 30
-        tab.addTab("Weave", sp1)
-        tab.addTab("Agents", sp2)
-        tab.addTab("LunarCN", sp3)
+        tab.addTab("Weave", panelWeave.withScroller())
+        tab.addTab("Agents", panelAgents.withScroller())
+        tab.addTab("LunarCN", panelCN.withScroller())
         for (addon in addons) {
             when (addon.category) {
                 RemoteAddon.Category.WEAVE -> {

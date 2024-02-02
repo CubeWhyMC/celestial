@@ -10,6 +10,7 @@ import com.google.gson.JsonObject
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.Celestial.proxy
 import org.cubewhy.celestial.gui.GuiLauncher
+import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
@@ -19,7 +20,7 @@ import java.awt.event.WindowEvent
 import javax.swing.*
 
 class MirrorDialog : JDialog() {
-    private var input: JTextArea? = null
+    private lateinit var input: JTextArea
 
     init {
         this.title = f.getString("gui.mirror.title")
@@ -32,13 +33,7 @@ class MirrorDialog : JDialog() {
 
     private fun initGui() {
         this.input = JTextArea(header)
-        this.add(
-            JScrollPane(
-                this.input,
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-                ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
-            )
-        )
+        this.add(input.withScroller())
 
         val btnCheckSyntax: JButton = JButton(f.getString("gui.mirror.syntax"))
 
@@ -98,7 +93,7 @@ class MirrorDialog : JDialog() {
         }
 
     private fun checkSyntax(): Boolean {
-        for (s in input!!.text.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+        for (s in input.text.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
             if (s.startsWith("#")) {
                 continue
             }
@@ -125,13 +120,13 @@ class MirrorDialog : JDialog() {
         val mirrors: JsonObject = proxy.getValue("mirror").asJsonObject
         for ((source, value) in mirrors.entrySet()) {
             val mirror = value.asString
-            input!!.append(String.format("%s %s\n", source, mirror))
+            input.append(String.format("%s %s\n", source, mirror))
         }
     }
 
     private fun asJson(): JsonObject {
         val json = JsonObject()
-        for (s in input!!.text.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+        for (s in input.text.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
             if (s.startsWith("#")) {
                 continue
             }
