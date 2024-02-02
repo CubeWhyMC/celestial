@@ -337,15 +337,15 @@ class GuiVersionSelect : JPanel() {
 
 
     private fun online() {
-        if (isLaunching) {
-            JOptionPane.showMessageDialog(
-                this,
-                f.getString("gui.launch.launching.message"),
-                f.getString("gui.launch.launching.title"),
-                JOptionPane.ERROR_MESSAGE
-            )
-            return
-        }
+//        if (isLaunching) {
+//            JOptionPane.showMessageDialog(
+//                this,
+//                f.getString("gui.launch.launching.message"),
+//                f.getString("gui.launch.launching.title"),
+//                JOptionPane.ERROR_MESSAGE
+//            )
+//            return
+//        }
         beforeLaunch()
         val natives =
             launch((versionSelect.selectedItem as String), branchInput.text, moduleSelect.selectedItem as String)
