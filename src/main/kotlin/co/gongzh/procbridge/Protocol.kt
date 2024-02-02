@@ -144,11 +144,9 @@ internal object Protocol {
             StatusCode.GOOD_RESPONSE -> {
                 SimpleEntry<StatusCode, Any>(StatusCode.GOOD_RESPONSE, body[Keys.PAYLOAD])
             }
-
             StatusCode.BAD_RESPONSE -> {
                 SimpleEntry<StatusCode, Any>(StatusCode.BAD_RESPONSE, body[Keys.MESSAGE].asString)
             }
-
             else -> {
                 throw ProtocolException(ProtocolException.INVALID_STATUS_CODE)
             }
