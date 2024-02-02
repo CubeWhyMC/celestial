@@ -5,26 +5,22 @@
  */
 package org.cubewhy.celestial.gui.dialogs
 
-import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.addWithScrollbars
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
-import java.awt.Component
-import java.awt.Container
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
-import java.lang.StringBuilder
-import javax.swing.*
+import javax.swing.JDialog
+import javax.swing.JTextArea
 
 class ArgsConfigDialog(private val key: String, json: JsonObject) : JDialog() {
     private val array: JsonArray = json.getAsJsonArray(key)
 
-    private lateinit var input: JTextArea
+    private var input: JTextArea
 
     init {
         this.layout = BorderLayout()

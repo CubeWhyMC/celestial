@@ -5,26 +5,78 @@
  */
 package org.cubewhy.celestial.gui.elements
 
-import java.awt.event.ActionEvent
-import javax.swing.JLabel
-import javax.swing.Timer
+import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.Celestial.gamePid
+import org.cubewhy.celestial.event.EventManager
+import org.cubewhy.celestial.event.EventTarget
+import org.cubewhy.celestial.event.impl.GameStartEvent
+import org.cubewhy.celestial.event.impl.GameTerminateEvent
+import org.cubewhy.celestial.gui.dialogs.LogsDialog
+import org.cubewhy.celestial.utils.FileUtils
+import java.awt.BorderLayout
+import javax.swing.*
 
-class StatusBar : JLabel() {
-    private val autoClearTimer = Timer(10000) { _: ActionEvent? ->
+class StatusBar : JPanel() {
+    private val label = JLabel()
+    private val pidLabel = JLabel("%GAME_PID%")
+    private val autoClearTimer = Timer(10000) {
         this.clear()
     }
 
-    fun clear() {
-        this.text = ""
+
+    val dialog = LogsDialog(f.getString("gui.status.logs"))
+
+    init {
+        EventManager.register(this)
+
+        this.layout = BorderLayout(0, 0)
+        val btnOpenDialog =
+            JButton(ImageIcon(FileUtils.readBytes(FileUtils.inputStreamFromClassPath("/images/logs.png")!!)))
+
+        btnOpenDialog.addActionListener {
+            dialog.isVisible = true
+        }
+        this.add(label, BorderLayout.WEST)
+
+        val otherComponents = JPanel()
+        otherComponents.add(pidLabel)
+        otherComponents.add(btnOpenDialog)
+
+        pidLabel.isVisible = false
+
+        this.add(otherComponents, BorderLayout.EAST)
     }
 
-    override fun setText(text: String?) {
-        if (this.text.isNotEmpty()) {
-            autoClearTimer.stop()
+    private fun clear() {
+        this.label.text = ""
+    }
+
+    var isRunningGame: Boolean = false
+        set(value) {
+            this@StatusBar.pidLabel.text = if (value) "PID $gamePid" else "NOT RUNNING"
+            this@StatusBar.pidLabel.isVisible = value
+            field = value
         }
-        super.setText(text)
-        if (!text.isNullOrEmpty()) {
-            autoClearTimer.start()
+
+    var text: String? = null
+        set(value) {
+            if (this.label.text.isNotEmpty()) {
+                autoClearTimer.stop()
+            }
+            this.label.setText(value)
+            if (!value.isNullOrEmpty()) {
+                dialog.addMessage(value)
+                autoClearTimer.start()
+            }
         }
+
+    @EventTarget
+    fun onGameStart(e: GameStartEvent) {
+        this.isRunningGame = true
+    }
+
+    @EventTarget
+    fun onGameTerminate(e: GameTerminateEvent) {
+        this.isRunningGame = false
     }
 }

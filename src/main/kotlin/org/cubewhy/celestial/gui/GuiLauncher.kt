@@ -127,6 +127,7 @@ class GuiLauncher : JFrame() {
                 val pid = java.id()
                 log.info("Exist game process found! Pid: $pid")
                 gamePid.set(pid.toLong())
+                GameStartEvent(gamePid.get()).call()
                 JOptionPane.showMessageDialog(
                     this,
                     String.format(f.getString("gui.launcher.game.exist.message"), pid),
@@ -193,7 +194,7 @@ class GuiLauncher : JFrame() {
     }
 
     companion object {
-        val statusBar: JLabel = StatusBar()
+        val statusBar = StatusBar()
         private val log: Logger = LoggerFactory.getLogger(GuiLauncher::class.java)
     }
 }
