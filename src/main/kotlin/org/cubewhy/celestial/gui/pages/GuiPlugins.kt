@@ -74,23 +74,11 @@ class GuiPlugins : JPanel() {
         panelAgents.layout = VerticalFlowLayout()
         val panelCN = JPanel()
         panelCN.layout = VerticalFlowLayout()
-        val sp1 = JScrollPane(
-            panelWeave,
-            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
-        )
+        val sp1 = JScrollPane(panelWeave)
         sp1.verticalScrollBar.unitIncrement = 30
-        val sp2 = JScrollPane(
-            panelAgents,
-            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
-        )
+        val sp2 = JScrollPane(panelAgents)
         sp2.verticalScrollBar.unitIncrement = 30
-        val sp3 = JScrollPane(
-            panelCN,
-            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED
-        )
+        val sp3 = JScrollPane(panelCN)
         sp3.verticalScrollBar.unitIncrement = 30
         tab.addTab("Weave", sp1)
         tab.addTab("Agents", sp2)
