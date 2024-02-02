@@ -7,9 +7,9 @@ package org.cubewhy.celestial.game
 
 import co.gongzh.procbridge.IDelegate
 import co.gongzh.procbridge.Server
+import com.google.gson.JsonObject
 import org.cubewhy.celestial.event.impl.AuthEvent
 import org.cubewhy.celestial.utils.TextUtils.dumpTrace
-import org.json.JSONObject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -40,9 +40,9 @@ class AuthServer private constructor() {
      */
     private fun handleRequest(method: String, args: Any?): Map<String, String> {
         val result = HashMap<String, String>()
-        if (method == "open-window" && args is JSONObject) {
+        if (method == "open-window" && args is JsonObject) {
             // Pop a token url
-            val url = URL(args.getString("url"))
+            val url = URL(args.get("url").asString)
             val auth = (AuthEvent(url).call() as AuthEvent).waitForAuth()
             if (auth.isBlank()) {
                 result["status"] = "CLOSED_WITH_NO_URL"
