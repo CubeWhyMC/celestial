@@ -9,9 +9,12 @@ package org.cubewhy.celestial
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import okhttp3.Response
+import java.awt.Component
+import java.awt.Container
 import java.net.URI
 import java.net.URL
 import java.util.*
+import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingConstants
 
@@ -32,6 +35,17 @@ fun String.hasNonAscii(): Boolean {
         }
     }
     return true
+}
+
+fun Container.addWithScrollbars(
+    component: Component,
+    vsbPolicy: Int = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+    hsbPolicy: Int = JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
+) {
+    this.add(JScrollPane(component, vsbPolicy, hsbPolicy).let {
+        it.verticalScrollBar.unitIncrement = 30
+        it
+    })
 }
 
 val Response.json: JsonElement?

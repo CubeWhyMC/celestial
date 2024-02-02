@@ -5,85 +5,69 @@
  */
 package org.cubewhy.celestial.gui.dialogs
 
+import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.addWithScrollbars
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
-import java.awt.GridLayout
+import java.awt.Component
+import java.awt.Container
+import java.awt.event.WindowAdapter
+import java.awt.event.WindowEvent
+import java.lang.StringBuilder
 import javax.swing.*
 
-class ArgsConfigDialog(private val key: String, private val json: JsonObject) : JDialog() {
+class ArgsConfigDialog(private val key: String, json: JsonObject) : JDialog() {
     private val array: JsonArray = json.getAsJsonArray(key)
+
+    private lateinit var input: JTextArea
 
     init {
         this.layout = BorderLayout()
-        this.initGui()
         this.setSize(600, 600)
         this.modalityType = ModalityType.APPLICATION_MODAL
         this.isLocationByPlatform = true
-    }
 
-    private fun initGui() {
         this.title = f.getString("gui.settings.args.title")
+        input = JTextArea(array.toSplitArgs())
+        this.addWithScrollbars(input)
 
-        val model = DefaultListModel<String>()
-        val args = JList(model)
-        // load args from config
-        if (array.isEmpty) {
-            // TODO remove this label
-            this.add(JLabel("Looks nothing here, try to add something?"))
-        } else {
-            for (element in array) {
-                model.addElement(element.asString)
+        this.addWindowListener(object: WindowAdapter() {
+            override fun windowClosing(e: WindowEvent?) {
+                saveArgs()
             }
-        }
-        this.add(args, BorderLayout.CENTER)
-        val panelButtons = JPanel()
-        panelButtons.layout = GridLayout(1, 2)
-        // btnAdd
-        val btnAdd = JButton(f.getString("gui.settings.args.add"))
-        btnAdd.addActionListener {
-            val arg = JOptionPane.showInputDialog(this, f.getString("gui.settings.args.add.message"))
-            if (arg != null) {
-                this.addArg(arg, model)
-            }
-        }
-        // btnRemove
-        val btnRemove = JButton(f.getString("gui.settings.args.remove"))
-        btnRemove.addActionListener {
-            val index = args.selectedIndex
-            if (index == -1 || JOptionPane.showConfirmDialog(
-                    this,
-                    String.format(f.getString("gui.settings.args.remove.confirm"), args.selectedValue),
-                    "Confirm",
-                    JOptionPane.YES_NO_OPTION
-                ) == JOptionPane.NO_OPTION
-            ) {
-                return@addActionListener
-            }
-            this.removeArg(index, model)
-        }
-        panelButtons.add(btnAdd)
-        panelButtons.add(btnRemove)
-        this.add(panelButtons, BorderLayout.SOUTH)
+        })
     }
 
-    private fun addArg(arg: String, model: DefaultListModel<String>) {
-        array.add(arg)
-        model.addElement(arg)
-        log.info("Add a arg to " + this.key + " -> " + arg)
-    }
-
-    private fun removeArg(index: Int, model: DefaultListModel<String>) {
-        val arg = model[index]
-        model.remove(index)
-        array.remove(index)
-        log.info("Remove a arg to " + this.key + " -> " + arg)
+    private fun saveArgs() {
+        log.info("Save args")
+        val lines = input.text.split("\n")
+        array.removeAll {
+            true
+        }
+        array.addAll(lines.asJsonArray())
     }
 
     companion object {
         private val log: Logger = LoggerFactory.getLogger(ArgsConfigDialog::class.java)
     }
+}
+
+private fun <E> List<E>.asJsonArray(): JsonArray {
+    val array = JsonArray()
+    this.forEach {
+        val string = it.toString()
+        if (string.isNotBlank()) array.add(string)
+    }
+    return array
+}
+
+private fun JsonArray.toSplitArgs(): String {
+    val sb = StringBuilder()
+    for (element in this) if (element.asString.isNotBlank()) sb.append(element.asString).append("\n")
+    return sb.toString()
 }
