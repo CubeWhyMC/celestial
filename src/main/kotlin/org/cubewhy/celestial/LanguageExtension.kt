@@ -21,7 +21,7 @@ import javax.swing.SwingConstants
 fun String.toURI(): URI = URI.create(this)
 
 fun ResourceBundle.format(key: String, vararg args: Any?): String =
-    this.getString(key).format(args)
+    this.getString(key).format(*args)
 
 fun String.toURL(): URL =
     URL(this)
