@@ -77,7 +77,7 @@ fun String.toJLabel(): JLabel =
 
 fun String.toJTextArea(): JTextArea = JTextArea(this)
 
-fun String.getInputStream(): InputStream? = System::class.java.getResourceAsStream(this)
+fun String.getInputStream(): InputStream? = Celestial::class.java.getResourceAsStream(this)
 
 fun File.toJar(): JarFile = JarFile(this)
 fun File.toZip(): ZipFile = ZipFile(this)
