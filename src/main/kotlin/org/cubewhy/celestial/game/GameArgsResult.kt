@@ -2,5 +2,4 @@ package org.cubewhy.celestial.game
 
 import java.io.File
 
-@JvmRecord
-data class GameArgsResult(@JvmField val args: List<String>, @JvmField val natives: File)
+data class GameArgsResult(val args: List<String>, val natives: File)
