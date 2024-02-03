@@ -20,6 +20,7 @@ import org.cubewhy.celestial.gui.Language
 import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog
 import org.cubewhy.celestial.gui.dialogs.MirrorDialog
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
+import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.utils.GuiUtils.chooseFile
 import org.cubewhy.celestial.utils.GuiUtils.chooseFolder
 import org.cubewhy.celestial.utils.GuiUtils.createButtonOpenFolder
@@ -520,7 +521,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
                     btnShowList.addActionListener { ArgsConfigDialog(key, json).isVisible = true }
                     basePanel.add(btnShowList)
                 } else if (value.isJsonNull) {
-                    basePanel.add(JLabel("$key: null"))
+                    basePanel.add("$key: null".toJLabel())
                 }
             }
         }

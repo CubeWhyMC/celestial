@@ -11,13 +11,13 @@ import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.gui.elements.HelpPage
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.readOnly
+import org.cubewhy.celestial.toJTextArea
 import javax.swing.JButton
-import javax.swing.JTextArea
 
 class HelpApi : HelpPage("API") {
     init {
         this.layout = VerticalFlowLayout()
-        this.add(JTextArea(f.getString("gui.help.api")).readOnly())
+        this.add(f.getString("gui.help.api").toJTextArea().readOnly())
         this.add(JButton(f.getString("gui.settings.title")).let {
             it.addActionListener {
                 Celestial.launcherFrame.layoutX.show(Celestial.launcherFrame.mainPanel, "settings")

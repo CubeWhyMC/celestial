@@ -6,6 +6,7 @@ import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.Celestial.metadata
 import org.cubewhy.celestial.files.DownloadManager.cache
 import org.cubewhy.celestial.gui.LauncherNews
+import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.utils.TextUtils.dumpTrace
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getBlogPosts
 import org.slf4j.Logger
@@ -43,7 +44,7 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
         log.info("Loading blogPosts (gui)")
         if (blogPosts.isJsonNull) {
             log.error("Failed to load blog posts")
-            this.add(JLabel("Failed to load news (blogPosts is null)"))
+            this.add("Failed to load news (blogPosts is null)".toJLabel())
         } else {
             for (blogPost in blogPosts) {
                 // cache the image if the image of the news doesn't exist
