@@ -22,8 +22,8 @@ import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.isMod
 import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.toJar
-import org.cubewhy.celestial.utils.GuiUtils.chooseFile
-import org.cubewhy.celestial.utils.GuiUtils.createButtonOpenFolder
+import org.cubewhy.celestial.utils.chooseFile
+import org.cubewhy.celestial.utils.createButtonOpenFolder
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.event.MouseAdapter

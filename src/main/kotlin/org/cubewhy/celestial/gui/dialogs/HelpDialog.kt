@@ -10,7 +10,7 @@ import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.gui.elements.HelpPage
 import org.cubewhy.celestial.gui.elements.HelpPageX
 import org.cubewhy.celestial.gui.elements.SearchableList
-import org.cubewhy.celestial.utils.ClassUtils
+import org.cubewhy.celestial.utils.resolvePackage
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
 import java.awt.CardLayout
@@ -38,7 +38,7 @@ class HelpDialog : JDialog() {
         val modelDocuments = DefaultListModel<HelpPageX>()
         val listDocuments = JList(modelDocuments)
 
-        ClassUtils.resolvePackage("org.cubewhy.celestial.gui.elements.help", HelpPage::class.java).forEach {
+        "org.cubewhy.celestial.gui.elements.help".resolvePackage(HelpPage::class.java).forEach {
             modelDocuments.addHelpPage(it.getDeclaredConstructor().newInstance())
         }
 
