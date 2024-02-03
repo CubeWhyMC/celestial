@@ -21,6 +21,7 @@ import org.cubewhy.celestial.gui.Language
 import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog
 import org.cubewhy.celestial.gui.dialogs.MirrorDialog
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
+import org.cubewhy.celestial.toFile
 import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.OSEnum.Companion.current
@@ -63,12 +64,8 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         val panelFolders = JPanel()
         panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.main"), config.file.parentFile))
         panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.theme"), themesDir))
-        panelFolders.add(
-            createButtonOpenFolder(
-                f.getString("gui.settings.folder.log"),
-                launcherLogFile.parentFile
-            )
-        )
+        panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.log"), launcherLogFile.parentFile))
+        panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.game"), config.getValue("installation-dir").asString.toFile()))
         panel.add(panelFolders)
         // jre
         val panelVM = JPanel()
@@ -84,7 +81,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
 
         val customJre: String = config.getValue("jre").asString
         val btnSelectPath = JButton(if ((customJre.isEmpty())) currentJavaExec.path else customJre)
-        val btnUnset: JButton = JButton(f.getString("gui.settings.jvm.jre.unset"))
+        val btnUnset = JButton(f.getString("gui.settings.jvm.jre.unset"))
         btnSelectPath.addActionListener { e: ActionEvent ->
             val file =
                 chooseFile(if ((current == OSEnum.Windows)) FileNameExtensionFilter("Java Executable", "exe") else null)
@@ -196,7 +193,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             }
         }
         p5.add(getAutoSaveComboBox(config.config, "theme", themes))
-        val btnAddTheme: JButton = JButton(f.getString("gui.settings.launcher.theme.add"))
+        val btnAddTheme = JButton(f.getString("gui.settings.launcher.theme.add"))
         btnAddTheme.addActionListener {
             val file = chooseFile(FileNameExtensionFilter("Intellij IDEA theme (.json)", "json"))
                 ?: return@addActionListener
@@ -239,7 +236,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         // installation-dir
         val p8 = JPanel()
         p8.add(JLabel(f.getString("gui.settings.launcher.installation")))
-        val btnSelectInstallation: JButton = JButton(config.getValue("installation-dir").asString)
+        val btnSelectInstallation = JButton(config.getValue("installation-dir").asString)
         btnSelectInstallation.addActionListener { e: ActionEvent ->
             val file = chooseFolder()
             val source = e.source as JButton
@@ -256,7 +253,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         // game-dir
         val p9 = JPanel()
         p9.add(JLabel(f.getString("gui.settings.launcher.game")))
-        val btnSelectGameDir: JButton = JButton(config.getValue("game-dir").asString)
+        val btnSelectGameDir = JButton(config.getValue("game-dir").asString)
         btnSelectGameDir.addActionListener { e: ActionEvent ->
             val file = chooseFolder()
             val source = e.source as JButton
@@ -292,8 +289,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         )
         val p10 = JPanel()
         val btnGroup = ButtonGroup()
-        val btnLoaderUnset: JRadioButton =
-            JRadioButton(f.getString("gui.settings.addon.loader.unset"), isLoaderSelected(null))
+        val btnLoaderUnset = JRadioButton(f.getString("gui.settings.addon.loader.unset"), isLoaderSelected(null))
         btnGroup.add(btnLoaderUnset)
         val btnWeave = JRadioButton("Weave", isLoaderSelected("weave"))
         btnGroup.add(btnWeave)
@@ -353,7 +349,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
 
         // program args
         val p14 = JPanel()
-        val btnProgramArgs: JButton = JButton(f.getString("gui.settings.game.args"))
+        val btnProgramArgs = JButton(f.getString("gui.settings.game.args"))
         btnProgramArgs.addActionListener {
             ArgsConfigDialog(
                 "program-args",
@@ -403,7 +399,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         p18.add(getAutoSaveTextField(proxy.config, "proxy"))
         p18.add(getAutoSaveCheckBox(proxy.config, "state", f.getString("gui.settings.proxy.state")))
 
-        val btnMirror: JButton = JButton(f.getString("gui.settings.proxy.mirror"))
+        val btnMirror = JButton(f.getString("gui.settings.proxy.mirror"))
         btnMirror.addActionListener {
             MirrorDialog().isVisible = true
         }
@@ -481,14 +477,21 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
 
             return isLoaderSelected(null)
         }
-        if (type == null) {
-            return !(stateWeave || stateCN)
-        } else if (type == "weave") {
-            return stateWeave
-        } else if (type == "cn") {
-            return stateCN
+        return when (type) {
+            null -> {
+                !(stateWeave || stateCN)
+            }
+
+            "weave" -> {
+                stateWeave
+            }
+
+            "cn" -> {
+                stateCN
+            }
+
+            else -> false
         }
-        return false
     }
 
     private fun addUnclaimed(basePanel: JPanel, json: JsonObject) {

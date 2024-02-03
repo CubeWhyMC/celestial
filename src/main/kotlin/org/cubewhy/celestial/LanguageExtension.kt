@@ -75,6 +75,8 @@ fun String.toJLabel(): JLabel =
     // todo multi line support
     JLabel(this)
 
+fun String.toFile(): File = File(this)
+
 fun String.toJTextArea(): JTextArea = JTextArea(this)
 
 fun String.getInputStream(): InputStream? = Celestial::class.java.getResourceAsStream(this)
