@@ -23,7 +23,7 @@ fun findJava(mainClass: String?): VirtualMachine? {
 val currentJavaExec: File
     get() {
         var exec = System.getProperty("java.home") + "/bin/java"
-        if (OSEnum.current == OSEnum.Windows) {
+        if (OSEnum.Windows.isCurrent) {
             exec += ".exe"
         }
         return File(exec)

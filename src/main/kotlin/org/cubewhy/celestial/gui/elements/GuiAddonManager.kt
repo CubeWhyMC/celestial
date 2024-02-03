@@ -8,6 +8,7 @@ package org.cubewhy.celestial.gui.elements
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.event.impl.AddonAddEvent
 import org.cubewhy.celestial.files.DownloadManager
+import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.AddonType
 import org.cubewhy.celestial.game.BaseAddon
 import org.cubewhy.celestial.game.addon.FabricMod
@@ -127,12 +128,12 @@ class GuiAddonManager : JPanel() {
             val name = currentAgent.file.name
             if (JOptionPane.showConfirmDialog(
                     this,
-                    String.format(f.getString("gui.addon.agents.remove.confirm.message"), name),
+                    f.format("gui.addon.agents.remove.confirm.message", name),
                     f.getString("gui.addon.agents.remove.confirm.title"),
                     JOptionPane.OK_CANCEL_OPTION
                 ) == JOptionPane.OK_OPTION && currentAgent.file.delete()
             ) {
-                GuiLauncher.statusBar.text = String.format(f.getString("gui.addon.agents.remove.success"), name)
+                GuiLauncher.statusBar.text = f.format("gui.addon.agents.remove.success", name)
                 agentList.clear()
                 loadAgents()
             }
@@ -148,8 +149,8 @@ class GuiAddonManager : JPanel() {
                 name.substring(0, name.length - 4)
             )
             if (newName != null && file.renameTo(File(file.parentFile, "$newName.jar"))) {
-                log.info(String.format("Rename agent %s -> %s", name, "$newName.jar"))
-                GuiLauncher.statusBar.text = String.format(f.getString("gui.addon.rename.success"), newName)
+                log.info("Rename agent $name -> $newName.jar")
+                GuiLauncher.statusBar.text = f.format("gui.addon.rename.success", newName)
                 // rename the name in the config
                 migrate(name, "$newName.jar")
                 agentList.clear()
@@ -178,7 +179,7 @@ class GuiAddonManager : JPanel() {
             )
             if (newName != null && file.renameTo(File(file.parentFile, "$newName.jar"))) {
                 log.info(String.format("Rename weave mod %s -> %s", name, "$newName.jar"))
-                GuiLauncher.statusBar.text = String.format(f.getString("gui.addon.rename.success"), newName)
+                GuiLauncher.statusBar.text = f.format("gui.addon.rename.success", newName)
                 weaveList.clear()
                 loadWeaveMods()
             }
@@ -189,7 +190,7 @@ class GuiAddonManager : JPanel() {
             val name = currentMod.file.name
             if (JOptionPane.showConfirmDialog(
                     this,
-                    String.format(f.getString("gui.addon.mods.weave.remove.confirm.message"), name),
+                    f.format("gui.addon.mods.weave.remove.confirm.message", name),
                     f.getString("gui.addon.mods.weave.remove.confirm.title"),
                     JOptionPane.OK_CANCEL_OPTION
                 ) == JOptionPane.OK_OPTION && currentMod.file.delete()
@@ -236,7 +237,7 @@ class GuiAddonManager : JPanel() {
                     JOptionPane.OK_CANCEL_OPTION
                 ) == JOptionPane.OK_OPTION && currentMod.file.delete()
             ) {
-                GuiLauncher.statusBar.text = String.format(f.getString("gui.addon.mods.cn.remove.success"), name)
+                GuiLauncher.statusBar.text = f.format("gui.addon.mods.cn.remove.success", name)
                 lunarcnList.clear()
                 loadLunarCNMods()
             }
@@ -268,13 +269,13 @@ class GuiAddonManager : JPanel() {
             val name = currentMod.file.name
             if (JOptionPane.showConfirmDialog(
                     this,
-                    String.format(f.getString("gui.addon.mods.fabric.remove.confirm.message"), name),
+                    f.format("gui.addon.mods.fabric.remove.confirm.message", name),
                     f.getString("gui.addon.mods.fabric.remove.confirm.title"),
                     JOptionPane.OK_CANCEL_OPTION
                 ) == JOptionPane.OK_OPTION && currentMod.file.delete()
             ) {
                 GuiLauncher.statusBar.text =
-                    String.format(f.getString("gui.addon.mods.fabric.remove.success"), name)
+                    f.format("gui.addon.mods.fabric.remove.success", name)
                 fabricList.clear()
                 loadFabricMods(fabricList)
             }
@@ -325,7 +326,7 @@ class GuiAddonManager : JPanel() {
                 log.error(trace)
                 JOptionPane.showMessageDialog(
                     this,
-                    String.format(f.getString("gui.addon.agents.add.failure.io"), trace),
+                    f.format("gui.addon.agents.add.failure.io", trace),
                     "Error",
                     JOptionPane.ERROR_MESSAGE
                 )
@@ -338,7 +339,7 @@ class GuiAddonManager : JPanel() {
                 if (!(file.toJar().isMod(AddonType.WEAVE))) {
                     JOptionPane.showMessageDialog(
                         this,
-                        String.format(f.getString("gui.addon.mods.incorrect"), file),
+                        f.format("gui.addon.mods.incorrect", file),
                         "Warning | Type incorrect",
                         JOptionPane.WARNING_MESSAGE
                     )
@@ -363,7 +364,7 @@ class GuiAddonManager : JPanel() {
                 log.error(trace)
                 JOptionPane.showMessageDialog(
                     this,
-                    String.format(f.getString("gui.addon.mods.weave.add.failure.io"), trace),
+                    f.format("gui.addon.mods.weave.add.failure.io", trace),
                     "Error",
                     JOptionPane.ERROR_MESSAGE
                 )
@@ -376,7 +377,7 @@ class GuiAddonManager : JPanel() {
                 if (!(file.toJar().isMod(AddonType.LUNARCN))) {
                     JOptionPane.showMessageDialog(
                         this,
-                        String.format(f.getString("gui.addon.mods.incorrect"), file),
+                        f.format("gui.addon.mods.incorrect", file),
                         "Warning | Type incorrect",
                         JOptionPane.WARNING_MESSAGE
                     )
@@ -401,7 +402,7 @@ class GuiAddonManager : JPanel() {
                 log.error(trace)
                 JOptionPane.showMessageDialog(
                     this,
-                    String.format(f.getString("gui.addon.mods.cn.add.failure.io"), trace),
+                    f.format("gui.addon.mods.cn.add.failure.io", trace),
                     "Error",
                     JOptionPane.ERROR_MESSAGE
                 )
@@ -435,7 +436,7 @@ class GuiAddonManager : JPanel() {
                 log.error(trace)
                 JOptionPane.showMessageDialog(
                     this,
-                    String.format(f.getString("gui.addon.mods.fabric.add.failure.io"), trace),
+                    f.format("gui.addon.mods.fabric.add.failure.io", trace),
                     "Error",
                     JOptionPane.ERROR_MESSAGE
                 )
@@ -498,7 +499,7 @@ class GuiAddonManager : JPanel() {
 
     private fun autoRefresh(panel: JPanel) {
         val name = panel.name
-        log.debug(String.format("Refreshing mod list %s (Focus changed)", name))
+        log.debug("Refreshing mod list $name (Focus changed)")
         when (name) {
             "agents" -> {
                 agentList.clear()

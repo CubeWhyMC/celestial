@@ -262,7 +262,7 @@ class GuiVersionSelect : JPanel() {
                     gamePid.set(p[0]!!.pid())
                 }
                 log.info("Pid: $gamePid")
-                statusBar.text = String.format(f.getString("status.launch.started"), gamePid)
+                statusBar.text = f.format("status.launch.started", gamePid)
                 GameStartEvent(gamePid.get()).call()
             }
         }

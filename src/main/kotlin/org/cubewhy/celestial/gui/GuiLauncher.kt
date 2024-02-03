@@ -16,6 +16,7 @@ import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.AuthEvent
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
+import org.cubewhy.celestial.format
 import org.cubewhy.celestial.getInputStream
 import org.cubewhy.celestial.gui.dialogs.HelpDialog
 import org.cubewhy.celestial.gui.elements.StatusBar
@@ -128,7 +129,7 @@ class GuiLauncher : JFrame() {
                 GameStartEvent(gamePid.get()).call()
                 JOptionPane.showMessageDialog(
                     this,
-                    String.format(f.getString("gui.launcher.game.exist.message"), pid),
+                    f.format("gui.launcher.game.exist.message", pid),
                     f.getString("gui.launcher.game.exist.title"),
                     JOptionPane.INFORMATION_MESSAGE
                 )

@@ -25,6 +25,10 @@ enum class OSEnum(val os: String, @JvmField val jsName: String = os.lowercase(Lo
     Darwin("Darwin", "darwin"),
     Others("Others");
 
+    val isCurrent: Boolean
+        get() =
+            current == this
+
     companion object {
         /**
          * Find a OS enum
