@@ -601,23 +601,21 @@ object Celestial {
         }
         log.info("Args was dumped to $launchScript")
         log.info("Natives file: $natives")
-        // check non-ascii chars on Microsoft Windows
-        if (OSEnum.Windows.isCurrent && argsString.hasNonAscii()) {
-            JOptionPane.showMessageDialog(
-                this.launcherFrame,
-                f.getString("gui.non-ascii.warn"),
-                "Warning",
-                JOptionPane.WARNING_MESSAGE
-            )
-        }
+        // TODO check non-ascii chars on Microsoft Windows
+//        if (OSEnum.Windows.isCurrent && argsString.hasNonAscii()) {
+//            JOptionPane.showMessageDialog(
+//                this.launcherFrame,
+//                f.getString("gui.non-ascii.warn"),
+//                "Warning",
+//                JOptionPane.WARNING_MESSAGE
+//            )
+//        }
         return natives // success
     }
 
     /**
      * Patching network disabling for LunarClient
      */
-
-
     fun completeSession() {
         if (!sessionFile.exists()) {
             log.info("Completing session.json to fix the network error for LunarClient")
@@ -644,7 +642,6 @@ object Celestial {
      */
 
     @Synchronized
-
     fun checkUpdate(version: String, module: String?, branch: String?) {
         log.info("Checking update")
         val installation = File(config.getValue("installation-dir").asString)

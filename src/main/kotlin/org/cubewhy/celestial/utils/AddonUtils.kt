@@ -49,7 +49,7 @@ fun downloadLoader(repo: String, file: File): Boolean {
             }
         }
     }
-    if (loader == null) {
+    if (loader === null) {
         return false
     }
     // send download
