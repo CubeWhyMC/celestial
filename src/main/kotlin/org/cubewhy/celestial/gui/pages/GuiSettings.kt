@@ -13,6 +13,7 @@ import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.Celestial.launcherLogFile
 import org.cubewhy.celestial.Celestial.proxy
 import org.cubewhy.celestial.Celestial.themesDir
+import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.gui.GuiLauncher
@@ -89,7 +90,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
                 chooseFile(if ((current == OSEnum.Windows)) FileNameExtensionFilter("Java Executable", "exe") else null)
             if (file != null) {
                 val source = e.source as JButton
-                GuiLauncher.statusBar.text = String.format(f.getString("gui.settings.jvm.jre.success"), file)
+                GuiLauncher.statusBar.text = f.format("gui.settings.jvm.jre.success", file)
                 config.setValue("jre", file.path)
                 source.text = file.path
             }

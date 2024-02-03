@@ -7,6 +7,7 @@ package org.cubewhy.celestial.gui.pages
 
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.Celestial.launcherData
+import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.RemoteAddon
 import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.game.addon.LunarCNMod
@@ -112,7 +113,7 @@ class GuiPlugins : JPanel() {
     }
 
     private fun getInfoButton(addon: RemoteAddon, file: File): JButton {
-        val btn = JButton(String.format(f.getString("gui.plugins.info"), file.name))
+        val btn = JButton(f.format("gui.plugins.info", file.name))
         btn.addActionListener {
             log.info("Open plugin info dialog for " + addon.name)
             AddonInfoDialog(addon, file).isVisible = true // show info dialog
