@@ -10,7 +10,7 @@ import org.cubewhy.celestial.Celestial.config
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.game.BaseAddon
 import org.cubewhy.celestial.gui.GuiLauncher
-import org.cubewhy.celestial.utils.AddonUtils.downloadLoader
+import org.cubewhy.celestial.utils.downloadLoader
 import org.jetbrains.annotations.Contract
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

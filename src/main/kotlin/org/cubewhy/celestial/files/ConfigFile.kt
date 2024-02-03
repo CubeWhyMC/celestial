@@ -80,7 +80,7 @@ open class ConfigFile(val file: File) {
         return this
     }
 
-    fun load(): ConfigFile {
+    private fun load(): ConfigFile {
         val gson = Gson()
         var bufferedReader: BufferedReader
         var successful = false

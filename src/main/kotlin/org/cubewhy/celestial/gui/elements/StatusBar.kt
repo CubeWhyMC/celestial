@@ -11,9 +11,9 @@ import org.cubewhy.celestial.event.EventManager
 import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
+import org.cubewhy.celestial.getInputStream
 import org.cubewhy.celestial.gui.dialogs.LogsDialog
 import org.cubewhy.celestial.toJLabel
-import org.cubewhy.celestial.utils.FileUtils
 import java.awt.BorderLayout
 import javax.swing.*
 
@@ -32,7 +32,7 @@ class StatusBar : JPanel() {
 
         this.layout = BorderLayout(0, 0)
         val btnOpenDialog =
-            JButton(ImageIcon(FileUtils.readBytes(FileUtils.inputStreamFromClassPath("/images/logs.png")!!)))
+            JButton(ImageIcon("/images/logs.png".getInputStream()!!.readAllBytes()))
 
         btnOpenDialog.addActionListener {
             dialog.isVisible = true
