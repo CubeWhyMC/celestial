@@ -31,12 +31,11 @@ import org.cubewhy.celestial.gui.GuiLauncher.Companion.statusBar
 import org.cubewhy.celestial.toZip
 import org.cubewhy.celestial.unzip
 import org.cubewhy.celestial.utils.CrashReportType
-import org.cubewhy.celestial.utils.GuiUtils
-import org.cubewhy.celestial.utils.SystemUtils.callExternalProcess
-import org.cubewhy.celestial.utils.SystemUtils.findJava
+import org.cubewhy.celestial.utils.findJava
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getSupportModules
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getSupportVersions
+import org.cubewhy.celestial.utils.saveFile
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
@@ -171,7 +170,7 @@ class GuiVersionSelect : JPanel() {
 
         btnFetchJson.addActionListener {
             // open file save dialog
-            val file = GuiUtils.saveFile(FileNameExtensionFilter("Json (*.json)", "json"))
+            val file = saveFile(FileNameExtensionFilter("Json (*.json)", "json"))
             file?.let {
                 log.info("Fetching version json...")
                 val json = launcherData.getVersion(
@@ -358,7 +357,7 @@ class GuiVersionSelect : JPanel() {
         runGame({
             try {
                 statusBar.text = f.getString("status.launch.call-process")
-                return@runGame callExternalProcess(launch())
+                return@runGame launch().start()
             } catch (e: InterruptedException) {
                 throw RuntimeException(e)
             }
@@ -402,7 +401,7 @@ class GuiVersionSelect : JPanel() {
         runGame({
             try {
                 statusBar.text = f.getString("status.launch.call-process")
-                return@runGame callExternalProcess(process)
+                return@runGame process.start()
             } catch (e: IOException) {
                 throw RuntimeException(e)
             } catch (e: InterruptedException) {

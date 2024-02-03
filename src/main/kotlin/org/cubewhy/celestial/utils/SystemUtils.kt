@@ -10,42 +10,30 @@ import com.sun.tools.attach.VirtualMachine
 import java.io.File
 import java.lang.management.ManagementFactory
 
-object SystemUtils {
 
-    fun callExternalProcess(processBuilder: ProcessBuilder): Process {
-        val managedProcess = ManagedProcess(processBuilder)
-        //        managedProcess.pumpInputStream(SystemUtils::onLogLine);
-//        managedProcess.pumpErrorStream(SystemUtils::onLogLine);
-        return managedProcess.process
+fun findJava(mainClass: String?): VirtualMachine? {
+    for (descriptor in VirtualMachine.list()) {
+        if (descriptor.displayName().startsWith(mainClass!!)) {
+            return descriptor.provider().attachVirtualMachine(descriptor)
+        }
     }
-
-
-    fun findJava(mainClass: String?): VirtualMachine? {
-        for (descriptor in VirtualMachine.list()) {
-            if (descriptor.displayName().startsWith(mainClass!!)) {
-                return descriptor.provider().attachVirtualMachine(descriptor)
-            }
-        }
-        return null
-    }
-
-
-    val currentJavaExec: File
-        get() {
-            var exec = System.getProperty("java.home") + "/bin/java"
-            if (OSEnum.current == OSEnum.Windows) {
-                exec += ".exe"
-            }
-            return File(exec)
-        }
-
-
-    val totalMem: Int
-        /**
-         * Get total RAM (MB)
-         */
-        get() {
-            val osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
-            return (osBean.totalMemorySize / 1048576).toInt()
-        }
+    return null
 }
+
+val currentJavaExec: File
+    get() {
+        var exec = System.getProperty("java.home") + "/bin/java"
+        if (OSEnum.current == OSEnum.Windows) {
+            exec += ".exe"
+        }
+        return File(exec)
+    }
+
+val totalMem: Int
+    /**
+     * Get total RAM (MB)
+     */
+    get() {
+        val osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
+        return (osBean.totalMemorySize / 1048576).toInt()
+    }

@@ -6,59 +6,44 @@
 package org.cubewhy.celestial.utils
 
 import org.cubewhy.celestial.Celestial
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.awt.Desktop
 import java.io.File
-import java.io.IOException
 import javax.swing.JButton
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileFilter
 import javax.swing.filechooser.FileNameExtensionFilter
 
-object GuiUtils {
-    private val log: Logger = LoggerFactory.getLogger(GuiUtils::class.java)
 
-
-    fun chooseFile(filter: FileFilter?): File? {
-        val fileDialog = JFileChooser()
-        if (filter != null) {
-            fileDialog.fileFilter = filter
-            fileDialog.addChoosableFileFilter(filter)
-        }
-        fileDialog.fileSelectionMode = JFileChooser.FILES_ONLY
-        return if ((fileDialog.showOpenDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
-    }
-
-
-    fun chooseFolder(): File? {
-        val fileDialog = JFileChooser()
-        fileDialog.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-        return if ((fileDialog.showOpenDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
-    }
-
-
-    fun saveFile(filter: FileNameExtensionFilter?): File? {
-        val fileDialog = JFileChooser()
+fun chooseFile(filter: FileFilter?): File? {
+    val fileDialog = JFileChooser()
+    if (filter != null) {
         fileDialog.fileFilter = filter
         fileDialog.addChoosableFileFilter(filter)
-        fileDialog.fileSelectionMode = JFileChooser.FILES_ONLY
-        return if ((fileDialog.showSaveDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
     }
+    fileDialog.fileSelectionMode = JFileChooser.FILES_ONLY
+    return if ((fileDialog.showOpenDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
+}
+
+fun chooseFolder(): File? {
+    val fileDialog = JFileChooser()
+    fileDialog.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
+    return if ((fileDialog.showOpenDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
+}
+
+fun createButtonOpenFolder(text: String?, folder: File): JButton {
+    val btn = JButton(text)
+    btn.addActionListener {
+        folder.mkdirs()
+        Desktop.getDesktop().open(folder)
+    }
+    return btn
+}
 
 
-    fun createButtonOpenFolder(text: String?, folder: File): JButton {
-        val btn = JButton(text)
-        btn.addActionListener {
-            try {
-                if (folder.mkdirs()) {
-                    log.info("Creating $folder because the folder not exist")
-                }
-                Desktop.getDesktop().open(folder)
-            } catch (ex: IOException) {
-                throw RuntimeException(ex)
-            }
-        }
-        return btn
-    }
+fun saveFile(filter: FileNameExtensionFilter?): File? {
+    val fileDialog = JFileChooser()
+    fileDialog.fileFilter = filter
+    fileDialog.addChoosableFileFilter(filter)
+    fileDialog.fileSelectionMode = JFileChooser.FILES_ONLY
+    return if ((fileDialog.showSaveDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
 }

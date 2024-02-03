@@ -37,7 +37,7 @@ object EventManager {
         return REGISTRY_MAP[clazz]
     }
 
-    fun cleanMap(removeOnlyEmptyValues: Boolean) {
+    private fun cleanMap(removeOnlyEmptyValues: Boolean) {
         val iterator: MutableIterator<Map.Entry<Class<out Event?>, ArrayList<EventData>?>> =
             REGISTRY_MAP.entries.iterator()
 
