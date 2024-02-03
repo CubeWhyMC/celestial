@@ -9,7 +9,6 @@ import co.gongzh.procbridge.IDelegate
 import co.gongzh.procbridge.Server
 import com.google.gson.JsonObject
 import org.cubewhy.celestial.event.impl.AuthEvent
-import org.cubewhy.celestial.utils.TextUtils.dumpTrace
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URL
@@ -20,7 +19,7 @@ class AuthServer private constructor() {
             return@IDelegate if (method != null) handleRequest(method, args) else null
         } catch (e: Exception) {
             log.error("Failed to start the auth server")
-            log.error(dumpTrace(e))
+            log.error(e.stackTraceToString())
         }
         null
     })

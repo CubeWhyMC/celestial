@@ -23,7 +23,6 @@ import org.cubewhy.celestial.utils.AddonUtils.isLunarCNMod
 import org.cubewhy.celestial.utils.AddonUtils.isWeaveMod
 import org.cubewhy.celestial.utils.GuiUtils.chooseFile
 import org.cubewhy.celestial.utils.GuiUtils.createButtonOpenFolder
-import org.cubewhy.celestial.utils.TextUtils.dumpTrace
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.event.MouseAdapter
@@ -320,8 +319,8 @@ class GuiAddonManager : JPanel() {
                         JOptionPane.ERROR_MESSAGE
                     )
                 }
-            } catch (ex: IOException) {
-                val trace = dumpTrace(ex)
+            } catch (e: IOException) {
+                val trace = e.stackTraceToString()
                 log.error(trace)
                 JOptionPane.showMessageDialog(
                     this,
@@ -358,8 +357,8 @@ class GuiAddonManager : JPanel() {
                         JOptionPane.ERROR_MESSAGE
                     )
                 }
-            } catch (ex: IOException) {
-                val trace = dumpTrace(ex)
+            } catch (e: IOException) {
+                val trace = e.stackTraceToString()
                 log.error(trace)
                 JOptionPane.showMessageDialog(
                     this,
@@ -396,8 +395,8 @@ class GuiAddonManager : JPanel() {
                         JOptionPane.ERROR_MESSAGE
                     )
                 }
-            } catch (ex: IOException) {
-                val trace = dumpTrace(ex)
+            } catch (e: IOException) {
+                val trace = e.stackTraceToString()
                 log.error(trace)
                 JOptionPane.showMessageDialog(
                     this,
@@ -430,8 +429,8 @@ class GuiAddonManager : JPanel() {
                         JOptionPane.ERROR_MESSAGE
                     )
                 }
-            } catch (ex: IOException) {
-                val trace = dumpTrace(ex)
+            } catch (e: IOException) {
+                val trace = e.stackTraceToString()
                 log.error(trace)
                 JOptionPane.showMessageDialog(
                     this,

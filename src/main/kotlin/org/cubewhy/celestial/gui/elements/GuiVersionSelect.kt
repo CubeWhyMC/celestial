@@ -24,6 +24,7 @@ import org.cubewhy.celestial.Celestial.wipeCache
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.files.DownloadManager.waitForAll
+import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.gui.GuiLauncher.Companion.statusBar
@@ -32,7 +33,6 @@ import org.cubewhy.celestial.utils.FileUtils.unzipNatives
 import org.cubewhy.celestial.utils.GuiUtils
 import org.cubewhy.celestial.utils.SystemUtils.callExternalProcess
 import org.cubewhy.celestial.utils.SystemUtils.findJava
-import org.cubewhy.celestial.utils.TextUtils.dumpTrace
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getSupportModules
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getSupportVersions
@@ -123,9 +123,8 @@ class GuiVersionSelect : JPanel() {
         btnOnline.addActionListener {
             try {
                 this.online()
-            } catch (ex: Exception) {
-                val trace = dumpTrace(ex)
-                log.error(trace)
+            } catch (e: Exception) {
+                log.error(e.stackTraceToString())
             }
         }
         this.add(btnOnline)
@@ -134,12 +133,10 @@ class GuiVersionSelect : JPanel() {
         btnOffline.addActionListener {
             try {
                 this.offline()
-            } catch (ex: IOException) {
-                val trace = dumpTrace(ex)
-                log.error(trace)
-            } catch (ex: InterruptedException) {
-                val trace = dumpTrace(ex)
-                log.error(trace)
+            } catch (e: IOException) {
+                log.error(e.stackTraceToString())
+            } catch (e: InterruptedException) {
+                log.error(e.stackTraceToString())
             } catch (ignored: AttachNotSupportedException) {
                 log.warn("Failed to attach to the game process")
             }
@@ -227,7 +224,7 @@ class GuiVersionSelect : JPanel() {
             }
         } catch (e: Exception) {
             log.error("Failed to check loader updates")
-            log.error(dumpTrace(e))
+            log.error(e.stackTraceToString())
             if (!proxy.hasMirror("github.com:443") && JOptionPane.showConfirmDialog(
                     this,
                     f.getString("gui.proxy.suggest.gh"),
@@ -326,9 +323,8 @@ class GuiVersionSelect : JPanel() {
                         }
                     }
                 }
-            } catch (ex: InterruptedException) {
-                val trace = dumpTrace(ex)
-                log.error(trace)
+            } catch (e: InterruptedException) {
+                log.error(e.stackTraceToString())
             } catch (e: IOException) {
                 throw RuntimeException(e)
             }
@@ -379,20 +375,19 @@ class GuiVersionSelect : JPanel() {
                     statusBar.text = f.getString("status.launch.natives")
                     unzipNatives(natives, File(config.getValue("installation-dir").asString))
                 } catch (e: Exception) {
-                    val trace = dumpTrace(e)
                     log.error("Is game launched? Failed to unzip natives.")
-                    log.error(trace)
+                    log.error(e.stackTraceToString())
                 }
                 // exec, run
                 log.info("Everything is OK, starting game...")
                 isLaunching = false
             } catch (e: Exception) {
                 log.error("Failed to check update")
-                val trace = dumpTrace(e)
+                val trace = e.stackTraceToString()
                 log.error(trace)
                 JOptionPane.showMessageDialog(
                     null,
-                    f.getString("gui.check-update.error.message"),
+                    f.format("gui.check-update.error.message", trace),
                     f.getString("gui.check-update.error.title"),
                     JOptionPane.ERROR_MESSAGE
                 )
