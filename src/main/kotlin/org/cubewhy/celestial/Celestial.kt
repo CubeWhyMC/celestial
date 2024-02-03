@@ -47,8 +47,7 @@ object Celestial {
 
     val config: ConfigFile = ConfigFile(File(configDir, "celestial.json"))
 
-    @JvmField
-    val proxy: ProxyConfig = ProxyConfig(File(configDir, "proxy.json"))
+    val proxy = ProxyConfig(File(configDir, "proxy.json"))
     val gameLogFile: File = File(configDir, "logs/game.log")
     val launcherLogFile: File = File(configDir, "logs/launcher.log")
 
@@ -72,7 +71,7 @@ object Celestial {
         File(System.getProperty("user.home"), ".config/launcher/sentry/session.json")
     }
 
-    private var log = LoggerFactory.getLogger(GuiUtils::class.java)
+    private var log = LoggerFactory.getLogger(Celestial::class.java)
 
 
     @JvmStatic
@@ -287,7 +286,7 @@ object Celestial {
             .initValue("game-dir", minecraftFolder.path) // the minecraft folder
             .initValue("game", null)
             .initValue("addon", addon)
-            .initValue("ram", SystemUtils.totalMem / 4)
+            .initValue("ram", totalMem / 4)
             .initValue("max-threads", Runtime.getRuntime().availableProcessors()) // recommend: same as your CPU core
             .initValue(
                 "api",
@@ -432,7 +431,7 @@ object Celestial {
             args.add(wrapper)
         }
         if (customJre.isEmpty()) {
-            val java = SystemUtils.currentJavaExec
+            val java = currentJavaExec
             if (!java.exists()) {
                 log.error("Java executable not found, please specify it in " + config.file)
             }
