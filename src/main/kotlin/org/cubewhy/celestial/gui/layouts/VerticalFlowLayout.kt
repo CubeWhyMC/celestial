@@ -49,7 +49,7 @@ class VerticalFlowLayout(// 每一列中各组件水平向对齐方式(注意非
             }
 
             // 累计高添加组件间间隙
-            if (!components.isEmpty()) {
+            if (components.isNotEmpty()) {
                 height += vGap * (components.size - 1)
             }
 
@@ -144,7 +144,7 @@ class VerticalFlowLayout(// 每一列中各组件水平向对齐方式(注意非
                     list.add(component)
                 }
             }
-            if (!list.isEmpty()) {
+            if (list.isNotEmpty()) {
                 batch(insets, availableWidth, availableHeight, xBase, list, components)
             }
         }
@@ -162,14 +162,19 @@ class VerticalFlowLayout(// 每一列中各组件水平向对齐方式(注意非
         val preferredHeight = getPreferredHeight(list)
 
         // y
-        var y = if (vAlign == TOP) {
-            insets.top + vPadding
-        } else if (vAlign == CENTER) {
-            (availableHeight - preferredHeight) / 2 + insets.top + vPadding
-        } else if (vAlign == BOTTOM) {
-            availableHeight - preferredHeight + insets.top + vPadding
-        } else {
-            insets.top + vPadding
+        var y = when (vAlign) {
+            TOP -> {
+                insets.top + vPadding
+            }
+            CENTER -> {
+                (availableHeight - preferredHeight) / 2 + insets.top + vPadding
+            }
+            BOTTOM -> {
+                availableHeight - preferredHeight + insets.top + vPadding
+            }
+            else -> {
+                insets.top + vPadding
+            }
         }
 
         for (i in list.indices) {
@@ -179,14 +184,19 @@ class VerticalFlowLayout(// 每一列中各组件水平向对齐方式(注意非
             val x = if (fill) {
                 xBase
             } else {
-                if (hAlign == LEFT) {
-                    xBase
-                } else if (hAlign == CENTER) {
-                    xBase + (preferredWidth - item.preferredSize.width) / 2
-                } else if (hAlign == RIGHT) {
-                    xBase + preferredWidth - item.preferredSize.width
-                } else {
-                    xBase
+                when (hAlign) {
+                    LEFT -> {
+                        xBase
+                    }
+                    CENTER -> {
+                        xBase + (preferredWidth - item.preferredSize.width) / 2
+                    }
+                    RIGHT -> {
+                        xBase + preferredWidth - item.preferredSize.width
+                    }
+                    else -> {
+                        xBase
+                    }
                 }
             }
 
@@ -241,7 +251,7 @@ class VerticalFlowLayout(// 每一列中各组件水平向对齐方式(注意非
             height += component.preferredSize.height
         }
         // 累计高添加组件间间隙
-        if (!components.isEmpty()) {
+        if (components.isNotEmpty()) {
             height += vGap * (components.size - 1)
         }
         return height
