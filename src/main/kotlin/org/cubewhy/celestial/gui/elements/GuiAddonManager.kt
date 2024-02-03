@@ -18,6 +18,7 @@ import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.game.addon.WeaveMod.Companion.add
 import org.cubewhy.celestial.gui.GuiLauncher
+import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.utils.AddonUtils.isLunarCNMod
 import org.cubewhy.celestial.utils.AddonUtils.isWeaveMod
 import org.cubewhy.celestial.utils.GuiUtils.chooseFile
@@ -475,7 +476,7 @@ class GuiAddonManager : JPanel() {
         val panelFabric = JPanel()
         panelFabric.name = "fabric"
         panelFabric.layout = BoxLayout(panelFabric, BoxLayout.Y_AXIS)
-        panelFabric.add(JLabel("Not fully support Fabric yet, please add mods by your self"))
+        panelFabric.add("Not fully support Fabric yet, please add mods by your self".toJLabel())
         //        panelFabric.add(new JScrollPane(jListFabric));
         val btnPanel4 = JPanel()
         btnPanel4.layout = BoxLayout(btnPanel4, BoxLayout.X_AXIS)

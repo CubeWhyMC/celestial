@@ -9,6 +9,7 @@ package org.cubewhy.celestial.gui.pages
 import org.cubewhy.celestial.Celestial.config
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.readOnly
+import org.cubewhy.celestial.toJTextArea
 import org.cubewhy.celestial.utils.GitUtils.branch
 import org.cubewhy.celestial.utils.GitUtils.buildUser
 import org.cubewhy.celestial.utils.GitUtils.buildUserEmail
@@ -20,7 +21,6 @@ import org.cubewhy.celestial.utils.GitUtils.remote
 import java.awt.Color
 import javax.swing.BoxLayout
 import javax.swing.JPanel
-import javax.swing.JTextArea
 import javax.swing.border.TitledBorder
 
 
@@ -63,7 +63,7 @@ class GuiAbout : JPanel() {
         )
 
         this.layout = BoxLayout(this, BoxLayout.Y_AXIS)
-        val textArea = JTextArea(f.getString("gui.about") + "\n" + env).readOnly()
+        val textArea = (f.getString("gui.about") + "\n" + env).toJTextArea().readOnly()
         this.add(textArea)
     }
 }

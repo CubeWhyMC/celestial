@@ -9,11 +9,11 @@ package org.cubewhy.celestial.gui.elements.help
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.gui.elements.HelpPage
 import org.cubewhy.celestial.readOnly
-import javax.swing.JTextArea
+import org.cubewhy.celestial.toJTextArea
 
 class HelpLogin : HelpPage(f.getString("gui.help.login.title")) {
 
     init {
-        this.add(JTextArea(f.getString("gui.help.login")).readOnly())
+        this.add(f.getString("gui.help.login").toJTextArea().readOnly())
     }
 }

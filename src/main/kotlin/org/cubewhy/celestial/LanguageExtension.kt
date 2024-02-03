@@ -10,10 +10,10 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import okhttp3.Response
 import java.awt.Component
-import java.awt.Container
 import java.net.URI
 import java.net.URL
 import java.util.*
+import javax.swing.JLabel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingConstants
@@ -64,3 +64,9 @@ fun JTextArea.readOnly(): JTextArea {
 fun <T> Array<T>.forEachIsEnd(action: (T, Boolean) -> Unit) {
     this.forEachIndexed { index, t -> action(t, index == this.size - 1) }
 }
+
+fun String.toJLabel(): JLabel =
+    // todo multi line support
+    JLabel(this)
+
+fun String.toJTextArea(): JTextArea = JTextArea(this)

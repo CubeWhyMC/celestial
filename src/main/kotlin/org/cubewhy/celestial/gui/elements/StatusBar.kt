@@ -12,13 +12,14 @@ import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.gui.dialogs.LogsDialog
+import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.utils.FileUtils
 import java.awt.BorderLayout
 import javax.swing.*
 
 class StatusBar : JPanel() {
     private val label = JLabel()
-    private val pidLabel = JLabel("%GAME_PID%")
+    private val pidLabel = "game-pid".toJLabel()
     private val autoClearTimer = Timer(10000) {
         this.clear()
     }

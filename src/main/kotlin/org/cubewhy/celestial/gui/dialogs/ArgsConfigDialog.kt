@@ -8,6 +8,8 @@ package org.cubewhy.celestial.gui.dialogs
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.toJLabel
+import org.cubewhy.celestial.toJTextArea
 import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -29,8 +31,9 @@ class ArgsConfigDialog(private val key: String, json: JsonObject) : JDialog() {
         this.isLocationByPlatform = true
 
         this.title = f.getString("gui.settings.args.title")
-        input = JTextArea(array.toSplitArgs())
-        this.add(input.withScroller())
+        input = array.toArgsString().toJTextArea()
+        this.add(f.getString("gui.settings.args.tip").toJLabel(), BorderLayout.SOUTH)
+        this.add(input.withScroller(), BorderLayout.CENTER)
 
         this.addWindowListener(object: WindowAdapter() {
             override fun windowClosing(e: WindowEvent?) {
@@ -62,7 +65,7 @@ private fun <E> List<E>.asJsonArray(): JsonArray {
     return array
 }
 
-private fun JsonArray.toSplitArgs(): String {
+private fun JsonArray.toArgsString(): String {
     val sb = StringBuilder()
     for (element in this) if (element.asString.isNotBlank()) sb.append(element.asString).append("\n")
     return sb.toString()
