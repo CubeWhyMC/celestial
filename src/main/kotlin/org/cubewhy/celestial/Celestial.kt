@@ -85,7 +85,7 @@ object Celestial {
             System.setProperty("file.encoding", "UTF-8")
             run(args)
         } catch (e: Exception) {
-            val trace = TextUtils.dumpTrace(e)
+            val trace = e.stackTraceToString()
             log.error(trace)
             // please share the crash report with developers to help us solve the problems of the Celestial Launcher
             val message = StringBuffer("Celestial Crashed\n")
@@ -169,8 +169,7 @@ object Celestial {
                 log.info("connected")
                 break // success
             } catch (e: Exception) {
-                val trace = TextUtils.dumpTrace(e)
-                log.error(trace)
+                log.error(e.stackTraceToString())
                 // shell we switch an api?
                 val input =
                     JOptionPane.showInputDialog(f.getString("api.unreachable"), config.getValue("api").asString)

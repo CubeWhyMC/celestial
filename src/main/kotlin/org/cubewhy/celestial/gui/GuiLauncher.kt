@@ -22,7 +22,6 @@ import org.cubewhy.celestial.gui.pages.*
 import org.cubewhy.celestial.utils.FileUtils.inputStreamFromClassPath
 import org.cubewhy.celestial.utils.FileUtils.readBytes
 import org.cubewhy.celestial.utils.SystemUtils.findJava
-import org.cubewhy.celestial.utils.TextUtils.dumpTrace
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getAlert
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
 import org.slf4j.Logger
@@ -138,7 +137,7 @@ class GuiLauncher : JFrame() {
             }
         } catch (e: AttachNotSupportedException) {
             log.error("Failed to find the game process, is launched with the official launcher? (attach not support)")
-            log.error(dumpTrace(e))
+            log.error(e.stackTraceToString())
         }
     }
 

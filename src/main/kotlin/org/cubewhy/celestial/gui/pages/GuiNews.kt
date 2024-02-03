@@ -7,7 +7,6 @@ import org.cubewhy.celestial.Celestial.metadata
 import org.cubewhy.celestial.files.DownloadManager.cache
 import org.cubewhy.celestial.gui.LauncherNews
 import org.cubewhy.celestial.toJLabel
-import org.cubewhy.celestial.utils.TextUtils.dumpTrace
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getBlogPosts
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -58,13 +57,12 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
                     }
                 } catch (e: IOException) {
                     log.warn("Failed to cache $imageURL")
-                    val trace = dumpTrace(e)
-                    log.error(trace)
+                    log.error(e.stackTraceToString())
                 } catch (e: NullPointerException) {
                     // new API
                     panel.add(JLabel(f.getString("gui.news.official")))
                     log.warn("Failed to load news $imageURL")
-                    log.error(dumpTrace(e))
+                    log.error(e.stackTraceToString())
                 }
             }
         }

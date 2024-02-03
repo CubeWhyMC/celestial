@@ -5,7 +5,6 @@
  */
 package org.cubewhy.celestial.event
 
-import org.cubewhy.celestial.utils.TextUtils.dumpTrace
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
@@ -23,7 +22,7 @@ open class Event {
                 try {
                     data.target.invoke(data.source, this)
                 } catch (e: Exception) {
-                    log.error(dumpTrace(e))
+                    log.error(e.stackTraceToString())
                 }
             }
         }
