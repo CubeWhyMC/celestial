@@ -75,7 +75,7 @@ object Troubleshoot {
         proxy.save()
     }
 
-    fun Scanner.confirm(prompt: String): Boolean {
+    private fun Scanner.confirm(prompt: String): Boolean {
         print("$prompt [y,N]: ")
         return this.next().lowercase() == "y"
     }
