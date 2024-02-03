@@ -16,11 +16,10 @@ import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.AuthEvent
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
+import org.cubewhy.celestial.getInputStream
 import org.cubewhy.celestial.gui.dialogs.HelpDialog
 import org.cubewhy.celestial.gui.elements.StatusBar
 import org.cubewhy.celestial.gui.pages.*
-import org.cubewhy.celestial.utils.FileUtils.inputStreamFromClassPath
-import org.cubewhy.celestial.utils.FileUtils.readBytes
 import org.cubewhy.celestial.utils.SystemUtils.findJava
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getAlert
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
@@ -149,9 +148,7 @@ class GuiLauncher : JFrame() {
      */
     private fun setIconImage(name: String) {
         this.iconImage = ImageIcon(
-            readBytes(
-                inputStreamFromClassPath("/images/icons/$name.png")!!
-            )
+            "/images/icons/$name.png".getInputStream()!!.readAllBytes()
         ).image
     }
 

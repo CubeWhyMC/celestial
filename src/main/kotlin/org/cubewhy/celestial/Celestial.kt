@@ -225,7 +225,7 @@ object Celestial {
             )
         }
 
-        if (sessionFile.exists() && LunarUtils.isReallyOfficial(sessionFile)) {
+        if (sessionFile.exists() && sessionFile.isReallyOfficial()) {
             log.warn("Detected the official launcher")
             JOptionPane.showMessageDialog(
                 null,
@@ -620,8 +620,8 @@ object Celestial {
         if (!sessionFile.exists()) {
             log.info("Completing session.json to fix the network error for LunarClient")
             var json: ByteArray?
-            org.cubewhy.celestial.utils.FileUtils.inputStreamFromClassPath("/game/session.json").use { stream ->
-                json = stream?.let { org.cubewhy.celestial.utils.FileUtils.readBytes(it) }
+            "/game/session.json".getInputStream().use { stream ->
+                json = stream?.readAllBytes()
             }
             FileUtils.writeStringToFile(
                 sessionFile, JsonParser.parseString(
@@ -703,4 +703,9 @@ object Celestial {
             DownloadManager.download(Downloadable(finalURL, finalFile, hash))
         }
     }
+}
+
+private fun File.isReallyOfficial(): Boolean {
+    val json = JsonParser.parseString(FileUtils.readFileToString(this, StandardCharsets.UTF_8)).asJsonObject
+    return !json.has("celestial")
 }

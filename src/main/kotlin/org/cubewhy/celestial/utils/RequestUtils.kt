@@ -21,7 +21,7 @@ object RequestUtils {
     private val JSON: MediaType = "application/json".toMediaType()
 
 
-    fun get(url: String?): Call {
+    fun get(url: String): Call {
         return get(URL(url))
     }
 

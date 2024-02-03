@@ -28,8 +28,9 @@ import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.gui.GuiLauncher.Companion.statusBar
+import org.cubewhy.celestial.toZip
+import org.cubewhy.celestial.unzip
 import org.cubewhy.celestial.utils.CrashReportType
-import org.cubewhy.celestial.utils.FileUtils.unzipNatives
 import org.cubewhy.celestial.utils.GuiUtils
 import org.cubewhy.celestial.utils.SystemUtils.callExternalProcess
 import org.cubewhy.celestial.utils.SystemUtils.findJava
@@ -373,7 +374,7 @@ class GuiVersionSelect : JPanel() {
                 waitForAll()
                 try {
                     statusBar.text = f.getString("status.launch.natives")
-                    unzipNatives(natives, File(config.getValue("installation-dir").asString))
+                    natives.unzipNatives(File(config.getValue("installation-dir").asString))
                 } catch (e: Exception) {
                     log.error("Is game launched? Failed to unzip natives.")
                     log.error(e.stackTraceToString())
@@ -448,6 +449,16 @@ class GuiVersionSelect : JPanel() {
         if (reset) {
             moduleSelect.selectedItem = defaultValue
         }
+    }
+
+    private fun File.unzipNatives(baseDir: File) {
+        log.info("Unzipping natives...")
+        val dir = File(baseDir, "natives")
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
+        this.toZip().unzip(dir)
+        log.info("Unzipped successful")
     }
 
     companion object {

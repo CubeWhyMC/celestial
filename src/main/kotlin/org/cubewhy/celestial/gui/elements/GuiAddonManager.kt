@@ -8,6 +8,7 @@ package org.cubewhy.celestial.gui.elements
 import org.cubewhy.celestial.Celestial.f
 import org.cubewhy.celestial.event.impl.AddonAddEvent
 import org.cubewhy.celestial.files.DownloadManager
+import org.cubewhy.celestial.game.AddonType
 import org.cubewhy.celestial.game.BaseAddon
 import org.cubewhy.celestial.game.addon.FabricMod
 import org.cubewhy.celestial.game.addon.JavaAgent
@@ -18,9 +19,9 @@ import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.game.addon.WeaveMod.Companion.add
 import org.cubewhy.celestial.gui.GuiLauncher
+import org.cubewhy.celestial.isMod
 import org.cubewhy.celestial.toJLabel
-import org.cubewhy.celestial.utils.AddonUtils.isLunarCNMod
-import org.cubewhy.celestial.utils.AddonUtils.isWeaveMod
+import org.cubewhy.celestial.toJar
 import org.cubewhy.celestial.utils.GuiUtils.chooseFile
 import org.cubewhy.celestial.utils.GuiUtils.createButtonOpenFolder
 import org.slf4j.LoggerFactory
@@ -307,7 +308,7 @@ class GuiAddonManager : JPanel() {
                 val agent = add(file, arg)
                 if (agent != null) {
                     // success
-                    AddonAddEvent(AddonAddEvent.Type.JAVAAGENT, agent)
+                    AddonAddEvent(AddonType.JAVAAGENT, agent)
                     GuiLauncher.statusBar.text = f.getString("gui.addon.agents.add.success")
                     agentList.clear()
                     loadAgents()
@@ -334,7 +335,7 @@ class GuiAddonManager : JPanel() {
         btnAddWeaveMod.addActionListener {
             val file = chooseFile(FileNameExtensionFilter("Weave Mod", "jar")) ?: return@addActionListener
             try {
-                if (!isWeaveMod(file)) {
+                if (!(file.toJar().isMod(AddonType.WEAVE))) {
                     JOptionPane.showMessageDialog(
                         this,
                         String.format(f.getString("gui.addon.mods.incorrect"), file),
@@ -345,7 +346,7 @@ class GuiAddonManager : JPanel() {
                 val mod = add(file)
                 if (mod != null) {
                     // success
-                    AddonAddEvent(AddonAddEvent.Type.WEAVE, mod)
+                    AddonAddEvent(AddonType.WEAVE, mod)
                     GuiLauncher.statusBar.text = f.getString("gui.addon.mods.weave.add.success")
                     weaveList.clear()
                     loadWeaveMods()
@@ -372,7 +373,7 @@ class GuiAddonManager : JPanel() {
         btnAddLunarCNMod.addActionListener {
             val file = chooseFile(FileNameExtensionFilter("LunarCN Mod", "jar")) ?: return@addActionListener
             try {
-                if (!isLunarCNMod(file)) {
+                if (!(file.toJar().isMod(AddonType.LUNARCN))) {
                     JOptionPane.showMessageDialog(
                         this,
                         String.format(f.getString("gui.addon.mods.incorrect"), file),
@@ -383,7 +384,7 @@ class GuiAddonManager : JPanel() {
                 val mod = LunarCNMod.add(file)
                 if (mod != null) {
                     // success
-                    AddonAddEvent(AddonAddEvent.Type.LUNARCN, mod)
+                    AddonAddEvent(AddonType.LUNARCN, mod)
                     GuiLauncher.statusBar.text = f.getString("gui.addon.mods.cn.add.success")
                     weaveList.clear()
                     loadWeaveMods()
@@ -417,7 +418,7 @@ class GuiAddonManager : JPanel() {
                 val mod = FabricMod.add(file)
                 if (mod != null) {
                     // success
-                    AddonAddEvent(AddonAddEvent.Type.FABRIC, mod)
+                    AddonAddEvent(AddonType.FABRIC, mod)
                     GuiLauncher.statusBar.text = f.getString("gui.addon.mods.fabric.add.success")
                     fabricList.clear()
                     loadFabricMods(fabricList)

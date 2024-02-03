@@ -10,7 +10,6 @@ import com.sun.tools.attach.VirtualMachine
 import java.io.File
 import java.lang.management.ManagementFactory
 
-// from hmcl launcher
 object SystemUtils {
 
     fun callExternalProcess(processBuilder: ProcessBuilder): Process {
