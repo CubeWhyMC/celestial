@@ -10,6 +10,7 @@ import java.awt.Desktop
 import java.io.File
 import javax.swing.JButton
 import javax.swing.JFileChooser
+import javax.swing.JLabel
 import javax.swing.filechooser.FileFilter
 import javax.swing.filechooser.FileNameExtensionFilter
 
@@ -47,3 +48,8 @@ fun saveFile(filter: FileNameExtensionFilter?): File? {
     fileDialog.fileSelectionMode = JFileChooser.FILES_ONLY
     return if ((fileDialog.showSaveDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
 }
+
+/**
+ * Get a empty label
+ * */
+fun emptyJLabel() = JLabel()
