@@ -101,8 +101,6 @@ class VerticalFlowLayout(// 每一列中各组件水平向对齐方式(注意非
 
     override fun layoutContainer(container: Container) {
         synchronized(container.treeLock) {
-            // 容器理想宽高, 即组件加间隙加容器边框后的累积理想宽高, 用于和容器实际宽高做比较
-            val idealSize = preferredLayoutSize(container)
             // 容器实际宽高
             val size = container.size
             // 容器实际边框
