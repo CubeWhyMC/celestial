@@ -270,6 +270,11 @@ object Celestial {
         )
         weave.addProperty("check-update", true)
         addon.add("weave", weave)
+        val lcqt = JsonObject()
+        lcqt.addProperty("enable", false)
+        lcqt.addProperty("installation", File(configDir, "loaders/lcqt-agent.jar").path)
+        lcqt.addProperty("check-update", true)
+        addon.add("lcqt", lcqt) // lunar qt
         // lccn
         val lunarcn = JsonObject()
         lunarcn.addProperty("enable", false)
@@ -460,6 +465,7 @@ object Celestial {
         // ===     loaders    ===
         val weave = config.getValue("addon").asJsonObject.getAsJsonObject("weave")
         val cn = config.getValue("addon").asJsonObject.getAsJsonObject("lunarcn")
+        val lcqt = config.getValue("addon").asJsonObject.getAsJsonObject("lcqt")
         if (weave["enable"].asBoolean) {
             val file = weave["installation"].asString
             log.info("Weave enabled! $file")
@@ -468,6 +474,11 @@ object Celestial {
         if (cn["enable"].asBoolean) {
             val file = cn["installation"].asString
             log.info("LunarCN enabled! $file")
+            javaAgents.add(JavaAgent(file))
+        }
+        if (lcqt["enable"].asBoolean) {
+            val file = lcqt["installation"].asString
+            log.info("LunarQT enabled! $file")
             javaAgents.add(JavaAgent(file))
         }
         for (agent in javaAgents) {

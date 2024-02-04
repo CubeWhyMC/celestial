@@ -19,6 +19,7 @@ import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.gui.Language
 import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog
+import org.cubewhy.celestial.gui.dialogs.LunarQTDialog
 import org.cubewhy.celestial.gui.dialogs.MirrorDialog
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.toFile
@@ -65,7 +66,12 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.main"), config.file.parentFile))
         panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.theme"), themesDir))
         panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.log"), launcherLogFile.parentFile))
-        panelFolders.add(createButtonOpenFolder(f.getString("gui.settings.folder.game"), config.getValue("installation-dir").asString.toFile()))
+        panelFolders.add(
+            createButtonOpenFolder(
+                f.getString("gui.settings.folder.game"),
+                config.getValue("installation-dir").asString.toFile()
+            )
+        )
         panel.add(panelFolders)
         // jre
         val panelVM = JPanel()
@@ -315,6 +321,56 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         p12.add(JLabel(f.getString("gui.settings.addon.loader.weave.installation")))
         p12.add(btnSelectWeaveInstallation)
         panelAddon.add(p12)
+
+        val panelLunarQT = JPanel()
+        panelLunarQT.layout = VerticalFlowLayout()
+        panelLunarQT.border = TitledBorder(
+            null,
+            f.getString("gui.settings.addons.lcqt"),
+            TitledBorder.DEFAULT_JUSTIFICATION,
+            TitledBorder.DEFAULT_POSITION,
+            null,
+            Color.ORANGE
+        )
+        panelLunarQT.add(
+            getAutoSaveCheckBox(
+                config.config.getAsJsonObject("addon").getAsJsonObject("lcqt"),
+                "enable",
+                f.getString("gui.settings.addons.lcqt.toggle")
+            )
+        )
+        panelLunarQT.add(
+            getAutoSaveCheckBox(
+                config.config.getAsJsonObject("addon").getAsJsonObject("lcqt"),
+                "check-update",
+                f.getString("gui.settings.addons.lcqt.check-update")
+            )
+        )
+        val panelManageLunarQTInstallation = JPanel()
+        panelManageLunarQTInstallation.add(f.getString("gui.settings.addons.lcqt.installation").toJLabel())
+        val btnSelectLunarQTInstallation = JButton(config.getValue("addon").asJsonObject.getAsJsonObject("lcqt").get("installation").asString)
+        btnSelectLunarQTInstallation.addActionListener { e: ActionEvent ->
+            val file = chooseFile(FileNameExtensionFilter("LunarQT Agent (*.jar)", "jar"))
+            val source = e.source as JButton
+            if (file == null) {
+                return@addActionListener
+            }
+            config.getValue("addon").asJsonObject.getAsJsonObject("lcqt").addProperty("installation", file.path)
+            log.info("Set lcqt-installation to $file")
+            source.text = file.path
+            GuiLauncher.statusBar.text = f.format("gui.settings.addons.lcqt.success", file)
+        }
+        panelManageLunarQTInstallation.add(btnSelectLunarQTInstallation)
+        panelLunarQT.add(panelManageLunarQTInstallation)
+
+        val btnManageLunarQT = JButton(f.getString("gui.settings.addons.lcqt.manage"))
+        btnManageLunarQT.addActionListener {
+            LunarQTDialog().isVisible = true
+        }
+
+        panelLunarQT.add(btnManageLunarQT)
+
+        panelAddon.add(panelLunarQT)
 
         val p13 = JPanel()
         p13.add(
