@@ -27,6 +27,7 @@ import org.cubewhy.celestial.files.DownloadManager.waitForAll
 import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
+import org.cubewhy.celestial.game.thirdparty.LunarQT
 import org.cubewhy.celestial.gui.GuiLauncher.Companion.statusBar
 import org.cubewhy.celestial.toZip
 import org.cubewhy.celestial.unzip
@@ -235,6 +236,19 @@ class GuiVersionSelect : JPanel() {
                 log.info("Applying GitHub mirror")
                 proxy.addMirror("github.com:443", "github.ink:443")
             }
+        }
+
+        try {
+            if (config.getValue("addon").asJsonObject.getAsJsonObject("lcqt")
+                    .get("enable").asBoolean && config.getValue("addon").asJsonObject.getAsJsonObject("lcqt")
+                    .get("check-update").asBoolean
+            ) {
+                log.info("Checking update for LunarQT")
+                checkUpdate = LunarQT.checkUpdate()
+            }
+        } catch (e: Exception) {
+            log.error("Failed to check lcqt updates")
+            log.error(e.stackTraceToString())
         }
 
         if (checkUpdate) {
