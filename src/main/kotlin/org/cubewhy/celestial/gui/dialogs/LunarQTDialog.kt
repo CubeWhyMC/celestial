@@ -11,6 +11,7 @@ import org.cubewhy.celestial.game.thirdparty.LunarQT
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.source
 import org.cubewhy.celestial.toJLabel
+import org.cubewhy.celestial.utils.emptyJLabel
 import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -45,6 +46,8 @@ class LunarQTDialog : JDialog() {
 
     private fun initGui() {
         panel.run {
+            add(f.getString("gui.settings.addons.lcqt.tip").toJLabel())
+            add(emptyJLabel())
             add(getCheckBoxToggleModule("cosmetics", f.getString("gui.settings.addons.lcqt.module.cosmetics")))
             add(getCheckBoxToggleModule("freelook", f.getString("gui.settings.addons.lcqt.module.freelook")))
             add(getCheckBoxToggleModule("cracked", f.getString("gui.settings.addons.lcqt.module.cracked")))

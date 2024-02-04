@@ -172,7 +172,7 @@ class GuiVersionSelect : JPanel() {
         btnFetchJson.addActionListener {
             // open file save dialog
             val file = saveFile(FileNameExtensionFilter("Json (*.json)", "json"))
-            file?.let {
+            file?.apply {
                 log.info("Fetching version json...")
                 val json = launcherData.getVersion(
                     versionSelect.selectedItem as String,
@@ -181,8 +181,8 @@ class GuiVersionSelect : JPanel() {
                 ).asJsonObject
                 val jsonString = Gson().toJson(json)
                 log.info(jsonString)
-                var file1 = it
-                if (!it.name.endsWith(".json")) {
+                var file1 = this
+                if (!this.name.endsWith(".json")) {
                     file1 = file + ".json" // add extension
                 }
                 log.info("Fetch OK! Dumping to ${file1.path}")
