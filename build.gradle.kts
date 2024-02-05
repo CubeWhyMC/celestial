@@ -2,7 +2,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.+"
     id ("com.gorylenko.gradle-git-properties") version "2.4.1"
     kotlin("jvm")
-    kotlin("plugin.serialization") version "1.9.0"
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 group = "org.cubewhy.celestial"
@@ -36,7 +36,7 @@ dependencies {
     implementation("cn.hutool:hutool-crypto:5.8.25")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 }
 
 tasks.shadowJar {
