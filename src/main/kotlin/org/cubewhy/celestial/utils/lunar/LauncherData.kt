@@ -104,7 +104,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
                     assert(response.body != null)
                     json =  response.json!!.asJsonArray
                 }
-            } catch (e: JsonSyntaxException) {
+            } catch (e: Exception) {
                 return null // official api
             }
             for (element in json) {
