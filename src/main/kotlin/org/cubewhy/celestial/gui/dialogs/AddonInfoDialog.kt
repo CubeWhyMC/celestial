@@ -52,7 +52,7 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
 
         val btnDownload = JButton(f.getString("gui.plugins.download"))
         btnDownload.addActionListener {
-            DownloadManager.download(Downloadable(addon.downloadURL, file, null))
+            DownloadManager.download(Downloadable(addon.downloadURL, file, addon.sha1))
             Thread {
                 try {
                     DownloadManager.waitForAll()
