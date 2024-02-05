@@ -36,7 +36,7 @@ dependencies {
     implementation("cn.hutool:hutool-crypto:5.8.25")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 }
 
 tasks.shadowJar {
