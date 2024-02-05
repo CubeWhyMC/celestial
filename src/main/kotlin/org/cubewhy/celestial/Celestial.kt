@@ -295,7 +295,7 @@ object Celestial {
             .initValue("max-threads", Runtime.getRuntime().availableProcessors()) // recommend: same as your CPU core
             .initValue(
                 "api",
-                "https://api.lunarclient.top"
+                "https://www.lunarclient.top/api"
             ) // only support the LunarCN api, Moonsworth's looks like shit :(
             .initValue("theme", "dark") // dark, light, unset, custom.
             .initValue("resize", resize) // (854, 480) for default

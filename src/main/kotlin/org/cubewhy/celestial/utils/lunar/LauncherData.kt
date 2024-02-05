@@ -102,7 +102,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
             try {
                 get(info).execute().use { response ->
                     assert(response.body != null)
-                    json =  response.json!!.asJsonObject.getAsJsonArray("data")
+                    json =  response.json!!.asJsonArray
                 }
             } catch (e: JsonSyntaxException) {
                 return null // official api
@@ -113,6 +113,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
                     RemoteAddon(
                         plugin["name"].asString,
                         URL(api.toString() + plugin["downloadLink"].asString),
+                        plugin["sha1"].asString,
                         RemoteAddon.Category.parse(
                             plugin["category"].asString
                         )!!,

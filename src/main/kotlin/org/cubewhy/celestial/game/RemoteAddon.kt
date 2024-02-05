@@ -8,7 +8,7 @@ package org.cubewhy.celestial.game
 import org.jetbrains.annotations.Contract
 import java.net.URL
 
-data class RemoteAddon(var name: String, var downloadURL: URL, var category: Category, val meta: AddonMeta?) {
+data class RemoteAddon(var name: String, var downloadURL: URL, var sha1: String, var category: Category, val meta: AddonMeta?) {
     enum class Category {
         AGENT, CN, WEAVE;
 
