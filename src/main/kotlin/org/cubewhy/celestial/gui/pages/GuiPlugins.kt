@@ -5,8 +5,8 @@
  */
 package org.cubewhy.celestial.gui.pages
 
-import org.cubewhy.celestial.Celestial.f
-import org.cubewhy.celestial.Celestial.launcherData
+import org.cubewhy.celestial.f
+import org.cubewhy.celestial.launcherData
 import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.RemoteAddon
 import org.cubewhy.celestial.game.addon.JavaAgent

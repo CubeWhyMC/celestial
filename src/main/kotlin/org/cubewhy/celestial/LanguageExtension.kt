@@ -10,6 +10,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import okhttp3.Response
 import org.cubewhy.celestial.game.AddonType
+import org.cubewhy.celestial.gui.GuiLauncher
 import java.awt.Component
 import java.io.File
 import java.io.FileOutputStream
@@ -79,7 +80,7 @@ fun String.toFile(): File = File(this)
 
 fun String.toJTextArea(): JTextArea = JTextArea(this)
 
-fun String.getInputStream(): InputStream? = Celestial::class.java.getResourceAsStream(this)
+fun String.getInputStream(): InputStream? = GuiLauncher::class.java.getResourceAsStream(this)
 
 fun File.toJar(): JarFile = JarFile(this)
 fun File.toZip(): ZipFile = ZipFile(this)

@@ -11,7 +11,7 @@ import com.google.gson.JsonElement
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.cubewhy.celestial.Celestial.proxy
+import org.cubewhy.celestial.proxy
 import java.net.URL
 
 object RequestUtils {

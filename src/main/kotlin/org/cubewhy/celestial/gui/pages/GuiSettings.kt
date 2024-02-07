@@ -8,11 +8,11 @@ package org.cubewhy.celestial.gui.pages
 
 import com.google.gson.JsonObject
 import org.apache.commons.io.FileUtils
-import org.cubewhy.celestial.Celestial.config
-import org.cubewhy.celestial.Celestial.f
-import org.cubewhy.celestial.Celestial.launcherLogFile
-import org.cubewhy.celestial.Celestial.proxy
-import org.cubewhy.celestial.Celestial.themesDir
+import org.cubewhy.celestial.config
+import org.cubewhy.celestial.f
+import org.cubewhy.celestial.launcherLogFile
+import org.cubewhy.celestial.proxy
+import org.cubewhy.celestial.themesDir
 import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod

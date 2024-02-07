@@ -6,7 +6,7 @@
 
 package org.cubewhy.celestial
 
-import org.cubewhy.celestial.Celestial.proxy
+import org.cubewhy.celestial.proxy
 import org.cubewhy.celestial.utils.GitUtils
 import org.slf4j.LoggerFactory
 import java.awt.Desktop
@@ -23,60 +23,58 @@ object Troubleshoot {
         log.info("Starting trouble shooting")
         log.info("Document: https://www.lunarclient.top/help")
         System.setProperty("file.encoding", "UTF-8")
-        with(Scanner(System.`in`)) {
-            println(f.format("welcome", GitUtils.buildVersion))
-            println(
-                """
+        println(f.format("welcome", GitUtils.buildVersion))
+        println(
+            """
                 ============================
                 | 1. Enable/Disable proxy  |
                 | 2. Update celestial      |
                 | 0. Quit                  |
                 ============================
             """.trimIndent()
-            )
-            while (true) {
-                print("\rSelect: ")
-                val selection = this.next()
-                when (selection) {
-                    "0" -> {
-                        break
-                    }
+        )
+        while (true) {
+            print("\rSelect: ")
+            val selection = readln()
+            when (selection) {
+                "0" -> {
+                    break
+                }
 
-                    "1" -> {
-                        proxy.state = if (proxy.state) {
-                            !confirm(f.getString("confirm.proxy.disable"))
+                "1" -> {
+                    proxy.state = if (proxy.state) {
+                        !confirm(f.getString("confirm.proxy.disable"))
+                    } else {
+                        print(f.getString("proxy.address"))
+                        val address = readln()
+                        if (address != "cancel") {
+                            proxy.useProxy(URL(address))
+                            true
                         } else {
-                            print(f.getString("proxy.address"))
-                            val address = this.next()
-                            if (address != "cancel") {
-                                proxy.useProxy(URL(address))
-                                true
-                            } else {
-                                false
-                            }
+                            false
                         }
                     }
+                }
 
-                    "2" -> {
-                        println("Please goto https://www.lunarclient.top/download to get a update!")
-                        if (confirm("Open in browser?")) {
-                            Desktop.getDesktop().browse("https://www.lunarclient.top/download".toURI())
-                            println()
-                        }
+                "2" -> {
+                    println("Please goto https://www.lunarclient.top/download to get a update!")
+                    if (confirm("Open in browser?")) {
+                        Desktop.getDesktop().browse("https://www.lunarclient.top/download".toURI())
+                        println()
                     }
+                }
 
-                    else -> {
-                        print("\rWrong selection!")
-                        Thread.sleep(3000)
-                    }
+                else -> {
+                    print("\rWrong selection!")
+                    Thread.sleep(3000)
                 }
             }
         }
         proxy.save()
     }
 
-    private fun Scanner.confirm(prompt: String): Boolean {
+    private fun confirm(prompt: String): Boolean {
         print("$prompt [y,N]: ")
-        return this.next().lowercase() == "y"
+        return readln().lowercase() == "y"
     }
 }

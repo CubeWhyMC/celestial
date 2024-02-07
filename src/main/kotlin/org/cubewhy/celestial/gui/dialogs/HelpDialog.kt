@@ -6,7 +6,7 @@
 
 package org.cubewhy.celestial.gui.dialogs
 
-import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.f
 import org.cubewhy.celestial.gui.elements.HelpPage
 import org.cubewhy.celestial.gui.elements.HelpPageX
 import org.cubewhy.celestial.gui.elements.SearchableList

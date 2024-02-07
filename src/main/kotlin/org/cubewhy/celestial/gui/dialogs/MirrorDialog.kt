@@ -7,8 +7,8 @@ package org.cubewhy.celestial.gui.dialogs
 
 import cn.hutool.core.util.NumberUtil
 import com.google.gson.JsonObject
-import org.cubewhy.celestial.Celestial.f
-import org.cubewhy.celestial.Celestial.proxy
+import org.cubewhy.celestial.f
+import org.cubewhy.celestial.proxy
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger

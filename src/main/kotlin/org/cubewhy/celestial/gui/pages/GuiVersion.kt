@@ -6,7 +6,7 @@
 
 package org.cubewhy.celestial.gui.pages
 
-import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.f
 import org.cubewhy.celestial.gui.elements.GuiAddonManager
 import org.cubewhy.celestial.gui.elements.GuiVersionSelect
 import org.slf4j.Logger

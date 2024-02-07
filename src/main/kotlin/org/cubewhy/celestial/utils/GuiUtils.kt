@@ -5,7 +5,7 @@
  */
 package org.cubewhy.celestial.utils
 
-import org.cubewhy.celestial.Celestial
+import org.cubewhy.celestial.launcherFrame
 import java.awt.Desktop
 import java.io.File
 import javax.swing.JButton
@@ -22,13 +22,13 @@ fun chooseFile(filter: FileFilter?): File? {
         fileDialog.addChoosableFileFilter(filter)
     }
     fileDialog.fileSelectionMode = JFileChooser.FILES_ONLY
-    return if ((fileDialog.showOpenDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
+    return if ((fileDialog.showOpenDialog(launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
 }
 
 fun chooseFolder(): File? {
     val fileDialog = JFileChooser()
     fileDialog.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
-    return if ((fileDialog.showOpenDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
+    return if ((fileDialog.showOpenDialog(launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
 }
 
 fun createButtonOpenFolder(text: String?, folder: File): JButton {
@@ -46,7 +46,7 @@ fun saveFile(filter: FileNameExtensionFilter?): File? {
     fileDialog.fileFilter = filter
     fileDialog.addChoosableFileFilter(filter)
     fileDialog.fileSelectionMode = JFileChooser.FILES_ONLY
-    return if ((fileDialog.showSaveDialog(Celestial.launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
+    return if ((fileDialog.showSaveDialog(launcherFrame) == JFileChooser.CANCEL_OPTION)) null else fileDialog.selectedFile
 }
 
 /**

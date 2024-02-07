@@ -8,8 +8,8 @@ package org.cubewhy.celestial.files
 
 import cn.hutool.crypto.SecureUtil
 import org.apache.commons.io.FileUtils
-import org.cubewhy.celestial.Celestial.config
-import org.cubewhy.celestial.Celestial.configDir
+import org.cubewhy.celestial.config
+import org.cubewhy.celestial.configDir
 import org.cubewhy.celestial.event.impl.FileDownloadEvent
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.RequestUtils.get

@@ -5,9 +5,9 @@
  */
 package org.cubewhy.celestial.game.addon
 
-import org.cubewhy.celestial.Celestial
-import org.cubewhy.celestial.Celestial.config
-import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.config
+import org.cubewhy.celestial.configDir
+import org.cubewhy.celestial.f
 import org.cubewhy.celestial.game.BaseAddon
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.downloadLoader
@@ -31,7 +31,7 @@ class LunarCNMod(@JvmField val file: File) : BaseAddon() {
 
     companion object {
         @JvmField
-        val modFolder: File = File(Celestial.configDir, "mods")
+        val modFolder: File = File(configDir, "mods")
         private val log: Logger = LoggerFactory.getLogger(LunarCNMod::class.java)
 
         init {

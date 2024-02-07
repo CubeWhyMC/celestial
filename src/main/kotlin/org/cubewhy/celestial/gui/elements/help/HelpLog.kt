@@ -6,8 +6,8 @@
 
 package org.cubewhy.celestial.gui.elements.help
 
-import org.cubewhy.celestial.Celestial.f
-import org.cubewhy.celestial.Celestial.launcherLogFile
+import org.cubewhy.celestial.f
+import org.cubewhy.celestial.launcherLogFile
 import org.cubewhy.celestial.gui.elements.HelpPage
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.readOnly
