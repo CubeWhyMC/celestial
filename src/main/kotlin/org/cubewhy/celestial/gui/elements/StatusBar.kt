@@ -5,8 +5,8 @@
  */
 package org.cubewhy.celestial.gui.elements
 
-import org.cubewhy.celestial.Celestial.f
-import org.cubewhy.celestial.Celestial.gamePid
+import org.cubewhy.celestial.f
+import org.cubewhy.celestial.gamePid
 import org.cubewhy.celestial.event.EventManager
 import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.GameStartEvent

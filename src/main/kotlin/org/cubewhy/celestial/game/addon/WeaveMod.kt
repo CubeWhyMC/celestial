@@ -5,7 +5,7 @@
  */
 package org.cubewhy.celestial.game.addon
 
-import org.cubewhy.celestial.Celestial.config
+import org.cubewhy.celestial.config
 import org.cubewhy.celestial.game.BaseAddon
 import org.cubewhy.celestial.utils.downloadLoader
 import org.jetbrains.annotations.Contract

@@ -6,8 +6,8 @@
 package org.cubewhy.celestial.game.addon
 
 import com.google.gson.JsonObject
-import org.cubewhy.celestial.Celestial.config
-import org.cubewhy.celestial.Celestial.configDir
+import org.cubewhy.celestial.config
+import org.cubewhy.celestial.configDir
 import org.cubewhy.celestial.game.BaseAddon
 import org.jetbrains.annotations.Contract
 import org.slf4j.Logger

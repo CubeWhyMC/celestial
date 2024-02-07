@@ -2,8 +2,8 @@ package org.cubewhy.celestial.gui.pages
 
 import cn.hutool.crypto.SecureUtil
 import com.google.gson.JsonArray
-import org.cubewhy.celestial.Celestial.f
-import org.cubewhy.celestial.Celestial.metadata
+import org.cubewhy.celestial.f
+import org.cubewhy.celestial.metadata
 import org.cubewhy.celestial.files.DownloadManager.cache
 import org.cubewhy.celestial.gui.LauncherNews
 import org.cubewhy.celestial.toJLabel

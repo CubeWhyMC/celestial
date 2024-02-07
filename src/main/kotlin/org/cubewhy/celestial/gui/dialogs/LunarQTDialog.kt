@@ -6,7 +6,7 @@
 
 package org.cubewhy.celestial.gui.dialogs
 
-import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.f
 import org.cubewhy.celestial.game.thirdparty.LunarQT
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.source
@@ -15,6 +15,8 @@ import org.cubewhy.celestial.utils.emptyJLabel
 import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.awt.event.FocusAdapter
+import java.awt.event.FocusEvent
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.*
@@ -59,7 +61,32 @@ class LunarQTDialog : JDialog() {
 
             add(getCheckBoxToggleModule("rawInput", f.getString("gui.settings.addons.lcqt.module.rawInput")))
             add(getCheckBoxToggleModule("packFix", f.getString("gui.settings.addons.lcqt.module.packfix")))
+
+            add(getCheckBoxToggleModule("customMetadata", f.getString("gui.settings.addons.lcqt.module.metadata")))
+            add(getTextField("customMetadataURL", f.getString("gui.settings.addons.lcqt.module.metadata.url")))
         }
+    }
+
+    private fun getTextField(name: String, text: String) : JPanel {
+        val methodGet = LunarQT.configLunarQT::class.java.getDeclaredMethod("get${getKotlinName(name)}")
+        val methodSet = LunarQT.configLunarQT::class.java.getDeclaredMethod("set${getKotlinName(name)}", String::class.java)
+        val textField = JTextField(methodGet.invoke(LunarQT.configLunarQT) as String)
+        fun doSet() {
+            methodSet.invoke(LunarQT.configLunarQT, textField.text)
+        }
+        textField.addActionListener {
+            doSet()
+        }
+        textField.addFocusListener(object: FocusAdapter() {
+            override fun focusLost(e: FocusEvent?) {
+                doSet()
+            }
+        })
+        val panelTF = JPanel().apply {
+            add(text.toJLabel())
+            add(textField)
+        }
+        return panelTF
     }
 
     private fun getFloatInput(name: String, text: String) : JPanel {

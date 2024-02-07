@@ -58,7 +58,7 @@ tasks.jar {
 
     manifest {
         attributes(
-            "Main-Class" to "org.cubewhy.celestial.Celestial"
+            "Main-Class" to "org.cubewhy.celestial.CelestialKt"
         )
         attributes(
             "Charset" to "UTF-8"

@@ -7,7 +7,7 @@ package org.cubewhy.celestial.gui.dialogs
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.f
 import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.toJTextArea
 import org.cubewhy.celestial.withScroller

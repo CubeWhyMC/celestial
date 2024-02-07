@@ -6,8 +6,8 @@
 
 package org.cubewhy.celestial.gui.pages
 
-import org.cubewhy.celestial.Celestial.config
-import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.config
+import org.cubewhy.celestial.f
 import org.cubewhy.celestial.readOnly
 import org.cubewhy.celestial.toJTextArea
 import org.cubewhy.celestial.utils.GitUtils.branch

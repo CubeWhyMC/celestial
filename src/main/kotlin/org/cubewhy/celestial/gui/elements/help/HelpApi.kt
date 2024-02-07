@@ -6,8 +6,8 @@
 
 package org.cubewhy.celestial.gui.elements.help
 
-import org.cubewhy.celestial.Celestial
-import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.launcherFrame
+import org.cubewhy.celestial.f
 import org.cubewhy.celestial.gui.elements.HelpPage
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.readOnly
@@ -20,7 +20,7 @@ class HelpApi : HelpPage("API") {
         this.add(f.getString("gui.help.api").toJTextArea().readOnly())
         this.add(JButton(f.getString("gui.settings.title")).let {
             it.addActionListener {
-                Celestial.launcherFrame.layoutX.show(Celestial.launcherFrame.mainPanel, "settings")
+                launcherFrame.layoutX.show(launcherFrame.mainPanel, "settings")
             }
             it
         })

@@ -5,7 +5,7 @@
  */
 package org.cubewhy.celestial.gui.elements
 
-import org.cubewhy.celestial.Celestial.f
+import org.cubewhy.celestial.f
 import org.cubewhy.celestial.event.impl.AddonAddEvent
 import org.cubewhy.celestial.files.DownloadManager
 import org.cubewhy.celestial.format

@@ -7,10 +7,10 @@
 package org.cubewhy.celestial.gui
 
 import com.sun.tools.attach.AttachNotSupportedException
-import org.cubewhy.celestial.Celestial.config
-import org.cubewhy.celestial.Celestial.f
-import org.cubewhy.celestial.Celestial.gamePid
-import org.cubewhy.celestial.Celestial.metadata
+import org.cubewhy.celestial.config
+import org.cubewhy.celestial.f
+import org.cubewhy.celestial.gamePid
+import org.cubewhy.celestial.metadata
 import org.cubewhy.celestial.event.EventManager.register
 import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.AuthEvent

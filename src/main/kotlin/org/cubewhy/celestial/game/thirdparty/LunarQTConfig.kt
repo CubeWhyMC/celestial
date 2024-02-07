@@ -23,4 +23,7 @@ class LunarQTConfig {
     var rawInputEnabled: Boolean = false
 
     var packFixEnabled: Boolean = false
+
+    var customMetadataEnabled: Boolean = false
+    var customMetadataURL: String = "https://www.lunarclient.top/api"
 }
