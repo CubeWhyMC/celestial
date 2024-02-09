@@ -10,7 +10,6 @@ import com.formdev.flatlaf.FlatDarkLaf
 import com.formdev.flatlaf.FlatLightLaf
 import com.formdev.flatlaf.IntelliJTheme
 import com.google.gson.*
-import joptsimple.OptionParser
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.event.impl.CreateLauncherEvent
 import org.cubewhy.celestial.files.ConfigFile
@@ -26,7 +25,6 @@ import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.game.MinecraftData
 import org.cubewhy.celestial.utils.game.ModrinthData
 import org.cubewhy.celestial.utils.lunar.LauncherData
-import org.jetbrains.annotations.Contract
 import org.slf4j.LoggerFactory
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
