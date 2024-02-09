@@ -26,8 +26,6 @@ abstract class BaseAddon {
     }
 
     companion object {
-
-
         @JvmStatic
         protected fun autoCopy(file: File, folder: File?): File? {
             var name = file.name

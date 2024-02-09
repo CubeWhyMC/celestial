@@ -7,4 +7,4 @@ package org.cubewhy.celestial.event
 
 import java.lang.reflect.Method
 
-class EventData(@JvmField val source: Any, @JvmField val target: Method, @JvmField val priority: Byte)
+class EventData(val source: Any, val target: Method, val priority: Byte)

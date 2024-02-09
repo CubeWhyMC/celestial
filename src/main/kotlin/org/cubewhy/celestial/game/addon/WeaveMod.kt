@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.*
 
-class WeaveMod(@JvmField val file: File) : BaseAddon() {
+class WeaveMod(val file: File) : BaseAddon() {
     override fun toString(): String {
         return file.name
     }
@@ -27,8 +27,6 @@ class WeaveMod(@JvmField val file: File) : BaseAddon() {
     }
 
     companion object {
-
-        @JvmField
         val modFolder: File = File(System.getProperty("user.home"), ".weave/mods")
         private val log: Logger = LoggerFactory.getLogger(WeaveMod::class.java)
 

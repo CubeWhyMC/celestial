@@ -9,7 +9,7 @@ import org.cubewhy.celestial.event.Event
 import java.net.URL
 import java.util.concurrent.atomic.AtomicBoolean
 
-class AuthEvent(@JvmField val authURL: URL) : Event() {
+class AuthEvent(val authURL: URL) : Event() {
     private var result = ""
     private val responded = AtomicBoolean(false)
 

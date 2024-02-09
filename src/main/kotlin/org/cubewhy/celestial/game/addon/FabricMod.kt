@@ -10,7 +10,7 @@ import org.cubewhy.celestial.game.BaseAddon
 import java.io.File
 import java.util.*
 
-class FabricMod(@JvmField val file: File) : BaseAddon() {
+class FabricMod(val file: File) : BaseAddon() {
     override fun toString(): String {
         return file.name
     }
@@ -24,7 +24,6 @@ class FabricMod(@JvmField val file: File) : BaseAddon() {
     }
 
     companion object {
-        @JvmField
         val modFolder: File = File(config.getValue("installation-dir").asString, "mods")
 
 

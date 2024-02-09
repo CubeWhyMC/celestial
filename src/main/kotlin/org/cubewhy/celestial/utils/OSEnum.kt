@@ -2,7 +2,7 @@ package org.cubewhy.celestial.utils
 
 import java.util.*
 
-enum class OSEnum(val os: String, @JvmField val jsName: String = os.lowercase(Locale.getDefault())) {
+enum class OSEnum(val os: String, val jsName: String = os.lowercase(Locale.getDefault())) {
     Any("any", "any"),
     Linux("Linux", "linux"),
     Mac_OS("Mac OS", "macos"),

@@ -12,6 +12,5 @@ object EventPriority {
     const val FOURTH: Byte = 3
     const val FIFTH: Byte = 4
 
-    @JvmField
     val valueArray: ByteArray = byteArrayOf(FIRST, SECOND, THIRD, FOURTH, FIFTH)
 }
