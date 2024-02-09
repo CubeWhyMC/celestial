@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.*
 
-class LunarCNMod(@JvmField val file: File) : BaseAddon() {
+class LunarCNMod(val file: File) : BaseAddon() {
     override fun toString(): String {
         return file.name
     }
@@ -30,7 +30,6 @@ class LunarCNMod(@JvmField val file: File) : BaseAddon() {
     }
 
     companion object {
-        @JvmField
         val modFolder: File = File(configDir, "mods")
         private val log: Logger = LoggerFactory.getLogger(LunarCNMod::class.java)
 

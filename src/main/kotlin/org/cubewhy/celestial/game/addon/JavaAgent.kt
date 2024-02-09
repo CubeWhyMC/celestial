@@ -27,7 +27,6 @@ class JavaAgent : BaseAddon {
      * -- GETTER --
      * Get a file of the javaagent
      */
-    @JvmField
     val file: File
 
     /**
@@ -91,7 +90,6 @@ class JavaAgent : BaseAddon {
     }
 
     companion object {
-        @JvmField
         val javaAgentFolder: File = File(configDir, "javaagents") // share with LunarCN Launcher
         private val log: Logger = LoggerFactory.getLogger(JavaAgent::class.java)
 

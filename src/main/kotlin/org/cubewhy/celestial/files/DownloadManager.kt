@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
 object DownloadManager {
-    @JvmField
     val cacheDir: File = File(configDir, "cache")
     private val log: Logger = LoggerFactory.getLogger(DownloadManager::class.java)
     private var pool: ExecutorService? = null
