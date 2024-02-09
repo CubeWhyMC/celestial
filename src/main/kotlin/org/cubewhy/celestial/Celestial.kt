@@ -367,12 +367,9 @@ private fun getArgs(
     module: String?,
     installation: File,
     gameArgs: GameArgs
-): GameArgsResult? {
+): GameArgsResult {
     val args: MutableList<String> = ArrayList()
     val json = launcherData.getVersion(version, branch, module)
-    if (!json["success"].asBoolean) {
-        return null
-    }
     // === JRE ===
     val wrapper = config.getValue("wrapper").asString
     val customJre = config.getValue("jre").asString
