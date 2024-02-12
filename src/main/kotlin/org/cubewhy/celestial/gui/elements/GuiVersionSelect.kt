@@ -359,15 +359,6 @@ class GuiVersionSelect : JPanel() {
         beforeLaunch()
         val natives =
             launch((versionSelect.selectedItem as String), branchInput.text, moduleSelect.selectedItem as String)
-        if (natives == null) {
-            JOptionPane.showMessageDialog(
-                this,
-                f.getString("gui.launch.server.failure.message"),
-                f.getString("gui.launch.server.failure.title"),
-                JOptionPane.ERROR_MESSAGE
-            )
-            return
-        }
         runGame({
             try {
                 statusBar.text = f.getString("status.launch.call-process")

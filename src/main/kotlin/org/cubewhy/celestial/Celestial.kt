@@ -167,6 +167,7 @@ private fun run() {
         }
 
         override fun windowClosed(e: WindowEvent) {
+            log.info("Exiting Java...")
             exitProcess(0) // exit java
         }
     })
@@ -217,6 +218,7 @@ private fun initConfig() {
         .initValue("game", null)
         .initValue("addon", addon)
         .initValue("ram", totalMem / 4)
+        .initValue("close-function", "nothing") // exitJava, tray, reopen, nothing
         .initValue("max-threads", Runtime.getRuntime().availableProcessors()) // recommend: same as your CPU core
         .initValue(
             "api",
@@ -308,7 +310,7 @@ private fun initLauncher() {
     modrinth = ModrinthData("https://api.modrinth.com".toURL())
     if (metadata.has("error")) {
         // trouble here
-        log.error("Metadata info: ${metadata}")
+        log.error("Metadata info: $metadata")
         throw IllegalStateException("metadata API Error!")
     }
 }
@@ -459,9 +461,9 @@ private fun getArgs(
         }
     }
     if (OSEnum.Windows.isCurrent) {
-        args.add(java.lang.String.join(";", classpath))
+        args.add(classpath.joinToString(";"))
     } else {
-        args.add(java.lang.String.join(":", classpath))
+        args.add(classpath.joinToString(":"))
     }
     // === main class ===
     args.add(LauncherData.getMainClass(json))
@@ -486,9 +488,9 @@ private fun getArgs(
     args.add("--assetIndex " + version.substring(0, version.lastIndexOf(".")))
     if (ichorEnabled) {
         args.add("--ichorClassPath")
-        args.add(java.lang.String.join(",", classpath))
+        args.add(classpath.joinToString(","))
         args.add("--ichorExternalFiles")
-        args.add(java.lang.String.join(",", ichorPath))
+        args.add(classpath.joinToString(","))
     }
     args.add("--webosrDir")
     args.add("\"" + natives!!.path + "\"")
@@ -510,7 +512,7 @@ private fun getArgs(
  */
 
 
-fun launch(version: String, branch: String?, module: String?): File? {
+fun launch(version: String, branch: String?, module: String?): File {
     val installationDir = File(config.getValue("installation-dir").asString)
 
     log.info(String.format("Launching (%s, %s, %s)", version, module, branch))
@@ -520,7 +522,7 @@ fun launch(version: String, branch: String?, module: String?): File? {
     val height = resize["height"].asInt
     log.info(String.format("Resize: (%d, %d)", width, height))
     val gameArgs = GameArgs(width, height, File(config.getValue("game-dir").asString))
-    val argsResult = getArgs(version, branch, module, installationDir, gameArgs) ?: return null
+    val argsResult = getArgs(version, branch, module, installationDir, gameArgs)
     val args = argsResult.args
     val argsString = args.joinToString(" ")
     val natives = argsResult.natives
@@ -639,10 +641,8 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
     val assetsFolder = File(minecraftFolder, "assets")
     val indexFile = File(
         assetsFolder,
-        "indexes/" + java.lang.String.join(
-            ".",
-            *Arrays.copyOfRange(version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-                .toTypedArray(), 0, 2)) + ".json")
+        "indexes/" + Arrays.copyOfRange(version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
+            .toTypedArray(), 0, 2).joinToString(".") + ".json")
     FileUtils.writeStringToFile(indexFile, Gson().toJson(textureIndex), StandardCharsets.UTF_8)
 
     val objects = textureIndex.getAsJsonObject("objects").asMap()
