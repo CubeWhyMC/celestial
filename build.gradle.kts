@@ -32,7 +32,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.formdev:flatlaf:3.4-SNAPSHOT")
     implementation("commons-io:commons-io:2.15.1")
-    implementation("cn.hutool:hutool-crypto:5.8.25")
+    implementation("cn.hutool:hutool-crypto:5.8.26")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
