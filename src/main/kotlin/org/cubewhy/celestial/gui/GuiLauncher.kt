@@ -48,12 +48,17 @@ class GuiLauncher : JFrame() {
 
         this.initGui()
         // show alert
-        val alert = getAlert(metadata)
-        if (alert != null) {
-            val title = alert["title"]
-            val message = alert["message"]
-            log.info("$title: $message")
-            JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE)
+        try {
+            val alert = getAlert(metadata)
+            if (alert != null) {
+                val title = alert["title"]
+                val message = alert["message"]
+                log.info("$title: $message")
+                JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE)
+            }
+        } catch (e: Exception) {
+            log.warn("Warning: Load alert failed")
+            log.error(e.stackTraceToString())
         }
     }
 
