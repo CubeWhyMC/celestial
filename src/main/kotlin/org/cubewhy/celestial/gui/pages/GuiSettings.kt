@@ -8,12 +8,11 @@ package org.cubewhy.celestial.gui.pages
 
 import com.google.gson.JsonObject
 import org.apache.commons.io.FileUtils
-import org.cubewhy.celestial.config
-import org.cubewhy.celestial.f
-import org.cubewhy.celestial.launcherLogFile
-import org.cubewhy.celestial.proxy
-import org.cubewhy.celestial.themesDir
-import org.cubewhy.celestial.format
+import org.cubewhy.celestial.*
+import org.cubewhy.celestial.event.EventManager
+import org.cubewhy.celestial.event.EventTarget
+import org.cubewhy.celestial.event.impl.GameStartEvent
+import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.gui.GuiLauncher
@@ -22,8 +21,6 @@ import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog
 import org.cubewhy.celestial.gui.dialogs.LunarQTDialog
 import org.cubewhy.celestial.gui.dialogs.MirrorDialog
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
-import org.cubewhy.celestial.toFile
-import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.OSEnum.Companion.current
 import org.slf4j.Logger
@@ -46,6 +43,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
     private val claimed: MutableSet<String> = HashSet()
 
     init {
+        EventManager.register(this)
         this.border = TitledBorder(
             null,
             f.getString("gui.settings.title"),
@@ -105,9 +103,8 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
                     "Confirm",
                     JOptionPane.YES_NO_OPTION
                 ) == JOptionPane.NO_OPTION
-            ) {
-                return@addActionListener
-            }
+            ) return@addActionListener
+
             val java = currentJavaExec
             btnSelectPath.text = java.path
             config.setValue("jre", "")
@@ -145,7 +142,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         p3.add(JLabel(f.getString("gui.settings.jvm.wrapper")))
         val wrapperInput = getAutoSaveTextField(config.config, "wrapper")
         p3.add(wrapperInput)
-        val btnSetVMArgs: JButton = JButton(f.getString("gui.settings.jvm.args"))
+        val btnSetVMArgs = JButton(f.getString("gui.settings.jvm.args"))
         btnSetVMArgs.addActionListener {
             ArgsConfigDialog("vm-args", config.config).isVisible = true
         }
@@ -185,6 +182,18 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
                 f.getString("gui.settings.launcher.data-sharing")
             )
         )
+        // close action
+        val panelCloseAction = JPanel()
+        panelCloseAction.add(f.getString("gui.settings.launcher.close-action").toJLabel())
+        panelCloseAction.add(
+            getAutoSaveComboBox(
+                config.config,
+                "close-function",
+                CloseFunction.entries.toTypedArray().toList()
+            )
+        )
+        panelLauncher.add(panelCloseAction)
+        claim("close-function")
         // theme
         val p5 = JPanel()
         p5.add(JLabel(f.getString("gui.settings.launcher.theme")))
@@ -352,9 +361,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         btnSelectLunarQTInstallation.addActionListener { e: ActionEvent ->
             val file = chooseFile(FileNameExtensionFilter("LunarQT Agent (*.jar)", "jar"))
             val source = e.source as JButton
-            if (file == null) {
-                return@addActionListener
-            }
+            if (file == null) return@addActionListener
             config.getValue("addon").asJsonObject.getAsJsonObject("lcqt").addProperty("installation", file.path)
             log.info("Set lcqt-installation to $file")
             source.text = file.path
@@ -585,31 +592,31 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         val cb = JComboBox<Any>()
         var isString = false
         var isLanguage = false
+        var isCloseFunction = false
         for (item in items) {
-            if (item is Language) {
-                isLanguage = true
-            }
+            if (item is Language) isLanguage = true
+            if (item is CloseFunction) isCloseFunction = true
+            if (item is String) isString = true
             cb.addItem(item)
-            if (item is String) {
-                isString = true
-            }
+
         }
-        if (isString) {
+        if (isString)
             cb.setSelectedItem(json[key].asString)
-        } else if (isLanguage) {
+        else if (isLanguage)
             cb.selectedItem = Language.findByCode(json[key].asString)
-        }
+        else if (isCloseFunction)
+            cb.selectedItem = CloseFunction.findByJsonValue(json[key].asString)
+
         val finalIsLanguage = isLanguage
         cb.addActionListener { e: ActionEvent ->
             val source = e.source as JComboBox<*>
             if (source.selectedItem == null) {
                 return@addActionListener
             }
-            val v = if (finalIsLanguage) {
-                (source.selectedItem as Language).code
-            } else {
-                source.selectedItem?.toString()
-            }
+            val v = if (finalIsLanguage) (source.selectedItem as Language).code
+            else if (isCloseFunction) (source.selectedItem as CloseFunction).jsonValue
+            else source.selectedItem?.toString()
+
             json.addProperty(key, v)
         }
         return cb
@@ -703,4 +710,33 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             return input
         }
     }
+
+    @EventTarget
+    fun onGameStart(e: GameStartEvent) {
+        launcherFrame.dispose()
+    }
+
+    @EventTarget
+    fun onGameTerminate(e: GameTerminateEvent) {
+        if (config.getValue("close-function").asString == CloseFunction.REOPEN.jsonValue) launcherFrame.isVisible = true
+    }
 }
+
+private enum class CloseFunction(val jsonValue: String, val text: String) {
+    NOTHING("nothing", f.getString("gui.settings.launcher.close-action.nothing")),
+    EXIT_JAVA("exitJava", f.getString("gui.settings.launcher.close-action.exit-java")),
+    TRAY("tray", f.getString("gui.settings.launcher.close-action.tray")),
+    REOPEN("reopen", f.getString("gui.settings.launcher.close-action.reopen"));
+
+    override fun toString() = text
+
+    companion object {
+        fun findByJsonValue(value: String): CloseFunction? {
+            for (value1 in entries) {
+                if (value1.jsonValue == value) return value1
+            }
+            return null
+        }
+    }
+}
+
