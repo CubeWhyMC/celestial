@@ -52,7 +52,7 @@ class GuiAbout : JPanel() {
                 """.trimIndent(),
             buildVersion,
             System.getProperty("java.version"),
-            if (config.getValue("data-sharing").asBoolean) "turn on" else "turn off",
+            if (config.dataSharing) "turn on" else "turn off",
             buildUser,
             buildUserEmail,
             branch,

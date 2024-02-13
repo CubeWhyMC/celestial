@@ -6,13 +6,10 @@
 
 package org.cubewhy.celestial.gui.dialogs
 
-import org.cubewhy.celestial.f
+import org.cubewhy.celestial.*
 import org.cubewhy.celestial.game.thirdparty.LunarQT
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
-import org.cubewhy.celestial.source
-import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.utils.emptyJLabel
-import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.event.FocusAdapter
@@ -113,8 +110,7 @@ class LunarQTDialog : JDialog() {
 
     private fun getCheckBoxToggleModule(moduleName: String, text: String): JCheckBox {
         val cb = JCheckBox(text)
-        val methodGet = LunarQT.configLunarQT::class.java.getDeclaredMethod("get${getKotlinName(moduleName)}Enabled")
-        cb.isSelected = methodGet.invoke(LunarQT.configLunarQT) as Boolean
+        cb.isSelected = LunarQT.configLunarQT.getKotlinField(moduleName + "Enabled")
         cb.addActionListener {
             val source = it.source<JCheckBox>()
             source.isSelected = toggle(moduleName)
@@ -123,18 +119,9 @@ class LunarQTDialog : JDialog() {
     }
 
     private fun toggle(moduleName: String): Boolean {
-        // kotlin set/get
-        val methodSet = LunarQT.configLunarQT::class.java.getDeclaredMethod("set${getKotlinName(moduleName)}Enabled", Boolean::class.java)
-        val methodGet = LunarQT.configLunarQT::class.java.getDeclaredMethod("get${getKotlinName(moduleName)}Enabled")
-        val willSetTo = !(methodGet.invoke(LunarQT.configLunarQT) as Boolean)
-        methodSet.isAccessible = true
-        methodSet.invoke(LunarQT.configLunarQT, willSetTo)
+        val fieldName = moduleName + "Enabled"
+        val willSetTo = !LunarQT.configLunarQT.getKotlinField<Boolean>(fieldName)
+        LunarQT.configLunarQT.setKotlinField(fieldName, willSetTo)
         return willSetTo
     }
-}
-
-fun getKotlinName(name: String): String {
-    val case = name[0].uppercase()
-    val exceptCase = name.substring(1)
-    return case + exceptCase
 }

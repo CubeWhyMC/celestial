@@ -38,7 +38,7 @@ object LunarQT {
         log.warn("LCQT2 is stopped update, downloading lcqt from XiaoHeiPa/lcqt2")
         downloadLoader(
             "XiaoHeiPa/lcqt2",
-            config.getValue("addon").asJsonObject.getAsJsonObject("lcqt").get("installation").asString.toFile()
+            config.addon.lcqt.installationDir.toFile()
         )
         return false
     }

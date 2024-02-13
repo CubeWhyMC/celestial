@@ -7,6 +7,7 @@ package org.cubewhy.celestial.game.addon
 
 import org.cubewhy.celestial.config
 import org.cubewhy.celestial.game.BaseAddon
+import org.cubewhy.celestial.toFile
 import org.cubewhy.celestial.utils.downloadLoader
 import org.jetbrains.annotations.Contract
 import org.slf4j.Logger
@@ -74,20 +75,15 @@ class WeaveMod(val file: File) : BaseAddon() {
 
         @get:Contract(" -> new")
         val installation: File
-            get() = File(
-                config.getValue("addon").asJsonObject.get("weave").asJsonObject.get("installation")
-                    .asString
-            )
+            get() = config.addon.weave.installationDir.toFile()
+
 
 
         fun checkUpdate(): Boolean {
             log.info("Updating Weave Loader")
             return downloadLoader(
                 "Weave-MC/Weave-Loader",
-                File(
-                    config.getValue("addon").asJsonObject.getAsJsonObject("weave").get("installation")
-                        .asString
-                )
+                config.addon.weave.installationDir.toFile()
             )
         }
     }

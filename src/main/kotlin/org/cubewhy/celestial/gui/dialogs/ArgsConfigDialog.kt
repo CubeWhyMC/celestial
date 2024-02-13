@@ -7,10 +7,7 @@ package org.cubewhy.celestial.gui.dialogs
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import org.cubewhy.celestial.f
-import org.cubewhy.celestial.toJLabel
-import org.cubewhy.celestial.toJTextArea
-import org.cubewhy.celestial.withScroller
+import org.cubewhy.celestial.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.BorderLayout
@@ -19,8 +16,8 @@ import java.awt.event.WindowEvent
 import javax.swing.JDialog
 import javax.swing.JTextArea
 
-class ArgsConfigDialog(private val key: String, json: JsonObject) : JDialog() {
-    private val array: JsonArray = json.getAsJsonArray(key)
+class ArgsConfigDialog(private val key: String, private val obj3ct: Any) : JDialog() {
+    private val array: ArrayList<String> = obj3ct.getKotlinField(key)
 
     private var input: JTextArea
 
@@ -45,10 +42,9 @@ class ArgsConfigDialog(private val key: String, json: JsonObject) : JDialog() {
     private fun saveArgs() {
         log.info("Save args")
         val lines = input.text.split("\n")
-        array.removeAll {
-            true
-        }
-        array.addAll(lines.asJsonArray())
+        array.removeAll { true }
+        array.addAll(lines)
+        obj3ct.setKotlinField(key, array)
     }
 
     companion object {
@@ -56,17 +52,8 @@ class ArgsConfigDialog(private val key: String, json: JsonObject) : JDialog() {
     }
 }
 
-private fun <E> List<E>.asJsonArray(): JsonArray {
-    val array = JsonArray()
-    this.forEach {
-        val string = it.toString()
-        if (string.isNotBlank()) array.add(string)
-    }
-    return array
-}
-
-private fun JsonArray.toArgsString(): String {
+private fun ArrayList<String>.toArgsString(): String {
     val sb = StringBuilder()
-    for (element in this) if (element.asString.isNotBlank()) sb.append(element.asString).append("\n")
+    for (element in this) if (element.isNotBlank()) sb.append(element).append("\n")
     return sb.toString()
 }

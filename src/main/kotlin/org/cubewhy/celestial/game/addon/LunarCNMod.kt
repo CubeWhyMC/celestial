@@ -10,6 +10,7 @@ import org.cubewhy.celestial.configDir
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.game.BaseAddon
 import org.cubewhy.celestial.gui.GuiLauncher
+import org.cubewhy.celestial.toFile
 import org.cubewhy.celestial.utils.downloadLoader
 import org.jetbrains.annotations.Contract
 import org.slf4j.Logger
@@ -75,11 +76,8 @@ class LunarCNMod(val file: File) : BaseAddon() {
         }
 
 
-        @get:Contract(" -> new")
         val installation: File
-            get() = File(
-                config.getValue("addon").asJsonObject.get("lunarcn").asJsonObject.get("installation").asString
-            )
+            get() = config.addon.lunarcn.installationDir.toFile()
 
 
         fun add(file: File?): LunarCNMod? {
@@ -93,10 +91,7 @@ class LunarCNMod(val file: File) : BaseAddon() {
             GuiLauncher.statusBar.text = f.getString("gui.addon.mods.cn.warn")
             return downloadLoader(
                 "CubeWhyMC/LunarClient-CN",
-                File(
-                    config.getValue("addon").asJsonObject.getAsJsonObject("lunarcn").get("installation")
-                        .asString
-                )
+                config.addon.lunarcn.installationDir.toFile()
             )
         }
     }

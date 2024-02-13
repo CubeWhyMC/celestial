@@ -115,7 +115,7 @@ object DownloadManager {
 
     fun download(downloadable: Downloadable) {
         if (pool == null || pool!!.isTerminated) {
-            pool = Executors.newFixedThreadPool(config.getValue("max-threads").asInt, DownloadThreadFactory())
+            pool = Executors.newFixedThreadPool(config.maxThreads, DownloadThreadFactory())
         }
         pool!!.execute(downloadable)
     }
