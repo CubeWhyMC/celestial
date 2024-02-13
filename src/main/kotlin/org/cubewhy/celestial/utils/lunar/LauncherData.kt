@@ -7,6 +7,8 @@
 package org.cubewhy.celestial.utils.lunar
 
 import com.google.gson.*
+import kotlinx.serialization.encodeToString
+import org.cubewhy.celestial.JSON
 import org.cubewhy.celestial.event.impl.CrashReportUploadEvent
 import org.cubewhy.celestial.game.AddonMeta
 import org.cubewhy.celestial.game.RemoteAddon
@@ -51,21 +53,22 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
 
 
     fun getVersion(version: String?, branch: String?, module: String?): JsonObject {
-        val json = JsonObject()
-        json.addProperty("hwid", "HWID-PUBLIC")
-        json.addProperty("installation_id", UUID(100, 0).toString()) // fake uuid
-        json.addProperty("os", OSEnum.find(System.getProperty("os.name"))?.jsName) // shit js
-        json.addProperty("arch", "x64") // example: x64
-        json.addProperty("os_release", "19045.3086")
-        json.addProperty("launcher_version", "2.15.1")
-        json.addProperty("launch_type", "offline")
-        json.addProperty("version", version)
-        json.addProperty("branch", branch)
-        json.addProperty("module", module)
+        val map = mapOf(
+            "hwid" to "HWID-PUBLIC",
+            "installation_id" to UUID(100, 0).toString(), // fake uuid
+            "os" to OSEnum.find(System.getProperty("os.name"))?.jsName, // shit js
+            "arch" to "x64", // example: x64
+            "os_release" to "19045.3086", // fake os release
+            "launcher_version" to "2.15.1",
+            "launch_type" to "offline",
+            "version" to version,
+            "branch" to branch,
+            "module" to module
+        )
 
-        post("$api/launcher/launch", Gson().toJson(json)).execute().use { response ->
+        post("$api/launcher/launch", JSON.encodeToString(map)).execute().use { response ->
             assert(response.body != null) { "ResponseBody was null" }
-            return  response.json!!.asJsonObject
+            return response.json!!.asJsonObject
         }
     }
 
@@ -79,7 +82,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         request.addProperty("launchScript", launchScript)
         post("$api/launcher/uploadCrashReport", request).execute().use { response ->
             if (response.isSuccessful && response.body != null) {
-                val json =  response.json!!.asJsonObject.getAsJsonObject("data")
+                val json = response.json!!.asJsonObject.getAsJsonObject("data")
                 val id = json["id"].asString
                 val url = json["url"].asString
                 map["id"] = id
@@ -102,7 +105,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
             try {
                 get(info).execute().use { response ->
                     assert(response.body != null)
-                    json =  response.json!!.asJsonArray
+                    json = response.json!!.asJsonArray
                 }
             } catch (e: Exception) {
                 return null // official api
