@@ -7,6 +7,7 @@ package org.cubewhy.celestial.game.addon
 
 import org.cubewhy.celestial.config
 import org.cubewhy.celestial.game.BaseAddon
+import org.cubewhy.celestial.toFile
 import java.io.File
 import java.util.*
 
@@ -24,7 +25,7 @@ class FabricMod(val file: File) : BaseAddon() {
     }
 
     companion object {
-        val modFolder: File = File(config.getValue("installation-dir").asString, "mods")
+        val modFolder: File = config.installationDir.toFile().resolve("mods")
 
 
         fun findAll(): List<FabricMod> {

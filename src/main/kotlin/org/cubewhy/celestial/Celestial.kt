@@ -10,12 +10,11 @@ import com.formdev.flatlaf.FlatDarkLaf
 import com.formdev.flatlaf.FlatLightLaf
 import com.formdev.flatlaf.IntelliJTheme
 import com.google.gson.*
+import kotlinx.serialization.json.Json
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.event.impl.CreateLauncherEvent
-import org.cubewhy.celestial.files.ConfigFile
 import org.cubewhy.celestial.files.DownloadManager
 import org.cubewhy.celestial.files.Downloadable
-import org.cubewhy.celestial.files.ProxyConfig
 import org.cubewhy.celestial.game.AuthServer
 import org.cubewhy.celestial.game.GameArgs
 import org.cubewhy.celestial.game.GameArgsResult
@@ -29,6 +28,7 @@ import org.slf4j.LoggerFactory
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileWriter
 import java.net.MalformedURLException
 import java.net.URL
@@ -40,12 +40,27 @@ import javax.swing.JOptionPane
 import kotlin.system.exitProcess
 
 private var log = LoggerFactory.getLogger("Celestial")
-val configDir: File = File(System.getProperty("user.home"), ".cubewhy/lunarcn")
-val themesDir: File = File(configDir, "themes")
+val JSON = Json { ignoreUnknownKeys = true; prettyPrint = true }
+val configDir = File(System.getProperty("user.home"), ".cubewhy/lunarcn")
+val themesDir = File(configDir, "themes")
+val configFile = configDir.resolve("celestial.json")
+val proxyConfigFile = configDir.resolve("proxy.json")
+val config: BasicConfig = try {
+    JSON.decodeFromString(configFile.readText())
+} catch (e: FileNotFoundException) {
+    log.info("Config not found, creating a new one...")
+    log.debug("This is not a bug, please DO NOT report this to developers!")
+    log.debug(e.stackTraceToString())
+    BasicConfig()
+}
 
-val config: ConfigFile = ConfigFile(File(configDir, "json"))
-
-val proxy = ProxyConfig(File(configDir, "proxy.json"))
+val proxy: ProxyConfig = try {
+    JSON.decodeFromString(proxyConfigFile.readText())
+} catch (e: FileNotFoundException) {
+    log.warn("Config not found, creating a new one...")
+    log.error(e.stackTraceToString())
+    ProxyConfig()
+}
 val gameLogFile: File = File(configDir, "logs/game.log")
 val launcherLogFile: File = File(configDir, "logs/launcher.log")
 
@@ -58,9 +73,14 @@ lateinit var launcherFrame: GuiLauncher
 private var sessionFile: File = if (OSEnum.Windows.isCurrent) {
     // Microsoft Windows
     File(System.getenv("APPDATA"), "launcher/sentry/session.json")
-} else {
-    // Linux, Macos... etc.
+} else if (OSEnum.Linux.isCurrent) {
+    // Linux
     File(System.getProperty("user.home"), ".config/launcher/sentry/session.json")
+} else {
+    // Macos...
+    // TODO support MACOS
+    // Not tested yet
+    File(System.getProperty("user.home"), "Library/Application Support//launcher/sentry/session.json")
 }
 
 
@@ -70,7 +90,7 @@ private lateinit var minecraftManifest: JsonObject
 private lateinit var locale: Locale
 private lateinit var userLanguage: String
 
-private val minecraftFolder: File
+val minecraftFolder: File
     /**
      * Get the default .minecraft folder
      *
@@ -100,7 +120,7 @@ fun main() {
         // please share the crash report with developers to help us solve the problems of the Celestial Launcher
         val message = StringBuffer("Celestial Crashed\n")
         message.append("Launcher Version: ").append(GitUtils.buildVersion).append("\n")
-        if (config.config.has("data-sharing") && config.getValue("data-sharing").asBoolean) {
+        if (config.dataSharing) {
             log.info("Uploading crash report")
             val logString = FileUtils.readFileToString(launcherLogFile, StandardCharsets.UTF_8)
             val map = launcherData.uploadCrashReport(logString, CrashReportType.LAUNCHER, null)
@@ -125,8 +145,8 @@ private fun run() {
 
     log.info("Language: $userLanguage")
     checkJava()
-    launcherData = LauncherData(config.getValue("api").asString)
-    if (proxy.state) log.info("Use proxy ${proxy.proxy}")
+    launcherData = LauncherData(config.api)
+    if (config.proxy.state) log.info("Use proxy ${config.proxy.proxyAddress}")
     while (true) {
         try {
             // I don't know why my computer crashed here if the connection takes too much time :(
@@ -137,13 +157,12 @@ private fun run() {
         } catch (e: Exception) {
             log.error(e.stackTraceToString())
             // shell we switch an api?
-            val input =
-                JOptionPane.showInputDialog(f.getString("api.unreachable"), config.getValue("api").asString)
+            val input = JOptionPane.showInputDialog(f.getString("api.unreachable"), config.api)
             if (input == null) {
                 exitProcess(1)
             } else {
                 launcherData = LauncherData(input)
-                config.setValue("api", input)
+                config.api = input
             }
         }
     }
@@ -161,7 +180,6 @@ private fun run() {
         override fun windowClosing(e: WindowEvent) {
             log.info("Closing celestial, dumping configs...")
             // dump configs
-            proxy.save()
             config.save()
             launcherFrame.dispose()
         }
@@ -173,6 +191,11 @@ private fun run() {
     })
 }
 
+private fun BasicConfig.save() {
+    val string = JSON.encodeToString(BasicConfig.serializer(), this)
+    configFile.writeText(string) // dump
+}
+
 private fun initConfig() {
     // init dirs
     if (configDir.mkdirs()) {
@@ -181,75 +204,15 @@ private fun initConfig() {
     if (themesDir.mkdirs()) {
         log.info("Making themes dir")
     }
-    // init config
-    val resize = JsonObject()
-    resize.addProperty("width", 854)
-    resize.addProperty("height", 480)
-
-    val addon = JsonObject()
-    // weave
-    val weave = JsonObject()
-    weave.addProperty("enable", false)
-    weave.addProperty(
-        "installation",
-        File(System.getProperty("user.home"), ".cubewhy/lunarcn/loaders/weave.jar").path
-    )
-    weave.addProperty("check-update", true)
-    addon.add("weave", weave)
-    val lcqt = JsonObject()
-    lcqt.addProperty("enable", false)
-    lcqt.addProperty("installation", File(configDir, "loaders/lcqt-agent.jar").path)
-    lcqt.addProperty("check-update", true)
-    addon.add("lcqt", lcqt) // lunar qt
-    // lccn
-    val lunarcn = JsonObject()
-    lunarcn.addProperty("enable", false)
-    lunarcn.addProperty(
-        "installation",
-        File(System.getProperty("user.home"), ".cubewhy/lunarcn/loaders/cn.jar").path
-    )
-    lunarcn.addProperty("check-update", true)
-    addon.add("lunarcn", lunarcn)
-
-    config.initValue("jre", "") // leave empty if you want to use the default one
-        .initValue("language", Locale.getDefault().language) // en, zh, ja, ko
-        .initValue("installation-dir", File(configDir, "game").path)
-        .initValue("game-dir", minecraftFolder.path) // the minecraft folder
-        .initValue("game", null)
-        .initValue("addon", addon)
-        .initValue("ram", totalMem / 4)
-        .initValue("close-function", "nothing") // exitJava, tray, reopen, nothing
-        .initValue("max-threads", Runtime.getRuntime().availableProcessors()) // recommend: same as your CPU core
-        .initValue(
-            "api",
-            "https://www.lunarclient.top/api"
-        ) // only support the LunarCN api, Moonsworth's looks like shit :(
-        .initValue("theme", "dark") // dark, light, unset, custom.
-        .initValue("resize", resize) // (854, 480) for default
-        .initValue("vm-args", JsonArray()) // custom jvm args
-        .initValue("wrapper", "") // like optirun on linux
-        .initValue("program-args", JsonArray()) // args of the game
-        .initValue("javaagents", JsonObject()) // lc addon
-    config.save()
     // init language
     log.info("Initializing language manager")
-    locale = Locale.forLanguageTag(config.getValue("language").asString)
+    locale = config.language.locale
     userLanguage = locale.language
     f = ResourceBundle.getBundle("languages/launcher", locale)
-
-    if (!config.config.has("data-sharing")) {
-        val b = JOptionPane.showConfirmDialog(
-            null,
-            f.getString("data-sharing.confirm.message"),
-            f.getString("data-sharing.confirm.title"),
-            JOptionPane.YES_NO_OPTION
-        ) == JOptionPane.OK_OPTION
-        config.initValue("data-sharing", JsonPrimitive(b))
-    }
 }
 
 private fun initTheme() {
-    val themeType = config.getValue("theme").asString
+    val themeType = config.theme
     log.info("Set theme -> $themeType")
     when (themeType) {
         "dark" -> FlatDarkLaf.setup()
@@ -323,7 +286,7 @@ private fun initLauncher() {
 
 fun wipeCache(id: String?): Boolean {
     log.info("Wiping LC cache")
-    val installation = File(config.getValue("installation-dir").asString)
+    val installation = File(config.installationDir)
     val cache = if (id == null) {
         File(installation, "cache")
     } else {
@@ -364,17 +327,13 @@ fun launch(): ProcessBuilder {
  * Get args
  */
 private fun getArgs(
-    version: String,
-    branch: String?,
-    module: String?,
-    installation: File,
-    gameArgs: GameArgs
+    version: String, branch: String?, module: String?, installation: File, gameArgs: GameArgs
 ): GameArgsResult {
     val args: MutableList<String> = ArrayList()
     val json = launcherData.getVersion(version, branch, module)
     // === JRE ===
-    val wrapper = config.getValue("wrapper").asString
-    val customJre = config.getValue("jre").asString
+    val wrapper = config.game.wrapper
+    val customJre = config.jre
     if (wrapper.isNotBlank()) {
         log.warn("Launch the game via the wrapper: $wrapper")
         args.add(wrapper)
@@ -382,7 +341,7 @@ private fun getArgs(
     if (customJre.isEmpty()) {
         val java = currentJavaExec
         if (!java.exists()) {
-            log.error("Java executable not found, please specify it in " + config.file)
+            log.error("Java executable not found, please specify it in the config file")
         }
         log.info("Use default jre: $java")
         args.add("\"" + java.path + "\"") // Note: Java may not be found through this method on some non-Windows computers. You can manually specify the Java executable file.
@@ -391,7 +350,7 @@ private fun getArgs(
         args.add("\"" + customJre + "\"")
     }
     // === default vm args ===
-    val ram = config.getValue("ram").asLong
+    val ram = config.game.ram
     log.info("RAM: " + ram + "MB")
     args.add("-Xms" + ram + "m")
     args.add("-Xmx" + ram + "m")
@@ -402,27 +361,26 @@ private fun getArgs(
     if (size != 0) {
         log.info(
             "Found %s javaagent%s (Except loaders)".format(
-                size,
-                if ((size == 1)) "" else "s"
+                size, if ((size == 1)) "" else "s"
             )
         )
     }
     // ===     loaders    ===
-    val weave = config.getValue("addon").asJsonObject.getAsJsonObject("weave")
-    val cn = config.getValue("addon").asJsonObject.getAsJsonObject("lunarcn")
-    val lcqt = config.getValue("addon").asJsonObject.getAsJsonObject("lcqt")
-    if (weave["enable"].asBoolean) {
-        val file = weave["installation"].asString
+    val weave = config.addon.weave
+    val cn = config.addon.lunarcn
+    val lcqt = config.addon.lcqt
+    if (weave.state) {
+        val file = weave.installationDir
         log.info("Weave enabled! $file")
         javaAgents.add(JavaAgent(file))
     }
-    if (cn["enable"].asBoolean) {
-        val file = cn["installation"].asString
+    if (cn.state) {
+        val file = cn.installationDir
         log.info("LunarCN enabled! $file")
         javaAgents.add(JavaAgent(file))
     }
-    if (lcqt["enable"].asBoolean) {
-        val file = lcqt["installation"].asString
+    if (lcqt.state) {
+        val file = lcqt.installationDir
         log.info("LunarQT enabled! $file")
         javaAgents.add(JavaAgent(file))
     }
@@ -431,8 +389,8 @@ private fun getArgs(
     }
     // === custom vm args ===
     val customVMArgs: MutableList<String> = ArrayList()
-    for (jsonElement in config.getValue("vm-args").asJsonArray) {
-        customVMArgs.add(jsonElement.asString)
+    for (element in config.game.vmArgs) {
+        customVMArgs.add(element)
     }
     args.addAll(customVMArgs)
     // === classpath ===
@@ -440,9 +398,7 @@ private fun getArgs(
     val ichorPath: MutableList<String> = ArrayList()
     var natives: File? = null
     args.add("-cp")
-    for (artifact in json
-        .getAsJsonObject("launchTypeData")
-        .getAsJsonArray("artifacts")) {
+    for (artifact in json.getAsJsonObject("launchTypeData").getAsJsonArray("artifacts")) {
         when (artifact.asJsonObject["type"].asString) {
             "CLASS_PATH" -> {
                 // is ClassPath
@@ -495,8 +451,8 @@ private fun getArgs(
     args.add("--webosrDir")
     args.add("\"" + natives!!.path + "\"")
     // === custom game args ===
-    for (arg in config.getValue("program-args").asJsonArray) {
-        args.add(arg.asString)
+    for (arg in config.game.args) {
+        args.add(arg)
     }
     // === finish ===
     return GameArgsResult(args, natives)
@@ -510,18 +466,16 @@ private fun getArgs(
  * @param branch  Git branch (LunarClient)
  * @return natives file
  */
-
-
 fun launch(version: String, branch: String?, module: String?): File {
-    val installationDir = File(config.getValue("installation-dir").asString)
+    val installationDir = File(config.installationDir)
 
     log.info(String.format("Launching (%s, %s, %s)", version, module, branch))
     log.info("Generating launch params")
-    val resize = config.getValue("resize").asJsonObject
-    val width = resize["width"].asInt
-    val height = resize["height"].asInt
+    val resize = config.game.resize
+    val width = resize.width
+    val height = resize.height
     log.info(String.format("Resize: (%d, %d)", width, height))
-    val gameArgs = GameArgs(width, height, File(config.getValue("game-dir").asString))
+    val gameArgs = GameArgs(width, height, File(config.game.gameDir))
     val argsResult = getArgs(version, branch, module, installationDir, gameArgs)
     val args = argsResult.args
     val argsString = args.joinToString(" ")
@@ -600,7 +554,7 @@ fun completeSession() {
 @Synchronized
 fun checkUpdate(version: String, module: String?, branch: String?) {
     log.info("Checking update")
-    val installation = File(config.getValue("installation-dir").asString)
+    val installation = File(config.installationDir)
     val versionJson = launcherData.getVersion(version, branch, module)
     // download artifacts
     val artifacts = LauncherData.getArtifacts(versionJson)
@@ -626,12 +580,11 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
         DownloadManager.download(Downloadable(url, file, full[full.size - 1]))
     }
 
-    val minecraftFolder = File(config.getValue("game-dir").asString)
+    val minecraftFolder = File(config.game.gameDir)
 
     GuiLauncher.statusBar.text = "Complete textures for vanilla Minecraft"
     val textureIndex = MinecraftData.getVersion(
-        version,
-        minecraftManifest
+        version, minecraftManifest
     )!!.let {
         MinecraftData.getTextureIndex(
             it
@@ -639,10 +592,10 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
     }
     // dump to .minecraft/assets/indexes
     val assetsFolder = File(minecraftFolder, "assets")
-    val indexFile = File(
-        assetsFolder,
-        "indexes/" + Arrays.copyOfRange(version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray(), 0, 2).joinToString(".") + ".json")
+    val indexFile = File(assetsFolder,
+        "indexes/" + Arrays.copyOfRange(version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray(),
+            0,
+            2).joinToString(".") + ".json")
     FileUtils.writeStringToFile(indexFile, Gson().toJson(textureIndex), StandardCharsets.UTF_8)
 
     val objects = textureIndex.getAsJsonObject("objects").asMap()

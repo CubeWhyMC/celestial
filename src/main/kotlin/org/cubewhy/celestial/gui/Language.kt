@@ -5,11 +5,13 @@
  */
 package org.cubewhy.celestial.gui
 
-enum class Language(val view: String, val code: String) {
-    ENGLISH("English", "en"),
-    CHINESE("简体中文", "zh"),
-    JAPANESE("日本語", "ja"),
-    KOREAN("한국인", "ko");
+import java.util.Locale
+
+enum class Language(val view: String, val code: String, val locale: Locale) {
+    ENGLISH("English", "en", Locale.ENGLISH),
+    CHINESE("简体中文", "zh", Locale.CHINESE),
+    JAPANESE("日本語", "ja", Locale.JAPANESE),
+    KOREAN("한국인", "ko", Locale.KOREAN);
 
     override fun toString(): String {
         return this.view + "/" + this.code

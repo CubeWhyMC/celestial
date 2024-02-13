@@ -152,20 +152,18 @@ class JavaAgent : BaseAddon {
          * @param name name of the agent
          * @param arg  param of the agent
          */
-        fun setArgFor(name: String?, arg: String?) {
-            val ja: JsonObject = config.getValue("javaagents").asJsonObject
-            ja.addProperty(name, arg)
-            config.setValue("javaagents", ja) // dump
+        fun setArgFor(name: String, arg: String?) {
+            val ja = config.game.javaagents
+            ja[name] = arg
         }
 
-        fun findAgentArg(name: String?): String {
-            val ja: JsonObject = config.getValue("javaagents").asJsonObject
-            if (!ja.has(name)) {
+        fun findAgentArg(name: String): String {
+            val ja = config.game.javaagents
+            if (!ja.containsKey(name)) {
                 // create config for the agent
-                ja.addProperty(name, "") // leave empty
-                config.setValue("javaagents", ja) // dump
+                ja[name] = "" // leave empty
             }
-            return ja[name].asString
+            return ja[name]?: ""
         }
 
 
@@ -185,15 +183,10 @@ class JavaAgent : BaseAddon {
          */
 
         fun migrate(old: String, n3w: String) {
-            val ja: JsonObject = config.getValue("javaagents").asJsonObject
-            val arg = if (ja[old] == null && ja[old].isJsonNull) {
-                null
-            } else {
-                ja[old].asString
-            }
-            ja.addProperty(n3w, arg) // leave empty
+            val ja = config.game.javaagents
+            val arg = if (ja[old] == null) "" else ja[old]
+            ja[n3w] =  arg // leave empty
             ja.remove(old)
-            config.setValue("javaagents", ja) // dump
         }
     }
 }

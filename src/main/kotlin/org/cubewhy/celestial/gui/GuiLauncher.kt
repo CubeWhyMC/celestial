@@ -163,8 +163,7 @@ class GuiLauncher : JFrame() {
      */
 
     private fun resetIcon() {
-        val themeType: String = config.getValue("theme").asString
-        when (themeType) {
+        when (config.theme) {
             "light" -> this.setIconImage("icon-dark")
             "dark" -> this.setIconImage("icon-light")
             else -> this.setIconImage("icon-light")

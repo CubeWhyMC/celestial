@@ -11,12 +11,12 @@ import com.google.gson.JsonElement
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.cubewhy.celestial.proxy
+import org.cubewhy.celestial.config
 import java.net.URL
 
 object RequestUtils {
     private val httpClient: OkHttpClient = OkHttpClient.Builder()
-        .proxy(proxy.proxy)
+        .proxy(config.proxy.toProxy())
         .build()
     private val JSON: MediaType = "application/json".toMediaType()
 
@@ -28,7 +28,7 @@ object RequestUtils {
 
     fun get(url: URL): Call {
         val request: Request = Request.Builder()
-            .url(proxy.useMirror(url))
+            .url(config.proxy.useMirror(url))
             .build()
 
         return httpClient.newCall(request)

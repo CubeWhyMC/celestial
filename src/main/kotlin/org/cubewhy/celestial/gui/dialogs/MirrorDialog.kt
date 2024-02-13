@@ -6,7 +6,7 @@
 package org.cubewhy.celestial.gui.dialogs
 
 import cn.hutool.core.util.NumberUtil
-import com.google.gson.JsonObject
+import org.cubewhy.celestial.config
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.proxy
 import org.cubewhy.celestial.gui.GuiLauncher
@@ -70,8 +70,8 @@ class MirrorDialog : JDialog() {
                     dispose()
                     return
                 }
-                val json = asJson()
-                proxy.applyMirrors(json)
+                val json = asMap()
+                config.proxy.applyMirrors(json)
                 GuiLauncher.statusBar.text = f.getString("giu.mirror.success")
                 dispose() // close window
             }
@@ -117,15 +117,13 @@ class MirrorDialog : JDialog() {
     }
 
     private fun loadFromJson() {
-        val mirrors: JsonObject = proxy.getValue("mirror").asJsonObject
-        for ((source, value) in mirrors.entrySet()) {
-            val mirror = value.asString
+        for ((source, mirror) in config.proxy.mirror) {
             input.append(String.format("%s %s\n", source, mirror))
         }
     }
 
-    private fun asJson(): JsonObject {
-        val json = JsonObject()
+    private fun asMap(): HashMap<String, String> {
+        val json = HashMap<String, String>()
         for (s in input.text.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
             if (s.startsWith("#")) {
                 continue
@@ -133,7 +131,7 @@ class MirrorDialog : JDialog() {
             val split = s.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             val source = split[0]
             val mirror = split[1]
-            json.addProperty(source, mirror)
+            json[source] = mirror
         }
         return json
     }

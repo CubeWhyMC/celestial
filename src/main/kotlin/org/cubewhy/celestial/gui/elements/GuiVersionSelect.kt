@@ -9,28 +9,14 @@ import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.sun.tools.attach.AttachNotSupportedException
 import org.apache.commons.io.FileUtils
-import org.cubewhy.celestial.checkUpdate
-import org.cubewhy.celestial.completeSession
-import org.cubewhy.celestial.config
-import org.cubewhy.celestial.f
-import org.cubewhy.celestial.gameLogFile
-import org.cubewhy.celestial.gamePid
-import org.cubewhy.celestial.launch
-import org.cubewhy.celestial.launchScript
-import org.cubewhy.celestial.launcherData
-import org.cubewhy.celestial.metadata
-import org.cubewhy.celestial.proxy
-import org.cubewhy.celestial.wipeCache
+import org.cubewhy.celestial.*
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.files.DownloadManager.waitForAll
-import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.game.thirdparty.LunarQT
 import org.cubewhy.celestial.gui.GuiLauncher.Companion.statusBar
-import org.cubewhy.celestial.toZip
-import org.cubewhy.celestial.unzip
 import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.findJava
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
@@ -109,12 +95,13 @@ class GuiVersionSelect : JPanel() {
         }
         refreshModuleSelect(false)
         // get is first launch
-        if (config.getValue("game").isJsonNull) {
-            val game = JsonObject()
-            game.addProperty("version", versionSelect.selectedItem as String)
-            game.addProperty("module", moduleSelect.selectedItem as String)
-            game.addProperty("branch", "master")
-            config.setValue("game", game)
+        if (config.game.target == null) {
+            val game = GameVersionInfo(
+                versionSelect.selectedItem as String,
+                moduleSelect.selectedItem as String,
+                "master"
+            )
+            config.game.target = game
             versionSelect.selectedItem = map["default"]
         }
         initInput(versionSelect, moduleSelect, branchInput)
@@ -210,23 +197,23 @@ class GuiVersionSelect : JPanel() {
         }
         completeSession()
         // check update for loaders
-        val weave: JsonObject = config.getValue("addon").asJsonObject.getAsJsonObject("weave")
-        val cn: JsonObject = config.getValue("addon").asJsonObject.getAsJsonObject("lunarcn")
+        val weave = config.addon.weave
+        val cn = config.addon.lunarcn
         var checkUpdate = false
 
         try {
-            if (weave["enable"].asBoolean && weave["check-update"].asBoolean) {
+            if (weave.state && weave.checkUpdate) {
                 log.info("Checking update for Weave loader")
                 checkUpdate = WeaveMod.checkUpdate()
             }
-            if (cn["enable"].asBoolean && cn["check-update"].asBoolean) {
+            if (cn.state && cn.checkUpdate) {
                 log.info("Checking update for LunarCN loader")
                 checkUpdate = LunarCNMod.checkUpdate()
             }
         } catch (e: Exception) {
             log.error("Failed to check loader updates")
             log.error(e.stackTraceToString())
-            if (!proxy.hasMirror("github.com:443") && JOptionPane.showConfirmDialog(
+            if (!config.proxy.mirror.containsKey("github.com:443") && JOptionPane.showConfirmDialog(
                     this,
                     f.getString("gui.proxy.suggest.gh"),
                     "Apply GitHub Mirror",
@@ -234,15 +221,12 @@ class GuiVersionSelect : JPanel() {
                 ) == JOptionPane.YES_OPTION
             ) {
                 log.info("Applying GitHub mirror")
-                proxy.addMirror("github.com:443", "github.ink:443")
+                config.proxy.mirror["github.com:443"] = "github.ink:443"
             }
         }
 
         try {
-            if (config.getValue("addon").asJsonObject.getAsJsonObject("lcqt")
-                    .get("enable").asBoolean && config.getValue("addon").asJsonObject.getAsJsonObject("lcqt")
-                    .get("check-update").asBoolean
-            ) {
+            if (config.addon.lcqt.state && config.addon.lcqt.checkUpdate) {
                 log.info("Checking update for LunarQT")
                 checkUpdate = LunarQT.checkUpdate()
             }
@@ -295,7 +279,7 @@ class GuiVersionSelect : JPanel() {
                     statusBar.text = f.getString("status.launch.crashed")
                     log.info("Client looks crashed")
                     try {
-                        if (config.config.has("data-sharing") && config.getValue("data-sharing").asBoolean) {
+                        if (config.dataSharing) {
                             val trace = FileUtils.readFileToString(gameLogFile, StandardCharsets.UTF_8)
                             val script = FileUtils.readFileToString(launchScript, StandardCharsets.UTF_8)
                             val map1: Map<String, String> =
@@ -378,7 +362,7 @@ class GuiVersionSelect : JPanel() {
                 waitForAll()
                 try {
                     statusBar.text = f.getString("status.launch.natives")
-                    natives.unzipNatives(File(config.getValue("installation-dir").asString))
+                    natives.unzipNatives(File(config.installationDir))
                 } catch (e: Exception) {
                     log.error("Is game launched? Failed to unzip natives.")
                     log.error(e.stackTraceToString())
@@ -416,18 +400,16 @@ class GuiVersionSelect : JPanel() {
     }
 
     private fun initInput(versionSelect: JComboBox<String>, moduleSelect: JComboBox<String>, branchInput: JTextField) {
-        val game: JsonObject = config.getValue("game").asJsonObject
-        versionSelect.selectedItem = game["version"].asString
-        moduleSelect.selectedItem = game["module"].asString
-        branchInput.text = game["branch"].asString
+        val game = config.game.target!!
+        versionSelect.selectedItem = game.version
+        moduleSelect.selectedItem = game.module
+        branchInput.text = game.branch
     }
 
     private fun saveVersion() {
         val version = versionSelect.selectedItem as String
         log.info("Select version -> $version")
-        val game: JsonObject = config.getValue("game").asJsonObject
-        game.addProperty("version", version)
-        config.setValue("game", game)
+        config.game.target?.version = version
     }
 
     private fun saveModule() {
@@ -436,9 +418,7 @@ class GuiVersionSelect : JPanel() {
         }
         val module = moduleSelect.selectedItem as String
         log.info("Select module -> $module")
-        val game: JsonObject = config.getValue("game").asJsonObject
-        game.addProperty("module", module)
-        config.setValue("game", game)
+        config.game.target?.module = module
     }
 
 
