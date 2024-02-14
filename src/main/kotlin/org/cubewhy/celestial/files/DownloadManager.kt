@@ -12,6 +12,7 @@ import org.cubewhy.celestial.config
 import org.cubewhy.celestial.configDir
 import org.cubewhy.celestial.event.impl.FileDownloadEvent
 import org.cubewhy.celestial.gui.GuiLauncher
+import org.cubewhy.celestial.runningOnGui
 import org.cubewhy.celestial.utils.RequestUtils.get
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -36,6 +37,7 @@ object DownloadManager {
 
 
     fun waitForAll() {
+        if (pool == null) return
         pool!!.shutdown()
         while (!pool!!.awaitTermination(1, TimeUnit.SECONDS)) {
             Thread.onSpinWait()
@@ -89,7 +91,7 @@ object DownloadManager {
             val bytes = response.body!!.bytes()
             FileUtils.writeByteArrayToFile(file, bytes)
         }
-        GuiLauncher.statusBar.text = "Download " + file.name + " success."
+        if (runningOnGui) GuiLauncher.statusBar.text = "Download " + file.name + " success."
         if (crcSha != null) {
             val result = compareSha(file, crcSha, type)
             if (!result) {

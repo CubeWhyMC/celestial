@@ -34,6 +34,8 @@ import javax.swing.*
 import javax.swing.border.TitledBorder
 import javax.swing.filechooser.FileNameExtensionFilter
 
+private val log: Logger = LoggerFactory.getLogger(GuiVersionSelect::class.java)
+
 class GuiVersionSelect : JPanel() {
     private val versionSelect = JComboBox<String>()
     private val moduleSelect = JComboBox<String>()
@@ -192,7 +194,6 @@ class GuiVersionSelect : JPanel() {
                 statusBar.isRunningGame = false
             }
         }
-        completeSession()
         // check update for loaders
         val weave = config.addon.weave
         val cn = config.addon.lunarcn
@@ -327,15 +328,6 @@ class GuiVersionSelect : JPanel() {
 
 
     private fun online() {
-//        if (isLaunching) {
-//            JOptionPane.showMessageDialog(
-//                this,
-//                f.getString("gui.launch.launching.message"),
-//                f.getString("gui.launch.launching.title"),
-//                JOptionPane.ERROR_MESSAGE
-//            )
-//            return
-//        }
         beforeLaunch()
         val natives =
             launch((versionSelect.selectedItem as String), branchInput.text, moduleSelect.selectedItem as String)
@@ -430,20 +422,16 @@ class GuiVersionSelect : JPanel() {
             moduleSelect.selectedItem = defaultValue
         }
     }
+}
 
-    private fun File.unzipNatives(baseDir: File) {
-        log.info("Unzipping natives...")
-        val dir = File(baseDir, "natives")
-        if (!dir.exists()) {
-            dir.mkdirs()
-        }
-        this.toZip().unzip(dir)
-        log.info("Unzipped successful")
+fun File.unzipNatives(baseDir: File) {
+    log.info("Unzipping natives...")
+    val dir = File(baseDir, "natives")
+    if (!dir.exists()) {
+        dir.mkdirs()
     }
-
-    companion object {
-        private val log: Logger = LoggerFactory.getLogger(GuiVersionSelect::class.java)
-    }
+    this.toZip().unzip(dir)
+    log.info("Unzipped successful")
 }
 
 private operator fun File.plus(s: String): File {

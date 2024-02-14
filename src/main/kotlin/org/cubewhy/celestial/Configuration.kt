@@ -19,7 +19,7 @@ import java.net.URL
 data class GameVersionInfo(
     var version: String,
     var module: String,
-    var branch: String
+    var branch: String = "master"
 )
 
 @Serializable
