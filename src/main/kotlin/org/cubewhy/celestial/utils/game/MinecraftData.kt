@@ -5,9 +5,12 @@
  */
 package org.cubewhy.celestial.utils.game
 
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import jdk.incubator.foreign.ResourceScope
+import kotlinx.serialization.Serializable
+import org.cubewhy.celestial.JSON
 import org.cubewhy.celestial.json
+import org.cubewhy.celestial.string
 import org.cubewhy.celestial.utils.RequestUtils.get
 import java.net.URL
 
@@ -16,10 +19,9 @@ object MinecraftData {
     var texture: URL = URL("https://resources.download.minecraft.net")
 
 
-    fun manifest(): JsonObject {
+    fun manifest(): MinecraftManifest {
         get(versionManifest).execute().use { response ->
-            assert(response.body != null)
-            return response.json!!.asJsonObject
+            return JSON.decodeFromString(response.string!!)
         }
     }
 
@@ -30,13 +32,12 @@ object MinecraftData {
      * @return version json
      */
 
-    fun getVersion(version: String, json: JsonElement): JsonObject? {
-        val versionsArray = json.asJsonObject.getAsJsonArray("versions")
-        for (element in versionsArray) {
-            if (element.asJsonObject["id"].asString == version) {
-                val url = element.asJsonObject["url"].asString
+    fun getVersion(version: String, manifest: MinecraftManifest): MinecraftArtifactInfo? {
+        for (versionInfo in manifest.versions) {
+            if (versionInfo.id == version) {
+                val url = versionInfo.url
                 get(url).execute().use { response ->
-                    return response.json!!.asJsonObject
+                    return JSON.decodeFromString(response.string!!)
                 }
             }
         }
@@ -46,15 +47,49 @@ object MinecraftData {
     /**
      * Get texture index (Minecraft)
      *
-     * @param json json object from MinecraftData.getVersion
+     * @param info json object from MinecraftData.getVersion
      * @return json of texture index
      */
 
-    fun getTextureIndex(json: JsonElement): JsonObject {
-        val url = URL(json.asJsonObject.getAsJsonObject("assetIndex")["url"].asString)
+    fun getTextureIndex(info: MinecraftArtifactInfo): MinecraftResources {
+        val url = URL(info.assetIndex.url)
         get(url).execute().use { response ->
-            assert(response.body != null)
-            return response.json!!.asJsonObject
+            return JSON.decodeFromString(response.string!!)
         }
     }
+}
+
+@Serializable
+data class MinecraftResources(
+    val objects: Map<String, Resource>
+) {
+    @Serializable
+    data class Resource(
+        val hash: String,
+        val size: Int
+    )
+}
+
+@Serializable
+data class MinecraftManifest(
+    val versions: List<MinecraftVersionInfo>
+) {
+    @Serializable
+    data class MinecraftVersionInfo(
+        val id: String,
+        val url: String
+    )
+}
+
+@Serializable
+data class MinecraftArtifactInfo(
+    val assets: String,
+    val assetIndex: AssetIndex
+) {
+    @Serializable
+    data class AssetIndex(
+        val id: String,
+        val sha1: String,
+        val url: String
+    )
 }
