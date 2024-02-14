@@ -6,8 +6,11 @@
 
 package org.cubewhy.celestial.game
 
+import kotlinx.serialization.Serializable
+
 // template: https://github.com/CubeWhyMC/LunarMod-Example/blob/master/src/main/resources/addon.meta.json
 
+@Serializable
 data class AddonMeta(
     val name: String,
     val version: String,

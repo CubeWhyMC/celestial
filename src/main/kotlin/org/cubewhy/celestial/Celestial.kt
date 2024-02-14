@@ -23,7 +23,9 @@ import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.game.MinecraftData
 import org.cubewhy.celestial.utils.game.ModrinthData
+import org.cubewhy.celestial.utils.lunar.GameArtifactInfo
 import org.cubewhy.celestial.utils.lunar.LauncherData
+import org.cubewhy.celestial.utils.lunar.LauncherMetadata
 import org.slf4j.LoggerFactory
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
@@ -67,7 +69,7 @@ val launcherLogFile: File = File(configDir, "logs/launcher.log")
 val gamePid: AtomicLong = AtomicLong()
 lateinit var f: ResourceBundle
 lateinit var launcherData: LauncherData
-lateinit var metadata: JsonObject
+lateinit var metadata: LauncherMetadata
 lateinit var modrinth: ModrinthData
 lateinit var launcherFrame: GuiLauncher
 private var sessionFile: File = if (OSEnum.Windows.isCurrent) {
@@ -123,13 +125,13 @@ fun main() {
         if (config.dataSharing) {
             log.info("Uploading crash report")
             val logString = FileUtils.readFileToString(launcherLogFile, StandardCharsets.UTF_8)
-            val map = launcherData.uploadCrashReport(logString, CrashReportType.LAUNCHER, null)
-            if (map.isEmpty()) {
+            val result = launcherData.uploadCrashReport(logString, CrashReportType.LAUNCHER, null)
+            if (result == null) {
                 log.info("Crash report update failed")
             } else {
-                log.info("Upload success, reportID is " + map["id"])
-                message.append("Report id: ").append(map["id"]).append("\n").append("View the report: ")
-                    .append(map["url"]).append("\n")
+                log.info("Upload success, reportID is " + result.id)
+                message.append("Report id: ").append(result.id).append("\n").append("View the report: ")
+                    .append(result.url).append("\n")
             }
         }
         message.append(trace)
@@ -198,12 +200,9 @@ private fun BasicConfig.save() {
 
 private fun initConfig() {
     // init dirs
-    if (configDir.mkdirs()) {
-        log.info("Making config dir")
-    }
-    if (themesDir.mkdirs()) {
-        log.info("Making themes dir")
-    }
+    if (configDir.mkdirs()) log.info("Making config dir")
+
+    if (themesDir.mkdirs()) log.info("Making themes dir")
     // init language
     log.info("Initializing language manager")
     locale = config.language.locale
@@ -271,11 +270,6 @@ private fun initLauncher() {
     metadata = launcherData.metadata()
     minecraftManifest = MinecraftData.manifest()
     modrinth = ModrinthData("https://api.modrinth.com".toURL())
-    if (metadata.has("error")) {
-        // trouble here
-        log.error("Metadata info: $metadata")
-        throw IllegalStateException("metadata API Error!")
-    }
 }
 
 /**
@@ -398,21 +392,25 @@ private fun getArgs(
     val ichorPath: MutableList<String> = ArrayList()
     var natives: File? = null
     args.add("-cp")
-    for (artifact in json.getAsJsonObject("launchTypeData").getAsJsonArray("artifacts")) {
-        when (artifact.asJsonObject["type"].asString) {
-            "CLASS_PATH" -> {
+    for (artifact in json.launchTypeData.artifacts) {
+        when (artifact.type) {
+            GameArtifactInfo.Artifact.ArtifactType.CLASS_PATH -> {
                 // is ClassPath
-                classpath.add("\"" + File(installation, artifact.asJsonObject["name"].asString).path + "\"")
+                classpath.add("\"" + installation.resolve(artifact.name).path + "\"")
             }
 
-            "EXTERNAL_FILE" -> {
+            GameArtifactInfo.Artifact.ArtifactType.EXTERNAL_FILE -> {
                 // is external file
-                ichorPath.add("\"" + File(artifact.asJsonObject["name"].asString).path + "\"")
+                ichorPath.add("\"" + File(artifact.name).path + "\"")
             }
 
-            "NATIVES" -> {
+            GameArtifactInfo.Artifact.ArtifactType.NATIVES -> {
                 // natives
-                natives = File(installation, artifact.asJsonObject["name"].asString)
+                natives = File(installation, artifact.name)
+            }
+
+            GameArtifactInfo.Artifact.ArtifactType.JAVAAGENT -> {
+                javaAgents.add(JavaAgent(installation.resolve(artifact.name)))
             }
         }
     }
@@ -557,13 +555,9 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
     val installation = File(config.installationDir)
     val versionJson = launcherData.getVersion(version, branch, module)
     // download artifacts
-    val artifacts = LauncherData.getArtifacts(versionJson)
-    artifacts.forEach { (name: String?, info: Map<String, String>) ->
-        try {
-            DownloadManager.download(Downloadable(URL(info["url"]), File(installation, name), info["sha1"]!!))
-        } catch (e: MalformedURLException) {
-            throw RuntimeException(e)
-        }
+    val artifacts = versionJson.launchTypeData.artifacts
+    for (artifact in artifacts) {
+        DownloadManager.download(Downloadable(URL(artifact.url), File(installation, artifact.name), artifact.sha1))
     }
 
     // download textures

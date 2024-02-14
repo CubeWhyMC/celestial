@@ -56,11 +56,16 @@ fun Component.withScroller(
         it
     }
 
+
+// TODO: Remove gson
 val Response.json: JsonElement?
     get() {
         val json = this.body!!.string()
         return JsonParser.parseString(json)
     }
+
+val Response.string: String?
+    get() = this.body?.string()
 
 fun <T : SwingConstants> EventObject.source(): T {
     return this.source as T

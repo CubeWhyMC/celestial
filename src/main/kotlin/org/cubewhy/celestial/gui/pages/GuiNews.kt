@@ -1,13 +1,12 @@
 package org.cubewhy.celestial.gui.pages
 
 import cn.hutool.crypto.SecureUtil
-import com.google.gson.JsonArray
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.metadata
 import org.cubewhy.celestial.files.DownloadManager.cache
 import org.cubewhy.celestial.gui.LauncherNews
 import org.cubewhy.celestial.toJLabel
-import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getBlogPosts
+import org.cubewhy.celestial.utils.lunar.Blogpost
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
@@ -21,7 +20,7 @@ import javax.swing.border.TitledBorder
 
 
 class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED) {
-    private val blogPosts: JsonArray
+    private val blogPosts: List<Blogpost>
 
     init {
         this.border = TitledBorder(
@@ -33,7 +32,7 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
             Color.orange
         )
         panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
-        blogPosts = getBlogPosts(metadata)
+        blogPosts = metadata.blogposts
         this.initGui()
     }
 
@@ -41,19 +40,18 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
         // render blogPosts
         getVerticalScrollBar().unitIncrement = 30
         log.info("Loading blogPosts (gui)")
-        if (blogPosts.isJsonNull) {
+        if (blogPosts.isEmpty()) {
             log.error("Failed to load blog posts")
-            this.add("Failed to load news (blogPosts is null)".toJLabel())
+            this.add("Failed to load news (blogPosts is empty)".toJLabel())
         } else {
             for (blogPost in blogPosts) {
                 // cache the image if the image of the news doesn't exist
-                val json = blogPost.asJsonObject
-                val imageURL = json["image"].asString
-                val title = json["title"].asString
+                val imageURL = blogPost.image
+                val title = blogPost.title
                 try {
                     if (cache(URL(imageURL), "news/${SecureUtil.sha1(title)}", false)) {
                         // load news
-                        panel.add(LauncherNews(json))
+                        panel.add(LauncherNews(blogPost))
                     }
                 } catch (e: IOException) {
                     log.warn("Failed to cache $imageURL")

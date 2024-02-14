@@ -6,5 +6,6 @@
 package org.cubewhy.celestial.event.impl
 
 import org.cubewhy.celestial.event.Event
+import org.cubewhy.celestial.utils.lunar.CrashReportResult
 
-class CrashReportUploadEvent(val crashID: String, val url: String) : Event()
+class CrashReportUploadEvent(val result: CrashReportResult) : Event()

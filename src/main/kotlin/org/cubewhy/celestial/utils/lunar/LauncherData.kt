@@ -6,17 +6,20 @@
 
 package org.cubewhy.celestial.utils.lunar
 
-import com.google.gson.*
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import org.cubewhy.celestial.JSON
 import org.cubewhy.celestial.event.impl.CrashReportUploadEvent
 import org.cubewhy.celestial.game.AddonMeta
 import org.cubewhy.celestial.game.RemoteAddon
-import org.cubewhy.celestial.json
+import org.cubewhy.celestial.string
 import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.OSEnum
 import org.cubewhy.celestial.utils.RequestUtils.get
 import org.cubewhy.celestial.utils.RequestUtils.post
+import org.cubewhy.celestial.utils.arch
 import java.io.File
 import java.net.URI
 import java.net.URL
@@ -39,7 +42,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
      * @return Launcher Metadata
      */
 
-    fun metadata(): JsonObject {
+    fun metadata(): LauncherMetadata {
         // do request with fake system info
         get("$api/launcher/metadata?installation_id=469a9de3-49b1-489f-ad67-ec55b9e0e727&os=NMSLOS&arch=x64&launcher_version=114.514.191&branch=master&branch_changed=true&private=true&os_release=114.514").execute()
             .use { response ->
@@ -47,16 +50,17 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
                     "Code = " + response.code // check success
                 }
                 assert(response.body != null) { "ResponseBody was null" }
-                return response.json!!.asJsonObject
+                return JSON.decodeFromString(response.string!!)
             }
     }
 
 
-    fun getVersion(version: String?, branch: String?, module: String?): JsonObject {
+    fun getVersion(version: String?, branch: String?, module: String?): GameArtifactInfo {
         val map = mapOf(
             "hwid" to "HWID-PUBLIC",
             "installation_id" to UUID(100, 0).toString(), // fake uuid
             "os" to OSEnum.find(System.getProperty("os.name"))?.jsName, // shit js
+//            "arch" to arch, // example: x64
             "arch" to "x64", // example: x64
             "os_release" to "19045.3086", // fake os release
             "launcher_version" to "2.15.1",
@@ -68,30 +72,26 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
 
         post("$api/launcher/launch", JSON.encodeToString(map)).execute().use { response ->
             assert(response.body != null) { "ResponseBody was null" }
-            return response.json!!.asJsonObject
+            return JSON.decodeFromString(response.string!!)
         }
     }
 
 
-    fun uploadCrashReport(trace: String?, type: CrashReportType, launchScript: String?): Map<String, String> {
-        val map: MutableMap<String, String> = HashMap()
+    fun uploadCrashReport(trace: String?, type: CrashReportType, launchScript: String?): CrashReportResult? {
         // do request
-        val request = JsonObject()
-        request.addProperty("type", type.jsonName)
-        request.addProperty("trace", trace)
-        request.addProperty("launchScript", launchScript)
+        val request = mapOf(
+            "type" to type.jsonName,
+            "trace" to trace,
+            "launchScript" to launchScript
+        )
         post("$api/launcher/uploadCrashReport", request).execute().use { response ->
             if (response.isSuccessful && response.body != null) {
-                val json = response.json!!.asJsonObject.getAsJsonObject("data")
-                val id = json["id"].asString
-                val url = json["url"].asString
-                map["id"] = id
-                map["message"] = json["message"].asString
-                map["url"] = url
-                CrashReportUploadEvent(id, url).call()
+                val result: CrashReportResult = JSON.decodeFromString(response.string!!)
+                CrashReportUploadEvent(result).call()
+                return result
             }
         }
-        return map
+        return null
     }
 
     val plugins: List<RemoteAddon>?
@@ -101,26 +101,23 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         get() {
             val list: MutableList<RemoteAddon> = ArrayList()
             val info = URL("$api/plugins/info")
-            var json: JsonArray
+            var json: Array<PluginInfo>
             try {
                 get(info).execute().use { response ->
                     assert(response.body != null)
-                    json = response.json!!.asJsonArray
+                    json = JSON.decodeFromString(response.string!!)
                 }
             } catch (e: Exception) {
                 return null // official api
             }
-            for (element in json) {
-                val plugin = element.asJsonObject
+            for (plugin in json) {
                 list.add(
                     RemoteAddon(
-                        plugin["name"].asString,
-                        URL(api.toString() + plugin["downloadLink"].asString),
-                        plugin["sha1"].asString,
-                        RemoteAddon.Category.parse(
-                            plugin["category"].asString
-                        )!!,
-                        Gson().fromJson(plugin["meta"], AddonMeta::class.java)
+                        plugin.name,
+                        URL(api.toString() + plugin.downloadLink),
+                        plugin.sha1,
+                        plugin.category,
+                        plugin.meta
                     )
                 )
             }
@@ -134,13 +131,9 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @param json Json of the special LunarClient instance
          * @return main class of the LunarClient instance
          */
-        fun getMainClass(json: JsonObject?): String {
-            if (json == null) {
-                return "com.moonsworth.lunar.genesis.Genesis"
-            }
-            return json
-                .getAsJsonObject("launchTypeData")["mainClass"].asString
-        }
+        fun getMainClass(json: GameArtifactInfo? = null) =
+            json?.launchTypeData?.mainClass ?: "com.moonsworth.lunar.genesis.Genesis"
+
 
         /**
          * Get ICHOR state
@@ -148,53 +141,16 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @return true (always)
          */
 
-        fun getIchorState(json: JsonObject): Boolean {
-            return if (json.getAsJsonObject("launchTypeData").has("ichor")) {
-                json
-                    .getAsJsonObject("launchTypeData")["ichor"].asBoolean
-            } else {
-                true // forces enable ichor in the latest api version
-            }
-        }
+        fun getIchorState(json: GameArtifactInfo?) = json?.launchTypeData?.ichor == true
 
-        /**
-         * Get the alert message
-         *
-         * @param metadata metadata from api
-         * @return a map of the alert (title, message)
-         */
-        fun getAlert(metadata: JsonObject): Map<String, String>? {
-            if (metadata.has("alert") && !metadata["alert"].isJsonNull) {
-                val alert = metadata.getAsJsonObject("alert")
-                val map: MutableMap<String, String> = HashMap()
-                map["title"] = alert["name"].asString
-                map["message"] = alert["text"].asString
-                return map
-            } else {
-                return null
-            }
-        }
-
-        /**
-         * Get blog posts
-         *
-         * @param metadata metadata from api
-         * @return a list of blog posts
-         */
-        fun getBlogPosts(metadata: JsonObject): JsonArray {
-            return metadata.getAsJsonArray("blogPosts")
-        }
-
-        fun getDefaultJvmArgs(json: JsonObject, installation: File): List<String> {
+        fun getDefaultJvmArgs(json: GameArtifactInfo, installation: File): List<String> {
             val out: MutableList<String> = ArrayList()
-            for (arg in json
-                .getAsJsonObject("jre")
-                .getAsJsonArray("extraArguments")) {
-                if (arg.asString == "-Djna.boot.library.path=natives") {
+            for (arg in json.jre.extraArguments) {
+                if (arg == "-Djna.boot.library.path=natives") {
                     out.add("-Djna.boot.library.path=\"$installation/natives\"")
                     continue
                 }
-                out.add(arg.asString)
+                out.add(arg)
             }
             out.add("-Djava.library.path=\"$installation/natives\"")
             return out
@@ -206,20 +162,17 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @param metadata LC metadata
          * @return Support versions list
          */
-        fun getSupportVersions(metadata: JsonElement): Map<String, Any> {
+        fun getSupportVersions(metadata: LauncherMetadata): Map<String, Any> {
             val map: MutableMap<String, Any> = HashMap()
             val versions: MutableList<String> = ArrayList()
-            val versionsJson = Objects.requireNonNull(metadata).asJsonObject.getAsJsonArray("versions")
-            for (version in versionsJson) {
+            for (version in metadata.versions) {
                 var versionId: String
-                if (version.asJsonObject.has("subversions")) {
-                    for (subVersion in version.asJsonObject["subversions"].asJsonArray) {
-                        versionId = subVersion.asJsonObject["id"].asString
-                        if (version.asJsonObject["default"].asBoolean) {
-                            map["default"] = versionId
-                        }
-                        versions.add(versionId)
+                for (subVersion in version.subversions) {
+                    versionId = subVersion.id
+                    if (version.default) {
+                        map["default"] = versionId
                     }
+                    versions.add(versionId)
                 }
             }
             map["versions"] = versions
@@ -232,29 +185,14 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @param version version name
          * @return version json
          */
-        fun getVersionInMetadata(metadata: JsonElement, version: String): JsonObject? {
-            val metadata1 = metadata.asJsonObject
-            for (version1 in metadata1["versions"].asJsonArray) {
-                if (version.contains(version1.asJsonObject["id"].asString)) {
-                    for (subVersion in version1.asJsonObject["subversions"].asJsonArray) {
-                        if (subVersion.asJsonObject["id"].asString == version) {
-                            return subVersion.asJsonObject
-                        }
-                    }
-                }
+        fun getVersionInMetadata(metadata: LauncherMetadata, version: String): LunarSubVersion? {
+            for (version1 in metadata.versions) {
+                if (version.contains(version1.id))
+                    for (subVersion in version1.subversions)
+                        if (subVersion.id == version) return subVersion
             }
             return null
         }
-
-        /**
-         * Get bundled modPacks
-         *
-         * @param metadata Metadata
-         *
-         * @return List of mod packs
-         * */
-        fun getModPacks(metadata: JsonElement) =
-            if (metadata.asJsonObject.has("modpacks")) metadata.asJsonObject.getAsJsonArray("modpacks") else null
 
         /**
          * Get support addons
@@ -263,50 +201,20 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @param version  Minecraft version
          * @return Module List
          */
-        fun getSupportModules(metadata: JsonElement, version: String): Map<String, Any> {
+        fun getSupportModules(metadata: LauncherMetadata, version: String): Map<String, Any> {
             val map: MutableMap<String, Any> = HashMap()
             val modules: MutableList<String> = ArrayList()
-            //        boolean isSubVersion = StringUtils.count(version, '.') >= 2;
             val version1 = getVersionInMetadata(metadata, version)
-            val modulesJson = version1!!.getAsJsonArray("modules")
+            val modulesJson = version1!!.modules
             for (moduleJson in modulesJson) {
-                val id = moduleJson.asJsonObject["id"].asString
+                val id = moduleJson.id
                 modules.add(id)
-                if (moduleJson.asJsonObject["default"].asBoolean) {
+                if (moduleJson.default) {
                     map["default"] = id
                 }
             }
             map["modules"] = modules
             return map
-        }
-
-        /**
-         * Get a list of LunarClient Artifacts
-         *
-         * @param version artifacts json
-         * @return artifact map {"fileName": {url, sha1, type}}
-         */
-
-        fun getArtifacts(version: JsonElement): Map<String, Map<String, String>> {
-            val out: MutableMap<String, Map<String, String>> = HashMap()
-
-            val versionJson = Objects.requireNonNull(version).asJsonObject
-            val launchTypeData = versionJson.getAsJsonObject("launchTypeData")
-            val artifacts = launchTypeData.getAsJsonArray("artifacts")
-
-            for (artifact in artifacts) {
-                val info: MutableMap<String, String> = HashMap()
-                val key = artifact.asJsonObject["name"].asString
-                val url = artifact.asJsonObject["url"].asString
-                val sha1 = artifact.asJsonObject["sha1"].asString
-                val type = artifact.asJsonObject["type"].asString
-                info["url"] = url
-                info["sha1"] = sha1
-                info["type"] = type
-                out[key] = info
-            }
-
-            return out
         }
 
         /**
@@ -316,11 +224,10 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @return textures' index
          */
 
-        fun getLunarTexturesIndex(version: JsonElement): Map<String, String>? {
-            val versionJson = version.asJsonObject
-            val indexUrl = versionJson.getAsJsonObject("textures")["indexUrl"].asString
+        fun getLunarTexturesIndex(version: GameArtifactInfo): Map<String, String>? {
+            val indexUrl = version.textures.indexUrl
             // get index json
-            val baseUrl = getTexturesBaseUrl(version)
+            val baseUrl = version.textures.baseUrl
             get(indexUrl).execute().use { response ->
                 if (response.body != null) {
                     // parse
@@ -337,10 +244,107 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
             }
             return null
         }
-
-        fun getTexturesBaseUrl(version: JsonElement): String {
-            val versionJson = Objects.requireNonNull(version).asJsonObject
-            return versionJson.getAsJsonObject("textures")["baseUrl"].asString
-        }
     }
 }
+
+@Serializable
+data class LunarVersion(
+    val id: String,
+    val default: Boolean,
+    val subversions: List<LunarSubVersion>
+)
+
+@Serializable
+data class LunarSubVersion(
+    val id: String,
+    val default: Boolean,
+    val modules: List<LunarModule>
+)
+
+@Serializable
+data class GameArtifactInfo(
+    val launchTypeData: LaunchTypeData,
+    val textures: Textures,
+    val jre: RuntimeInfo
+) {
+    @Serializable
+    data class RuntimeInfo(
+        val extraArguments: List<String>
+    )
+
+    @Serializable
+    data class Artifact(
+        val name: String,
+        val sha1: String,
+        val url: String,
+        val type: ArtifactType
+    ) {
+        enum class ArtifactType {
+            CLASS_PATH,
+            EXTERNAL_FILE,
+            NATIVES,
+            JAVAAGENT // LCCN API, not support yet
+        }
+    }
+
+    @Serializable
+    data class LaunchTypeData(
+        val artifacts: List<Artifact>,
+        val mainClass: String,
+        val ichor: Boolean = true
+    )
+
+    @Serializable
+    data class Textures(
+        val indexUrl: String,
+        val indexSha1: String,
+        val baseUrl: String
+    )
+}
+
+@Serializable
+data class LunarModule(
+    val id: String,
+    val default: Boolean,
+)
+
+@Serializable
+data class Blogpost(
+    val title: String,
+    val excerpt: String? = null, // only available on LCCN API
+    val image: String,
+    val link: String,
+    val author: String? = null, // moonsworth removed this in v3.0.0
+    @SerialName("button_text")
+    val buttonText: String? = null
+)
+
+@Serializable
+data class Alert(
+    val name: String,
+    val text: String
+)
+
+@Serializable
+data class LauncherMetadata(
+    val versions: List<LunarVersion>,
+    @SerialName("blogPosts")
+    val blogposts: List<Blogpost> = emptyList(),
+    val alert: Alert?
+)
+
+@Serializable
+data class PluginInfo(
+    val name: String,
+    val sha1: String,
+    val downloadLink: String,
+    val category: RemoteAddon.Category,
+    val meta: AddonMeta? = null
+)
+
+@Serializable
+data class CrashReportResult(
+    val id: String,
+    val url: String,
+    val message: String
+)
