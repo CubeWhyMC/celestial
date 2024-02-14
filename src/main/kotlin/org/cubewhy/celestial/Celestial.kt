@@ -22,6 +22,7 @@ import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.game.MinecraftData
+import org.cubewhy.celestial.utils.game.MinecraftManifest
 import org.cubewhy.celestial.utils.game.ModrinthData
 import org.cubewhy.celestial.utils.lunar.GameArtifactInfo
 import org.cubewhy.celestial.utils.lunar.LauncherData
@@ -87,7 +88,7 @@ private var sessionFile: File = if (OSEnum.Windows.isCurrent) {
 
 
 val launchScript: File = File(configDir, if (OSEnum.Windows.isCurrent) "launch.bat" else "launch.sh")
-private lateinit var minecraftManifest: JsonObject
+private lateinit var minecraftManifest: MinecraftManifest
 
 private lateinit var locale: Locale
 private lateinit var userLanguage: String
@@ -585,18 +586,17 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
         )
     }
     // dump to .minecraft/assets/indexes
-    val assetsFolder = File(minecraftFolder, "assets")
+    val assetsFolder = minecraftFolder.resolve("assets")
     val indexFile = File(assetsFolder,
         "indexes/" + Arrays.copyOfRange(version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray(),
             0,
             2).joinToString(".") + ".json")
     FileUtils.writeStringToFile(indexFile, Gson().toJson(textureIndex), StandardCharsets.UTF_8)
 
-    val objects = textureIndex.getAsJsonObject("objects").asMap()
+    val objects = textureIndex.objects
     // baseURL/hash[0:2]/hash
-    for (s in objects.values) {
-        val resource = s.asJsonObject
-        val hash = resource["hash"].asString
+    for (resource in objects.values) {
+        val hash = resource.hash
         val folder = hash.substring(0, 2)
         val finalURL = URL(String.format("%s/%s/%s", MinecraftData.texture, folder, hash))
         val finalFile = File(assetsFolder, "objects/$folder/$hash")
