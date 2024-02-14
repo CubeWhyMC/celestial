@@ -6,7 +6,6 @@
 package org.cubewhy.celestial.gui.elements
 
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.sun.tools.attach.AttachNotSupportedException
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.*
@@ -165,7 +164,7 @@ class GuiVersionSelect : JPanel() {
                     versionSelect.selectedItem as String,
                     branchInput.text,
                     moduleSelect.selectedItem as String,
-                ).asJsonObject
+                )
                 val jsonString = Gson().toJson(json)
                 log.info(jsonString)
                 var file1 = this
@@ -282,11 +281,10 @@ class GuiVersionSelect : JPanel() {
                         if (config.dataSharing) {
                             val trace = FileUtils.readFileToString(gameLogFile, StandardCharsets.UTF_8)
                             val script = FileUtils.readFileToString(launchScript, StandardCharsets.UTF_8)
-                            val map1: Map<String, String> =
-                                launcherData.uploadCrashReport(trace, CrashReportType.GAME, script)
-                            if (map1.isNotEmpty()) {
-                                val url = map1["url"]
-                                val id = map1["id"]
+                            val result = launcherData.uploadCrashReport(trace, CrashReportType.GAME, script)
+                            if (result != null) {
+                                val url = result.url
+                                val id = result.id
                                 JOptionPane.showMessageDialog(
                                     this,
                                     String.format(

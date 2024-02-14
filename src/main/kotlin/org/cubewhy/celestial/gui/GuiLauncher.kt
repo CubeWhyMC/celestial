@@ -22,7 +22,6 @@ import org.cubewhy.celestial.gui.dialogs.HelpDialog
 import org.cubewhy.celestial.gui.elements.StatusBar
 import org.cubewhy.celestial.gui.pages.*
 import org.cubewhy.celestial.utils.findJava
-import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getAlert
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -49,10 +48,10 @@ class GuiLauncher : JFrame() {
         this.initGui()
         // show alert
         try {
-            val alert = getAlert(metadata)
+            val alert = metadata.alert
             if (alert != null) {
-                val title = alert["title"]
-                val message = alert["message"]
+                val title = alert.name
+                val message = alert.text
                 log.info("$title: $message")
                 JOptionPane.showMessageDialog(this, message, title, JOptionPane.INFORMATION_MESSAGE)
             }

@@ -8,9 +8,11 @@ package org.cubewhy.celestial.utils
 
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import kotlinx.serialization.encodeToString
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.cubewhy.celestial.JSON
 import org.cubewhy.celestial.config
 import java.net.URL
 
@@ -18,7 +20,6 @@ object RequestUtils {
     private val httpClient: OkHttpClient = OkHttpClient.Builder()
         .proxy(config.proxy.toProxy())
         .build()
-    private val JSON: MediaType = "application/json".toMediaType()
 
 
     fun get(url: String): Call {
@@ -40,7 +41,7 @@ object RequestUtils {
 
 
     fun post(url: String, json: String): Call {
-        val body: RequestBody = json.toRequestBody(JSON) // MUST be JSON in the latest LC-API
+        val body: RequestBody = json.toRequestBody("application/json".toMediaType()) // MUST be JSON in the latest LC-API
         val request: Request = Request.Builder()
             .url(url)
             .post(body)
@@ -49,9 +50,7 @@ object RequestUtils {
     }
 
 
-    fun post(url: String, json: JsonElement): Call {
-        val gson = Gson()
-        val realJson = gson.toJson(json)
-        return post(url, realJson)
+    fun post(url: String, map: Map<*, *>): Call {
+        return post(url, JSON.encodeToString(map))
     }
 }

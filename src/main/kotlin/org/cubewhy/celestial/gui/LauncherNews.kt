@@ -7,8 +7,10 @@
 package org.cubewhy.celestial.gui
 
 import cn.hutool.crypto.SecureUtil
-import com.google.gson.JsonObject
 import org.cubewhy.celestial.files.DownloadManager.cacheDir
+import org.cubewhy.celestial.toJLabel
+import org.cubewhy.celestial.toURI
+import org.cubewhy.celestial.utils.lunar.Blogpost
 import java.awt.Color
 import java.awt.Desktop
 import java.awt.Image
@@ -17,14 +19,14 @@ import java.net.URI
 import javax.swing.*
 import javax.swing.border.TitledBorder
 
-class LauncherNews(val json: JsonObject) : JPanel() {
-    private val image = File(cacheDir, "news/" + SecureUtil.sha1(json["title"].asString))
+class LauncherNews(private val blogPost: Blogpost) : JPanel() {
+    private val image = File(cacheDir, "news/" + SecureUtil.sha1(blogPost.title))
 
     init {
         this.layout = BoxLayout(this, BoxLayout.Y_AXIS)
         this.border = TitledBorder(
             null,
-            json["title"].asString,
+            blogPost.title,
             TitledBorder.DEFAULT_JUSTIFICATION,
             TitledBorder.DEFAULT_POSITION,
             null,
@@ -34,12 +36,12 @@ class LauncherNews(val json: JsonObject) : JPanel() {
     }
 
     private fun initGui() {
-        val isMoonsworth = !json.has("excerpt")
+        val isMoonsworth = blogPost.excerpt == null
 
         val textLabel: JLabel = if (isMoonsworth) {
-            JLabel(json["title"].asString)
+            blogPost.title.toJLabel()
         } else {
-            JLabel(json["excerpt"].asString + " - " + json["author"].asString)
+            (blogPost.excerpt + " - " + blogPost.author).toJLabel()
         }
 
         this.add(textLabel)
@@ -52,17 +54,12 @@ class LauncherNews(val json: JsonObject) : JPanel() {
         val text = if (isMoonsworth) {
             "View"
         } else {
-            val jsonBtnText = json["button_text"]
-            if (!jsonBtnText.isJsonNull) {
-                jsonBtnText.asString
-            } else {
-                "View"
-            }
+            blogPost.buttonText ?: "View"
         }
 
         val button = JButton(text)
         button.addActionListener {
-            Desktop.getDesktop().browse(URI.create(json["link"].asString))
+            Desktop.getDesktop().browse(blogPost.link.toURI())
         }
         this.add(button)
 

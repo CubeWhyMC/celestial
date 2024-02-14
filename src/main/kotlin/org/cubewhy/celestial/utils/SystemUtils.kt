@@ -37,3 +37,6 @@ val totalMem: Int
         val osBean = ManagementFactory.getOperatingSystemMXBean() as OperatingSystemMXBean
         return (osBean.totalMemorySize / 1048576).toInt()
     }
+
+val arch = System.getProperty("os.arch").let { if (it == "x86_64") "x64" else it }
+
