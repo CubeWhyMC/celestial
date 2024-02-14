@@ -23,7 +23,6 @@ import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.game.MinecraftData
 import org.cubewhy.celestial.utils.game.MinecraftManifest
-import org.cubewhy.celestial.utils.game.ModrinthData
 import org.cubewhy.celestial.utils.lunar.GameArtifactInfo
 import org.cubewhy.celestial.utils.lunar.LauncherData
 import org.cubewhy.celestial.utils.lunar.LauncherMetadata
@@ -71,7 +70,6 @@ val gamePid: AtomicLong = AtomicLong()
 lateinit var f: ResourceBundle
 lateinit var launcherData: LauncherData
 lateinit var metadata: LauncherMetadata
-lateinit var modrinth: ModrinthData
 lateinit var launcherFrame: GuiLauncher
 private var sessionFile: File = if (OSEnum.Windows.isCurrent) {
     // Microsoft Windows
@@ -270,7 +268,6 @@ private fun checkJava() {
 private fun initLauncher() {
     metadata = launcherData.metadata()
     minecraftManifest = MinecraftData.manifest()
-    modrinth = ModrinthData("https://api.modrinth.com".toURL())
 }
 
 /**
