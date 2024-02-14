@@ -91,6 +91,8 @@ private lateinit var minecraftManifest: MinecraftManifest
 private lateinit var locale: Locale
 private lateinit var userLanguage: String
 
+var runningOnGui = false
+
 val minecraftFolder: File
     /**
      * Get the default .minecraft folder
@@ -176,6 +178,7 @@ private fun run() {
     launcherFrame = GuiLauncher()
     CreateLauncherEvent(launcherFrame).call()
     launcherFrame.isVisible = true
+    runningOnGui = true
 
     launcherFrame.addWindowListener(object : WindowAdapter() {
         override fun windowClosing(e: WindowEvent) {
@@ -290,7 +293,7 @@ fun wipeCache(id: String?): Boolean {
 /**
  * Launch LunarClient offline
  */
-fun launch(): ProcessBuilder {
+fun launch(wrapLog: Boolean = true): ProcessBuilder {
     // wrapper was applied in the script
     log.info("Launching with script")
     log.info("delete the log file")
@@ -299,17 +302,28 @@ fun launch(): ProcessBuilder {
         // Windows
         // delete the log file
         val builder = ProcessBuilder()
-        builder.command(
-            System.getenv("WINDIR") + "/System32/cmd.exe",
-            "/C \"" + launchScript.path + " 1>>\"%s\" 2>&1\"".format(gameLogFile.path)
-        )
+        if (wrapLog) {
+            builder.command(
+                System.getenv("WINDIR") + "/System32/cmd.exe",
+                "/C \"" + launchScript.path + " 1>>\"%s\" 2>&1\"".format(gameLogFile.path)
+            )
+        } else {
+            builder.command(
+                System.getenv("WINDIR") + "/System32/cmd.exe",
+                "/C \"" + launchScript.path
+            )
+        }
         return builder
     } else {
         // others
         // do chmod
         Runtime.getRuntime().exec("chmod 777 " + launchScript.path)
         val builder = ProcessBuilder()
-        builder.command("/bin/bash", "-c", "\"" + launchScript.path + "\" > \"" + gameLogFile.path + "\"")
+        if (wrapLog) {
+            builder.command("/bin/bash", "-c", "\"" + launchScript.path + "\" > \"" + gameLogFile.path + "\"")
+        } else {
+            builder.command("/bin/bash", "-c", "\"" + launchScript.path)
+        }
         return builder
     }
 }
@@ -318,8 +332,8 @@ fun launch(): ProcessBuilder {
 /**
  * Get args
  */
-private fun getArgs(
-    version: String, branch: String?, module: String?, installation: File, gameArgs: GameArgs
+fun getArgs(
+    version: String, branch: String?, module: String?, installation: File, gameArgs: GameArgs, givenAgents: List<JavaAgent> = emptyList()
 ): GameArgsResult {
     val args: MutableList<String> = ArrayList()
     val json = launcherData.getVersion(version, branch, module)
@@ -349,6 +363,7 @@ private fun getArgs(
     args.addAll(LauncherData.getDefaultJvmArgs(json, installation))
     // === javaagents ===
     val javaAgents = JavaAgent.findEnabled()
+    javaAgents.addAll(givenAgents)
     val size = javaAgents.size
     if (size != 0) {
         log.info(
@@ -462,7 +477,9 @@ private fun getArgs(
  * @param branch  Git branch (LunarClient)
  * @return natives file
  */
-fun launch(version: String, branch: String?, module: String?): File {
+fun launch(version: String, branch: String?, module: String?, javaagents: List<JavaAgent> = emptyList(), beforeLaunch: () -> Unit = {}): File {
+    completeSession()
+    beforeLaunch()
     val installationDir = File(config.installationDir)
 
     log.info(String.format("Launching (%s, %s, %s)", version, module, branch))
@@ -472,7 +489,7 @@ fun launch(version: String, branch: String?, module: String?): File {
     val height = resize.height
     log.info(String.format("Resize: (%d, %d)", width, height))
     val gameArgs = GameArgs(width, height, File(config.game.gameDir))
-    val argsResult = getArgs(version, branch, module, installationDir, gameArgs)
+    val argsResult = getArgs(version, branch, module, installationDir, gameArgs, javaagents)
     val args = argsResult.args
     val argsString = args.joinToString(" ")
     val natives = argsResult.natives
@@ -507,15 +524,6 @@ fun launch(version: String, branch: String?, module: String?): File {
     }
     log.info("Args was dumped to $launchScript")
     log.info("Natives file: $natives")
-    // TODO check non-ascii chars on Microsoft Windows
-//        if (OSEnum.Windows.isCurrent && argsString.hasNonAscii()) {
-//            JOptionPane.showMessageDialog(
-//                this.launcherFrame,
-//                f.getString("gui.non-ascii.warn"),
-//                "Warning",
-//                JOptionPane.WARNING_MESSAGE
-//            )
-//        }
     return natives // success
 }
 
