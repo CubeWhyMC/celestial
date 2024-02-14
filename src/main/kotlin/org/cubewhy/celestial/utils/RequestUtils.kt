@@ -6,8 +6,6 @@
 
 package org.cubewhy.celestial.utils
 
-import com.google.gson.Gson
-import com.google.gson.JsonElement
 import kotlinx.serialization.encodeToString
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType

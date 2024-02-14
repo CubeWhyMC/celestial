@@ -5,11 +5,8 @@
  */
 package org.cubewhy.celestial.utils.game
 
-import com.google.gson.JsonObject
-import jdk.incubator.foreign.ResourceScope
 import kotlinx.serialization.Serializable
 import org.cubewhy.celestial.JSON
-import org.cubewhy.celestial.json
 import org.cubewhy.celestial.string
 import org.cubewhy.celestial.utils.RequestUtils.get
 import java.net.URL

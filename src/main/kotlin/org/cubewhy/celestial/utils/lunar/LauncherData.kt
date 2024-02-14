@@ -321,8 +321,8 @@ data class Blogpost(
 
 @Serializable
 data class Alert(
-    val name: String,
-    val text: String
+    val name: String? = "Failed to get title",
+    val text: String? = null
 )
 
 @Serializable
@@ -330,7 +330,7 @@ data class LauncherMetadata(
     val versions: List<LunarVersion>,
     @SerialName("blogPosts")
     val blogposts: List<Blogpost> = emptyList(),
-    val alert: Alert?
+    val alert: Alert? = null
 )
 
 @Serializable

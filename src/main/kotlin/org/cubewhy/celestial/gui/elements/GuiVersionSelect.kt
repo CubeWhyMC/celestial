@@ -5,7 +5,6 @@
  */
 package org.cubewhy.celestial.gui.elements
 
-import com.google.gson.Gson
 import com.sun.tools.attach.AttachNotSupportedException
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.*
@@ -18,6 +17,7 @@ import org.cubewhy.celestial.game.thirdparty.LunarQT
 import org.cubewhy.celestial.gui.GuiLauncher.Companion.statusBar
 import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.findJava
+import org.cubewhy.celestial.utils.lunar.GameArtifactInfo
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getSupportModules
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getSupportVersions
@@ -165,14 +165,12 @@ class GuiVersionSelect : JPanel() {
                     branchInput.text,
                     moduleSelect.selectedItem as String,
                 )
-                val jsonString = Gson().toJson(json)
-                log.info(jsonString)
                 var file1 = this
                 if (!this.name.endsWith(".json")) {
                     file1 = file + ".json" // add extension
                 }
                 log.info("Fetch OK! Dumping to ${file1.path}")
-                FileUtils.write(file1, jsonString, StandardCharsets.UTF_8)
+                FileUtils.write(file1, JSON.encodeToString(GameArtifactInfo.serializer(), json), StandardCharsets.UTF_8)
             }
         }
 
