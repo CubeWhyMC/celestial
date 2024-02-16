@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "org.cubewhy.celestial"
-version = "2.2-pre1-SNAPSHOT"
+version = "2.2-SNAPSHOT"
 
 println("Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"))
 println("Celestial Launcher -> https://www.lunarclient.top/")
@@ -33,6 +33,7 @@ dependencies {
     implementation("com.formdev:flatlaf:3.4-SNAPSHOT")
     implementation("commons-io:commons-io:2.15.1")
     implementation("cn.hutool:hutool-crypto:5.8.26")
+    implementation("org.java-websocket:Java-WebSocket:1.5.6")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
