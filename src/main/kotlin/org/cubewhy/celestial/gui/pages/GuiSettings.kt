@@ -223,7 +223,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         // max-threads
         val p7 = JPanel()
         p7.add(JLabel(f.getString("gui.settings.launcher.max-threads")))
-        p7.add(getAutoSaveSpinner(config, "maxThreads", 1.0, 256.0, 1.0))
+        p7.add(getAutoSaveSpinner(config, "maxThreads", 1.0, 256.0, 1.0, true))
         panelLauncher.add(p7)
         // installation-dir
         val p8 = JPanel()
@@ -537,7 +537,8 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             key: String,
             min: Double,
             max: Double,
-            step: Double
+            step: Double,
+            forceInt: Boolean = false
         ): JSpinner {
             val value = obj3ct.getKotlinField<Double>(key)
             val spinner = JSpinner(SpinnerNumberModel(value, min, max, step))
@@ -546,7 +547,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             val textField = (editor as DefaultEditor).textField
             spinner.addChangeListener { e: ChangeEvent ->
                 val source = e.source as JSpinner
-                val v = source.value as Number
+                val v = if (forceInt) source.value as Int else source.value as Number
                 obj3ct.setKotlinField(key, v)
             }
             textField.columns = 20
