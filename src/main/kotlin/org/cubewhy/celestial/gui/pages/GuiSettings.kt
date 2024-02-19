@@ -547,7 +547,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             val textField = (editor as DefaultEditor).textField
             spinner.addChangeListener { e: ChangeEvent ->
                 val source = e.source as JSpinner
-                val v = if (forceInt) source.value as Int else source.value as Number
+                val v = if (forceInt) (source.value as Number).toInt() else source.value as Number
                 obj3ct.setKotlinField(key, v)
             }
             textField.columns = 20
