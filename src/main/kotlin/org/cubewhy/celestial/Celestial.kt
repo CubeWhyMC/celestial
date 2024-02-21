@@ -41,7 +41,9 @@ import java.util.concurrent.atomic.AtomicLong
 import javax.swing.JOptionPane
 import kotlin.system.exitProcess
 
-private var log = LoggerFactory.getLogger("Celestial")
+class Celestial()
+
+private var log = LoggerFactory.getLogger(Celestial::class.java)
 val JSON = Json { ignoreUnknownKeys = true; prettyPrint = true }
 val configDir = File(System.getProperty("user.home"), ".cubewhy/lunarcn")
 val themesDir = File(configDir, "themes")

@@ -4,6 +4,12 @@
 
 > 让LunarClient再次辉煌. Celestial是一个高性能的LC启动器,使用Kotlin编写
 
+## 是时候说再见了
+
+Celestial已经停止更新, 由于个人原因, 我将退出Minecraft开发
+
+感谢所有人.
+
 ## 特性
 
 > 警告: Celestial不是破解LunarClient, 且以后也不会更新相关功能!

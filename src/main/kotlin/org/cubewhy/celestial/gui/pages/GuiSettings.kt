@@ -6,7 +6,6 @@
 
 package org.cubewhy.celestial.gui.pages
 
-import com.google.gson.JsonObject
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.*
 import org.cubewhy.celestial.event.EventManager
