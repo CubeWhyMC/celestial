@@ -25,7 +25,7 @@ repositories {
 dependencies {
     implementation("org.slf4j:slf4j-api:2.0.11")
     implementation("org.slf4j:slf4j-log4j12:2.0.12")
-    implementation("org.apache.logging.log4j:log4j-api:2.22.1")
+    implementation("org.apache.logging.log4j:log4j-api:2.23.0")
     implementation("org.apache.logging.log4j:log4j-core:2.22.1")
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
