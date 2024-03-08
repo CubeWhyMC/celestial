@@ -2,7 +2,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.+"
     id ("com.gorylenko.gradle-git-properties") version "2.4.1"
     kotlin("jvm")
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("plugin.serialization") version "1.9.23"
 }
 
 group = "org.cubewhy.celestial"
