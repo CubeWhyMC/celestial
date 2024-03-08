@@ -4,6 +4,12 @@
 
 > Make LunarClient great again. Celestial is a high performance LC Launcher
 
+## Time to say Goodbye
+
+Celestial is current stopped update, I'll quit Minecraft developing
+
+Thanks everyone.
+
 ## Features
 
 > Warning: Celestial doesn't include any features about "cracked LunarClient"
