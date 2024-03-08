@@ -91,8 +91,14 @@ data class BasicConfig(
     @SerialName("max-threads")
     var maxThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
     var addon: AddonConfiguration = AddonConfiguration(),
-    var proxy: ProxyConfig = ProxyConfig()
-)
+    var proxy: ProxyConfig = ProxyConfig(),
+    var connectMethod: ConnectMethod = ConnectMethod.ATTACH
+) {
+    enum class ConnectMethod {
+        ATTACH, // using the attachment API to inject LunarClient (recommend)
+        CMDLINE // using the "-javaagent" parameter
+    }
+}
 
 class Mirror(address: String) {
     val host: String = address.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]

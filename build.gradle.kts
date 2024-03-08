@@ -37,6 +37,8 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    implementation("org.ow2.asm:asm:9.4")
 }
 
 tasks.shadowJar {
@@ -58,7 +60,9 @@ tasks.jar {
 
     manifest {
         attributes(
-            "Main-Class" to "org.cubewhy.celestial.CelestialKt"
+            "Main-Class" to "org.cubewhy.celestial.CelestialKt",
+            "Agent-Class" to "org.cubewhy.celestial.AgentKt",
+            "Premain-Class" to "org.cubewhy.celestial.AgentKt"
         )
         attributes(
             "Charset" to "UTF-8"
