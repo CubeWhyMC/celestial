@@ -28,13 +28,6 @@ Get celestial at [GitHub Actions](https://github.com/CubeWhyMC/celestial/actions
 
 Download at [releases](https://github.com/cubewhy/celestial/releases) (often outdated)
 
-## Troubleshooting
-
-Documents are available [here](https://www.lunarclient.top/help)
-
-Run `java -cp celestial.jar org.cubewhy.celestial.Troubleshoot`
-
-
 ## Donate
 
 > There **might** some ads in the Launcher, but you are allowed to turn them off (permanent)

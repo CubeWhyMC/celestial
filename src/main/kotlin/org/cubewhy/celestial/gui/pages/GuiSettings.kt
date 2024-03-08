@@ -386,6 +386,30 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         }
         p14.add(btnProgramArgs)
         panelGame.add(p14)
+        // listener
+        val panelListener = JPanel()
+        panelListener.border = TitledBorder(
+            null,
+            f.getString("gui.settings.game.listener"),
+            TitledBorder.DEFAULT_JUSTIFICATION,
+            TitledBorder.DEFAULT_POSITION,
+            null,
+            Color.orange
+        )
+        val btnGroupListener = ButtonGroup()
+        val btnAttach = JRadioButton(f.getString("gui.settings.game.listener.attach"), config.connectMethod == BasicConfig.ConnectMethod.ATTACH)
+        val btnCmdLine = JRadioButton(f.getString("gui.settings.game.listener.cmdline"), config.connectMethod == BasicConfig.ConnectMethod.CMDLINE)
+        btnAttach.addActionListener {
+            config.connectMethod = BasicConfig.ConnectMethod.ATTACH
+        }
+        btnCmdLine.addActionListener {
+            config.connectMethod = BasicConfig.ConnectMethod.CMDLINE
+        }
+        btnGroupListener.add(btnAttach)
+        btnGroupListener.add(btnCmdLine)
+        panelListener.add(btnAttach)
+        panelListener.add(btnCmdLine)
+        panelGame.add(panelListener)
         // resize
         val p15 = JPanel()
         p15.border = TitledBorder(
@@ -434,6 +458,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
 
         panel.add(panelVM)
         panel.add(panelLauncher)
+        panel.add(panelGame)
         panel.add(panelAddon)
 
         panel.add(panelProxy)

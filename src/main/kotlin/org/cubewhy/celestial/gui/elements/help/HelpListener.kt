@@ -8,7 +8,5 @@ package org.cubewhy.celestial.gui.elements.help
 
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.gui.elements.HelpPage
-import org.cubewhy.celestial.readOnly
-import org.cubewhy.celestial.toJTextArea
 
-class HelpLunarQT : HelpPage("LunarQT", f.getString("gui.help.lcqt"))
+class HelpListener : HelpPage("Listener", f.getString("gui.help.listener"))

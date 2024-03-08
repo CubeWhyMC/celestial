@@ -17,7 +17,6 @@ import org.cubewhy.celestial.files.DownloadManager
 import org.cubewhy.celestial.files.Downloadable
 import org.cubewhy.celestial.game.AuthServer
 import org.cubewhy.celestial.game.GameArgs
-import org.cubewhy.celestial.game.GameArgsResult
 import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.*
@@ -41,7 +40,9 @@ import java.util.concurrent.atomic.AtomicLong
 import javax.swing.JOptionPane
 import kotlin.system.exitProcess
 
-private var log = LoggerFactory.getLogger("Celestial")
+object Celestial
+
+private var log = LoggerFactory.getLogger(Celestial::class.java)
 val JSON = Json { ignoreUnknownKeys = true; prettyPrint = true }
 val configDir = File(System.getProperty("user.home"), ".cubewhy/lunarcn")
 val themesDir = File(configDir, "themes")
@@ -92,6 +93,8 @@ private lateinit var locale: Locale
 private lateinit var userLanguage: String
 
 var runningOnGui = false
+var jar = Celestial::class.java.getProtectionDomain().codeSource.location.path.toFile()
+var isRunningInJar = jar.isFile
 
 val minecraftFolder: File
     /**
@@ -364,6 +367,14 @@ fun getArgs(
     // === javaagents ===
     val javaAgents = JavaAgent.findEnabled()
     javaAgents.addAll(givenAgents)
+    // add the celestial listener
+    if (isRunningInJar) {
+        log.info("Add the Celestial listener (CMDLINE)")
+        javaAgents.add(JavaAgent(jar))
+    } else {
+        // I don't know how to add it
+        log.debug("You're in a development env, so skipped add the listener")
+    }
     val size = javaAgents.size
     if (size != 0) {
         log.info(
@@ -613,3 +624,5 @@ private fun File.isReallyOfficial(): Boolean {
     val json = JsonParser.parseString(FileUtils.readFileToString(this, StandardCharsets.UTF_8)).asJsonObject
     return !json.has("celestial")
 }
+
+data class GameArgsResult(val args: List<String>, val natives: File)

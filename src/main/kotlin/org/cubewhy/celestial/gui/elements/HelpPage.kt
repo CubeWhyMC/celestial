@@ -6,12 +6,16 @@
 
 package org.cubewhy.celestial.gui.elements
 
+import org.cubewhy.celestial.f
+import org.cubewhy.celestial.readOnly
+import org.cubewhy.celestial.toJLabel
+import org.cubewhy.celestial.toJTextArea
 import java.awt.Color
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.border.TitledBorder
 
-open class HelpPage(val documentName: String) : JPanel() {
+open class HelpPage(val documentName: String, val text: String? = null) : JPanel() {
     init {
         this.name = documentName
         this.border = TitledBorder(
@@ -22,6 +26,7 @@ open class HelpPage(val documentName: String) : JPanel() {
             null,
             Color.orange
         )
+        if (text != null) this.add(text.toJTextArea().readOnly())
     }
 
 
