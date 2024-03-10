@@ -253,10 +253,14 @@ class GuiVersionSelect : JPanel() {
                     val id = java.id()
                     gamePid.set(id.toLong())
                     // inject celestial
-                    if (isRunningInJar) {
-                        log.info("Injecting celestial... [ATTACH]")
-                        java.loadAgent(jar.path)
-                        log.info("Inject successful")
+                    try {
+                        if (isRunningInJar) {
+                            log.info("Injecting celestial... [ATTACH]")
+                            java.loadAgent(jar.path)
+                            log.info("Inject successful")
+                        }
+                    } catch (e: Exception) {
+                        log.error(e.stackTraceToString())
                     }
                     java.detach()
                 } catch (ex: Exception) {
