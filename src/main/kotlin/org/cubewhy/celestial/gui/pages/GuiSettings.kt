@@ -398,16 +398,22 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         val btnGroupListener = ButtonGroup()
         val btnAttach = JRadioButton(f.getString("gui.settings.game.listener.attach"), config.connectMethod == BasicConfig.ConnectMethod.ATTACH)
         val btnCmdLine = JRadioButton(f.getString("gui.settings.game.listener.cmdline"), config.connectMethod == BasicConfig.ConnectMethod.CMDLINE)
+        val btnDisable = JRadioButton("Disable")
         btnAttach.addActionListener {
             config.connectMethod = BasicConfig.ConnectMethod.ATTACH
         }
         btnCmdLine.addActionListener {
             config.connectMethod = BasicConfig.ConnectMethod.CMDLINE
         }
+        btnDisable.addActionListener {
+            config.connectMethod = BasicConfig.ConnectMethod.DISABLE
+        }
         btnGroupListener.add(btnAttach)
         btnGroupListener.add(btnCmdLine)
+        btnGroupListener.add(btnDisable)
         panelListener.add(btnAttach)
         panelListener.add(btnCmdLine)
+        panelListener.add(btnDisable)
         panelGame.add(panelListener)
         // resize
         val p15 = JPanel()
