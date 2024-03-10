@@ -8,6 +8,7 @@ package org.cubewhy.celestial.gui.elements
 import com.sun.tools.attach.AttachNotSupportedException
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.*
+import org.cubewhy.celestial.event.EventManager
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.files.DownloadManager.waitForAll
@@ -251,6 +252,12 @@ class GuiVersionSelect : JPanel() {
                     val java = findJava(getMainClass(null))!!
                     val id = java.id()
                     gamePid.set(id.toLong())
+                    // inject celestial
+                    if (isRunningInJar) {
+                        log.info("Injecting celestial... [ATTACH]")
+                        java.loadAgent(jar.path)
+                        log.info("Inject successful")
+                    }
                     java.detach()
                 } catch (ex: Exception) {
                     log.error("Failed to get the real pid of the game, is Celestial launched non java program?")

@@ -9,8 +9,8 @@ package org.cubewhy.celestial
 import java.lang.instrument.Instrumentation
 
 fun premain(arg: String?, inst: Instrumentation) {
-    // step1: patch the agent check
-    // step2: launch!
+
+    patch(arg, inst)
 }
 
 fun agentmain(arg: String?, inst: Instrumentation) {
