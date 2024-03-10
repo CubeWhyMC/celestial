@@ -398,7 +398,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         val btnGroupListener = ButtonGroup()
         val btnAttach = JRadioButton(f.getString("gui.settings.game.listener.attach"), config.connectMethod == BasicConfig.ConnectMethod.ATTACH)
         val btnCmdLine = JRadioButton(f.getString("gui.settings.game.listener.cmdline"), config.connectMethod == BasicConfig.ConnectMethod.CMDLINE)
-        val btnDisable = JRadioButton("Disable")
+        val btnDisable = JRadioButton("Disable", config.connectMethod == BasicConfig.ConnectMethod.DISABLE)
         btnAttach.addActionListener {
             config.connectMethod = BasicConfig.ConnectMethod.ATTACH
         }
