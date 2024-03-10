@@ -254,7 +254,7 @@ class GuiVersionSelect : JPanel() {
                     gamePid.set(id.toLong())
                     // inject celestial
                     try {
-                        if (isRunningInJar || config.connectMethod == BasicConfig.ConnectMethod.ATTACH) {
+                        if (isRunningInJar && config.connectMethod == BasicConfig.ConnectMethod.ATTACH) {
                             log.info("Injecting celestial... [ATTACH]")
                             java.loadAgent(jar.path)
                             log.info("Inject successful")
