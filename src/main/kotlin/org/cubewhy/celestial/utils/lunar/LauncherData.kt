@@ -150,6 +150,8 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
                     out.add("-Djna.boot.library.path=\"$installation/natives\"")
                     continue
                 }
+                // block sentry
+                if (arg.startsWith("-Dichor.filteredGenesisSentries")) continue
                 out.add(arg)
             }
             out.add("-Djava.library.path=\"$installation/natives\"")
