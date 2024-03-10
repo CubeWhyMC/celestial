@@ -368,7 +368,7 @@ fun getArgs(
     val javaAgents = JavaAgent.findEnabled()
     javaAgents.addAll(givenAgents)
     // add the celestial listener
-    if (isRunningInJar) {
+    if (isRunningInJar && config.connectMethod == BasicConfig.ConnectMethod.CMDLINE) {
         log.info("Add the Celestial listener (CMDLINE)")
         javaAgents.add(JavaAgent(jar))
     } else {
