@@ -2,7 +2,7 @@
 
 [English](./README.md)
 
-> 让LunarClient再次辉煌. Celestial是一个高性能的LC启动器,使用Kotlin编写
+> Celestial是一个高性能的LC启动器,使用Kotlin编写
 
 ## 特性
 
@@ -15,12 +15,17 @@
 5. 开箱即用
 6. 浏览器登录微软账号支持
 7. 跨平台 (*实验* 不完全支持Windows)
-8. 自定义API地址 (仅完全支持[LunarCN API](https://github.com/CubeWhyMC/website))
+8. 自定义API地址
 9. 多版本，单java环境
 10. 支持javaagent (*实验*)
 11. 支持LunarCN (*实验*)
 12. 支持Weave (*实验*)
 13. 将版本Json的响应保存在本地
+
+## 已失效的功能(在最新的LunarClient中)
+
+1. LunarQT
+2. 普通的javaagent (没有对Genesis进行处理)
 
 ## 获取Celestial
 
