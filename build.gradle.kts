@@ -32,7 +32,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("com.formdev:flatlaf:3.4")
     implementation("commons-io:commons-io:2.16.0")
-    implementation("cn.hutool:hutool-crypto:5.8.26")
+    implementation("cn.hutool:hutool-crypto:5.8.27")
     implementation("org.java-websocket:Java-WebSocket:1.5.6")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
