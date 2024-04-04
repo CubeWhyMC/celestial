@@ -37,6 +37,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.util.*
 import java.util.concurrent.atomic.AtomicLong
+import javax.swing.JDialog
 import javax.swing.JOptionPane
 import kotlin.system.exitProcess
 
@@ -161,6 +162,7 @@ private fun run() {
             log.info("connected")
             break // success
         } catch (e: Exception) {
+            log.warn("API is unreachable")
             log.error(e.stackTraceToString())
             // shell we switch an api?
             val input = JOptionPane.showInputDialog(f.getString("api.unreachable"), config.api)
@@ -196,6 +198,12 @@ private fun run() {
             exitProcess(0) // exit java
         }
     })
+}
+
+private class SwitchAPIDialog : JDialog() {
+    init {
+        this.title = f.getString("api.unreachable.title")
+    }
 }
 
 private fun BasicConfig.save() {

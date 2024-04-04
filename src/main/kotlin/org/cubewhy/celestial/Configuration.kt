@@ -79,7 +79,7 @@ data class AddonConfiguration(
 
 @Serializable
 data class BasicConfig(
-    var api: String = "https://www.lunarclient.top/api",
+    var api: String = "https://lunarclient.top/api",
     var jre: String = "", // // leave empty if you want to use the default one
     var language: Language = Language.ENGLISH,
     var theme: String = "dark",
