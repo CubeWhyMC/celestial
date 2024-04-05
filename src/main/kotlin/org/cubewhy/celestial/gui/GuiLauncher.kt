@@ -79,7 +79,7 @@ class GuiLauncher : JFrame() {
         val btnHelp = JButton(f.getString("gui.help"))
         btnDonate.addActionListener {
             try {
-                Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/donate"))
+                Desktop.getDesktop().browse(URI.create("https://lunarclient.top/donate"))
             } catch (ignored: IOException) {
             }
         }
