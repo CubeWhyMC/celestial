@@ -21,7 +21,7 @@ class HelpWelcome : HelpPage("Welcome") {
 
         val online = JButton(f.getString("gui.help.document"))
         online.addActionListener {
-            Desktop.getDesktop().browse(URI.create("https://www.lunarclient.top/help"))
+            Desktop.getDesktop().browse(URI.create("https://lunarclient.top/help"))
         }
         this.add(online)
     }

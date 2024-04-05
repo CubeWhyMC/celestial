@@ -44,7 +44,7 @@
 
 ## 捐赠
 
-在[lunarclient.top](https://www.lunarclient.top/donate)中捐赠 (仅支持中国元)
+在[lunarclient.top](https://lunarclient.top/donate)中捐赠 (仅支持中国元)
 
 ## 翻译
 

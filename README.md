@@ -35,7 +35,7 @@ Download at [releases](https://github.com/cubewhy/celestial/releases) (often out
 
 ## Donate
 
-Donate at [lunarclient.top](https://www.lunarclient.top/donate) (CNY only/仅支持中国元)
+Donate at [lunarclient.top](https://lunarclient.top/donate) (CNY only/仅支持中国元)
 
 ## Translation
 

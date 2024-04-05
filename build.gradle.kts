@@ -9,7 +9,7 @@ group = "org.cubewhy.celestial"
 version = "2.5-SNAPSHOT"
 
 println("Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"))
-println("Celestial Launcher -> https://www.lunarclient.top/")
+println("Celestial Launcher -> https://lunarclient.top/")
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"

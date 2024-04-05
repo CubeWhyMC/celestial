@@ -47,7 +47,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         get("$api/launcher/metadata?installation_id=469a9de3-49b1-489f-ad67-ec55b9e0e727&os=NMSLOS&arch=x64&launcher_version=114.514.191&branch=master&branch_changed=true&private=true&os_release=114.514").execute()
             .use { response ->
                 assert(response.code == 200) {
-                    "Code = " + response.code // check success
+                    "Code = " + response.code
                 }
                 assert(response.body != null) { "ResponseBody was null" }
                 return JSON.decodeFromString(response.string!!)
@@ -318,8 +318,14 @@ data class Blogpost(
     val link: String,
     val author: String? = null, // moonsworth removed this in v3.0.0
     @SerialName("button_text")
-    val buttonText: String? = null
-)
+    val buttonText: String? = null,
+    val type: ButtonType? = ButtonType.OPEN_LINK
+) {
+    enum class ButtonType {
+        OPEN_LINK,
+        CHANGE_API
+    }
+}
 
 @Serializable
 data class Alert(

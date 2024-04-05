@@ -7,6 +7,8 @@
 package org.cubewhy.celestial.gui
 
 import cn.hutool.crypto.SecureUtil
+import org.cubewhy.celestial.config
+import org.cubewhy.celestial.f
 import org.cubewhy.celestial.files.DownloadManager.cacheDir
 import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.toURI
@@ -59,7 +61,33 @@ class LauncherNews(private val blogPost: Blogpost) : JPanel() {
 
         val button = JButton(text)
         button.addActionListener {
-            Desktop.getDesktop().browse(blogPost.link.toURI())
+            when (blogPost.type) {
+                Blogpost.ButtonType.OPEN_LINK -> Desktop.getDesktop().browse(blogPost.link.toURI())
+                Blogpost.ButtonType.CHANGE_API -> {
+                    if (JOptionPane.showConfirmDialog(
+                            this,
+                            f.getString("gui.news.api.confirm").format(blogPost.link),
+                            "Confirm",
+                            JOptionPane.YES_NO_OPTION
+                        ) == JOptionPane.OK_OPTION
+                    ) {
+                        config.api = blogPost.link // set api
+                        JOptionPane.showMessageDialog(
+                            this,
+                            f.getString("gui.news.api.reopen"),
+                            "Reopen needed",
+                            JOptionPane.INFORMATION_MESSAGE
+                        )
+                    }
+                }
+
+                null -> JOptionPane.showMessageDialog(
+                    this,
+                    f.getString("gui.news.empty"),
+                    "A Joke",
+                    JOptionPane.INFORMATION_MESSAGE
+                ) // do nothing
+            }
         }
         this.add(button)
 
