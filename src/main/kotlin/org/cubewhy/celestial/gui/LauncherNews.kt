@@ -10,9 +10,12 @@ import cn.hutool.crypto.SecureUtil
 import org.cubewhy.celestial.config
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.files.DownloadManager.cacheDir
+import org.cubewhy.celestial.gui.elements.GuiVersionSelect
 import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.toURI
 import org.cubewhy.celestial.utils.lunar.Blogpost
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Desktop
 import java.awt.Image
@@ -20,6 +23,8 @@ import java.io.File
 import java.net.URI
 import javax.swing.*
 import javax.swing.border.TitledBorder
+
+private val log: Logger = LoggerFactory.getLogger(LauncherNews::class.java)
 
 class LauncherNews(private val blogPost: Blogpost) : JPanel() {
     private val image = File(cacheDir, "news/" + SecureUtil.sha1(blogPost.title))
@@ -72,6 +77,7 @@ class LauncherNews(private val blogPost: Blogpost) : JPanel() {
                         ) == JOptionPane.OK_OPTION
                     ) {
                         config.api = blogPost.link // set api
+                        log.info("Change API into ${config.api}")
                         JOptionPane.showMessageDialog(
                             this,
                             f.getString("gui.news.api.reopen"),
