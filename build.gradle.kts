@@ -29,7 +29,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:2.23.1")
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.google.code.gson:gson:2.11.0")
     implementation("com.formdev:flatlaf:3.4.1")
     implementation("commons-io:commons-io:2.16.1")
     implementation("cn.hutool:hutool-crypto:5.8.27")
