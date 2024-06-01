@@ -10,7 +10,7 @@
 
 1. Full open source (GPLv3)
 2. No electron
-3. Lite, high performance (For example, the downloader)
+3. Lite, high performance
 4. No installation needed
 5. Ready out of the box
 6. External browser login support
@@ -44,7 +44,7 @@ If there are any translation errors, please submit a PR or an issue (in English)
 
 ## License
 
-Celestial license under GPLv3
+Celestial is licensed under GPLv3
 
 You're allowed
 

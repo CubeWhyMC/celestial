@@ -9,7 +9,8 @@ package org.cubewhy.celestial
 import com.formdev.flatlaf.FlatDarkLaf
 import com.formdev.flatlaf.FlatLightLaf
 import com.formdev.flatlaf.IntelliJTheme
-import com.google.gson.*
+import com.google.gson.Gson
+import com.google.gson.JsonParser
 import kotlinx.serialization.json.Json
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.event.impl.CreateLauncherEvent
@@ -19,7 +20,10 @@ import org.cubewhy.celestial.game.AuthServer
 import org.cubewhy.celestial.game.GameArgs
 import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.gui.GuiLauncher
-import org.cubewhy.celestial.utils.*
+import org.cubewhy.celestial.utils.CrashReportType
+import org.cubewhy.celestial.utils.GitUtils
+import org.cubewhy.celestial.utils.OSEnum
+import org.cubewhy.celestial.utils.currentJavaExec
 import org.cubewhy.celestial.utils.game.MinecraftData
 import org.cubewhy.celestial.utils.game.MinecraftManifest
 import org.cubewhy.celestial.utils.lunar.GameArtifactInfo
@@ -118,6 +122,7 @@ fun main() {
     System.setProperty("file.encoding", "UTF-8")
     log.info("Celestial v${GitUtils.buildVersion} build by ${GitUtils.buildUser}")
     log.info("Git remote: ${GitUtils.remote} (${GitUtils.branch})")
+    log.info("Classpath: ${System.getProperty("java.class.path")}")
     try {
         System.setProperty("file.encoding", "UTF-8")
         run()
@@ -269,13 +274,14 @@ private fun checkJava() {
     }
 
     if (sessionFile.exists() && sessionFile.isReallyOfficial()) {
-        log.warn("Detected the official launcher")
-        JOptionPane.showMessageDialog(
-            null,
-            f.getString("warn.official-launcher.message"),
-            f.getString("warn.official-launcher.title"),
-            JOptionPane.WARNING_MESSAGE
-        )
+        log.warn("session.json exists, did you forgot to close the official lc launcher?")
+        // the latest lc launcher doesn't use port 28189, so we needn't let user knows this thing.
+//        JOptionPane.showMessageDialog(
+//            null,
+//            f.getString("warn.official-launcher.message"),
+//            f.getString("warn.official-launcher.title"),
+//            JOptionPane.WARNING_MESSAGE
+//        )
     }
 }
 
@@ -403,6 +409,7 @@ fun getArgs(
     if (cn.state) {
         val file = cn.installationDir
         log.info("LunarCN enabled! $file")
+        log.warn("LunarCN might not working probably at the latest version of LunarClient")
         javaAgents.add(JavaAgent(file))
     }
     if (lcqt.state) {
@@ -446,13 +453,25 @@ fun getArgs(
             }
         }
     }
+    if (config.launchWrap) {
+        // [celewrap] add Celestial's classpath
+        log.info("CeleWrap is enabled")
+        classpath.add(System.getProperty("java.class.path")) // fixme squid
+    }
     if (OSEnum.Windows.isCurrent) {
         args.add(classpath.joinToString(";"))
     } else {
         args.add(classpath.joinToString(":"))
     }
     // === main class ===
-    args.add(LauncherData.getMainClass(json))
+    val mainClass = LauncherData.getMainClass(json)
+    if (config.launchWrap) {
+        // using celestial
+        args.add("-DlunarMain=$mainClass")
+        args.add("org.cubewhy.celestial.game.CeleWrapKt") // celestial wrapper
+    } else {
+        args.add(mainClass)
+    }
     // === game args ===
     val ichorEnabled = LauncherData.getIchorState(json)
     args.add("--version $version") // what version will lunarClient inject

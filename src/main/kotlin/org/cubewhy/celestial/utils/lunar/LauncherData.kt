@@ -11,6 +11,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import org.cubewhy.celestial.JSON
+import org.cubewhy.celestial.config
 import org.cubewhy.celestial.event.impl.CrashReportUploadEvent
 import org.cubewhy.celestial.game.AddonMeta
 import org.cubewhy.celestial.game.RemoteAddon
@@ -131,8 +132,9 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
          * @param json Json of the special LunarClient instance
          * @return main class of the LunarClient instance
          */
-        fun getMainClass(json: GameArtifactInfo? = null) =
+        fun getMainClass(json: GameArtifactInfo? = null): String =
             json?.launchTypeData?.mainClass ?: "com.moonsworth.lunar.genesis.Genesis"
+
 
 
         /**
