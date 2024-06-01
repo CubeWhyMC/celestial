@@ -15,25 +15,7 @@ import org.slf4j.LoggerFactory
 import java.net.URL
 import kotlin.system.exitProcess
 
-fun main(args: Array<String>) {
-    // lc wrapper
-    val mainClassName = System.getProperty("lunarMain")
-    if (mainClassName == null) {
-        println("Main class not set, did you launch the game from celestial?")
-        exitProcess(1)
-    }
-    println("[Celestial] LC Wrapper is working!")
-    println("[Celestial] celestial version: v${GitUtils.buildVersion}")
-    println("[Celestial] LC main class: $mainClassName")
-    println("[Celestial] Current classpath: ${System.getProperty("java.class.path")}")
-    println("[Celestial] Getting main function via reflection")
-    val lunarMain = Class.forName(mainClassName)
-    val mainFunction = lunarMain.getDeclaredMethod("main", Array<String>::class.java)
-    mainFunction.invoke(lunarMain.getConstructor().newInstance(), args)
-//    println("[Celestial] starting IPC listener...")
-    // todo ipc
-
-}
+// celewrap: https:/github.com/CubeWhyMC/celewrap
 
 // Please notice that: Moonsworth changed its auth method since 2024/4, AuthServer is now deprecated
 class AuthServer private constructor() {
