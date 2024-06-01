@@ -219,6 +219,8 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             )
         )
         panelLauncher.add(p6)
+        // cele wrap
+        panelLauncher.add(getAutoSaveCheckBox(config, "launchWrap", f.getString("gui.settings.launcher.celewrap")))
         // max-threads
         val p7 = JPanel()
         p7.add(JLabel(f.getString("gui.settings.launcher.max-threads")))

@@ -92,8 +92,10 @@ data class BasicConfig(
     var maxThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
     var addon: AddonConfiguration = AddonConfiguration(),
     var proxy: ProxyConfig = ProxyConfig(),
-    var connectMethod: ConnectMethod = ConnectMethod.DISABLE
+    var connectMethod: ConnectMethod = ConnectMethod.DISABLE,
+    var launchWrap: Boolean = true
 ) {
+
     enum class ConnectMethod {
         ATTACH, // using the attachment API to inject LunarClient (recommend)
         CMDLINE, // using the "-javaagent" parameter
