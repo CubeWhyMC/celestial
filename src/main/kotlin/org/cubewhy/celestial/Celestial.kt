@@ -19,6 +19,7 @@ import org.cubewhy.celestial.files.Downloadable
 import org.cubewhy.celestial.game.AuthServer
 import org.cubewhy.celestial.game.GameArgs
 import org.cubewhy.celestial.game.addon.JavaAgent
+import org.cubewhy.celestial.game.thirdparty.CeleWrap
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.GitUtils
@@ -456,7 +457,10 @@ fun getArgs(
     if (config.launchWrap) {
         // [celewrap] add Celestial's classpath
         log.info("CeleWrap is enabled")
-        classpath.add(System.getProperty("java.class.path")) // fixme squid
+        if (CeleWrap.checkUpdate()) {
+            log.info("CeleWrap upgraded successful")
+        }
+        classpath.add(CeleWrap.installation.path) // fixme squid
     }
     if (OSEnum.Windows.isCurrent) {
         args.add(classpath.joinToString(";"))
@@ -468,7 +472,7 @@ fun getArgs(
     if (config.launchWrap) {
         // using celestial
         args.add("-DlunarMain=$mainClass")
-        args.add("org.cubewhy.celestial.game.CeleWrapKt") // celestial wrapper
+        args.add("org.cubewhy.CeleWrapKt") // celestial wrapper
     } else {
         args.add(mainClass)
     }

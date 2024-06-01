@@ -125,7 +125,7 @@ class GuiLauncher : JFrame() {
 
     private fun findExistGame() {
         try {
-            val java = if (config.launchWrap) findJava("org.cubewhy.celestial.game.CeleWrapKt") else findJava(getMainClass(null))
+            val java = if (config.launchWrap) findJava("org.cubewhy.CeleWrapKt") else findJava(getMainClass(null))
             if (java != null) {
                 val pid = java.id()
                 log.info("Exist game process found! Pid: $pid")
