@@ -9,11 +9,9 @@ import co.gongzh.procbridge.IDelegate
 import co.gongzh.procbridge.Server
 import com.google.gson.JsonObject
 import org.cubewhy.celestial.event.impl.AuthEvent
-import org.cubewhy.celestial.utils.GitUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URL
-import kotlin.system.exitProcess
 
 // celewrap: https:/github.com/CubeWhyMC/celewrap
 
