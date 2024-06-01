@@ -402,6 +402,9 @@ fun getArgs(
     val weave = config.addon.weave
     val cn = config.addon.lunarcn
     val lcqt = config.addon.lcqt
+    if (config.celeWrap.state) {
+        javaAgents.add(JavaAgent(CeleWrap.installation)) // patch classloader and anti antiagent check
+    }
     if (weave.state) {
         val file = weave.installationDir
         log.info("Weave enabled! $file")
@@ -454,13 +457,13 @@ fun getArgs(
             }
         }
     }
-    if (config.launchWrap) {
+    if (config.celeWrap.state) {
         // [celewrap] add Celestial's classpath
         log.info("CeleWrap is enabled")
-        if (CeleWrap.checkUpdate()) {
+        if (config.celeWrap.checkUpdate && CeleWrap.checkUpdate()) {
             log.info("CeleWrap upgraded successful")
         }
-        classpath.add(CeleWrap.installation.path) // fixme squid
+        classpath.add("\"${CeleWrap.installation.path}\"")
     }
     if (OSEnum.Windows.isCurrent) {
         args.add(classpath.joinToString(";"))
@@ -469,9 +472,10 @@ fun getArgs(
     }
     // === main class ===
     val mainClass = LauncherData.getMainClass(json)
-    if (config.launchWrap) {
+    if (config.celeWrap.state) {
         // using celestial
         args.add("-DlunarMain=$mainClass")
+        args.add("-DcelestialVersion=${GitUtils.buildVersion}")
         args.add("org.cubewhy.CeleWrapKt") // celestial wrapper
     } else {
         args.add(mainClass)

@@ -264,6 +264,7 @@ class GuiVersionSelect : JPanel() {
                     }
                     java.detach()
                 } catch (ex: Exception) {
+                    log.error(ex.stackTraceToString())
                     log.error("Failed to get the real pid of the game, is Celestial launched non java program?")
                     log.warn("process.pid() will be used to get the process id, which may not be the real PID")
                     gamePid.set(p[0]!!.pid())
