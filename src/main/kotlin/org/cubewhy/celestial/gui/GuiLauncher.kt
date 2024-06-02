@@ -17,6 +17,7 @@ import org.cubewhy.celestial.event.impl.AuthEvent
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.format
+import org.cubewhy.celestial.game.thirdparty.CeleWrap
 import org.cubewhy.celestial.getInputStream
 import org.cubewhy.celestial.gui.dialogs.HelpDialog
 import org.cubewhy.celestial.gui.elements.StatusBar
@@ -125,7 +126,7 @@ class GuiLauncher : JFrame() {
 
     private fun findExistGame() {
         try {
-            val java = if (config.celeWrap.state) findJava("org.cubewhy.CeleWrapKt") else findJava(getMainClass(null))
+            val java = if (config.celeWrap.state) findJava(CeleWrap.MAIN_CLASS) else findJava(getMainClass(null))
             if (java != null) {
                 val pid = java.id()
                 log.info("Exist game process found! Pid: $pid")

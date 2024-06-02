@@ -14,6 +14,7 @@ import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.files.DownloadManager.waitForAll
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
+import org.cubewhy.celestial.game.thirdparty.CeleWrap
 import org.cubewhy.celestial.game.thirdparty.LunarQT
 import org.cubewhy.celestial.gui.GuiLauncher.Companion.statusBar
 import org.cubewhy.celestial.utils.CrashReportType
@@ -249,7 +250,7 @@ class GuiVersionSelect : JPanel() {
             Thread.sleep(3000) // sleep 3s
             if (p[0]!!.isAlive) {
                 try {
-                    val java = findJava(getMainClass(null))!!
+                    val java = (if (config.celeWrap.state) findJava(CeleWrap.MAIN_CLASS) else findJava(getMainClass(null)))!!
                     val id = java.id()
                     gamePid.set(id.toLong())
                     // inject celestial
