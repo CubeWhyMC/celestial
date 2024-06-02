@@ -21,6 +21,7 @@ import java.io.File
 object CeleWrap {
     private val log: Logger = LoggerFactory.getLogger(CeleWrap::class.java)
     val installation = configDir.resolve("celewrap.jar") // celewrap library
+    const val MAIN_CLASS = "org.cubewhy.CeleWrapKt"
 
     fun checkUpdate() : Boolean {
         log.info("Checking update for CeleWrap")
