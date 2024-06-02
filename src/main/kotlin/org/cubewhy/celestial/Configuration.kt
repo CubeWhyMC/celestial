@@ -98,7 +98,7 @@ data class BasicConfig(
     var maxThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
     var addon: AddonConfiguration = AddonConfiguration(),
     var proxy: ProxyConfig = ProxyConfig(),
-    var connectMethod: ConnectMethod = ConnectMethod.DISABLE,
+//    var connectMethod: ConnectMethod = ConnectMethod.DISABLE,
     var celeWrap: CeleWrapConfiguration = CeleWrapConfiguration()
 ) {
 

@@ -399,35 +399,35 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         p14.add(btnProgramArgs)
         panelGame.add(p14)
         // listener
-        val panelListener = JPanel()
-        panelListener.border = TitledBorder(
-            null,
-            f.getString("gui.settings.game.listener"),
-            TitledBorder.DEFAULT_JUSTIFICATION,
-            TitledBorder.DEFAULT_POSITION,
-            null,
-            Color.orange
-        )
-        val btnGroupListener = ButtonGroup()
-        val btnAttach = JRadioButton(f.getString("gui.settings.game.listener.attach"), config.connectMethod == BasicConfig.ConnectMethod.ATTACH)
-        val btnCmdLine = JRadioButton(f.getString("gui.settings.game.listener.cmdline"), config.connectMethod == BasicConfig.ConnectMethod.CMDLINE)
-        val btnDisable = JRadioButton("Disable", config.connectMethod == BasicConfig.ConnectMethod.DISABLE)
-        btnAttach.addActionListener {
-            config.connectMethod = BasicConfig.ConnectMethod.ATTACH
-        }
-        btnCmdLine.addActionListener {
-            config.connectMethod = BasicConfig.ConnectMethod.CMDLINE
-        }
-        btnDisable.addActionListener {
-            config.connectMethod = BasicConfig.ConnectMethod.DISABLE
-        }
-        btnGroupListener.add(btnAttach)
-        btnGroupListener.add(btnCmdLine)
-        btnGroupListener.add(btnDisable)
-        panelListener.add(btnAttach)
-        panelListener.add(btnCmdLine)
-        panelListener.add(btnDisable)
-        panelGame.add(panelListener)
+//        val panelListener = JPanel()
+//        panelListener.border = TitledBorder(
+//            null,
+//            f.getString("gui.settings.game.listener"),
+//            TitledBorder.DEFAULT_JUSTIFICATION,
+//            TitledBorder.DEFAULT_POSITION,
+//            null,
+//            Color.orange
+//        )
+//        val btnGroupListener = ButtonGroup()
+//        val btnAttach = JRadioButton(f.getString("gui.settings.game.listener.attach"), config.connectMethod == BasicConfig.ConnectMethod.ATTACH)
+//        val btnCmdLine = JRadioButton(f.getString("gui.settings.game.listener.cmdline"), config.connectMethod == BasicConfig.ConnectMethod.CMDLINE)
+//        val btnDisable = JRadioButton("Disable", config.connectMethod == BasicConfig.ConnectMethod.DISABLE)
+//        btnAttach.addActionListener {
+//            config.connectMethod = BasicConfig.ConnectMethod.ATTACH
+//        }
+//        btnCmdLine.addActionListener {
+//            config.connectMethod = BasicConfig.ConnectMethod.CMDLINE
+//        }
+//        btnDisable.addActionListener {
+//            config.connectMethod = BasicConfig.ConnectMethod.DISABLE
+//        }
+//        btnGroupListener.add(btnAttach)
+//        btnGroupListener.add(btnCmdLine)
+//        btnGroupListener.add(btnDisable)
+//        panelListener.add(btnAttach)
+//        panelListener.add(btnCmdLine)
+//        panelListener.add(btnDisable)
+//        panelGame.add(panelListener)
         // resize
         val p15 = JPanel()
         p15.border = TitledBorder(
