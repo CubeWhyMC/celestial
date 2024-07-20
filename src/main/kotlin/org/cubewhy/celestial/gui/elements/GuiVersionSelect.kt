@@ -184,7 +184,7 @@ class GuiVersionSelect : JPanel() {
 
     private fun beforeLaunch() {
         if (gamePid.get() != 0L) {
-            if (findJava(getMainClass(null)) != null) {
+            if (findJava(if (config.celeWrap.state) CeleWrap.MAIN_CLASS else getMainClass(null)) != null) {
                 JOptionPane.showMessageDialog(
                     this,
                     f.getString("gui.version.launched.message"),
