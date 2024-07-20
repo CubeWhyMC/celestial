@@ -221,6 +221,7 @@ class GuiVersionSelect : JPanel() {
                 ) == JOptionPane.YES_OPTION
             ) {
                 log.info("Applying GitHub mirror")
+                // TODO github.ink is died
                 config.proxy.mirror["github.com:443"] = "github.ink:443"
             }
         }
