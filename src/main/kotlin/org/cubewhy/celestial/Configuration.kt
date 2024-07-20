@@ -39,7 +39,10 @@ data class GameConfiguration(
     var args: ArrayList<String> = ArrayList(),
     @SerialName("vm-args")
     var vmArgs: ArrayList<String> = ArrayList(),
-    var javaagents: HashMap<String, String?> = HashMap()
+    var javaagents: HashMap<String, String?> = HashMap(),
+
+    var debug: Boolean = false,
+    var overrides: Map<String, String> = HashMap() // serviceOverrideXXX=address
 )
 
 
