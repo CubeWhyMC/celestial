@@ -36,7 +36,7 @@ dependencies {
     implementation("org.java-websocket:Java-WebSocket:1.5.6")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 
     implementation("org.ow2.asm:asm:9.7")
 }
