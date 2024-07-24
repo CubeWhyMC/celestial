@@ -386,18 +386,13 @@ fun getArgs(
     args.add("-Xms" + ram + "m")
     args.add("-Xmx" + ram + "m")
     args.addAll(LauncherData.getDefaultJvmArgs(json, installation))
+    // serviceOverride
+    config.game.overrides.forEach { ov, address ->
+        args.add("-DserviceOverride$ov=$address")
+    }
     // === javaagents ===
     val javaAgents = JavaAgent.findEnabled()
     javaAgents.addAll(givenAgents)
-    // add the celestial listener
-    // MOVED to CeleWrap
-//    if (isRunningInJar && config.connectMethod == BasicConfig.ConnectMethod.CMDLINE) {
-//        log.info("Add the Celestial listener (CMDLINE)")
-//        javaAgents.add(JavaAgent(jar))
-//    } else {
-//        // I don't know how to add it
-//        log.debug("You're in a development env, so skipped add the listener")
-//    }
     val size = javaAgents.size
     if (size != 0) {
         log.info(
