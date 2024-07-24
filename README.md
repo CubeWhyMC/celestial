@@ -19,9 +19,9 @@
 9. Multi version, one jre
 10. Javaagent support (*EXPERIMENTAL*)
 11. ~~LunarCN support~~ (*EXPERIMENTAL,REMOVED*)
-12. Weave support (*Experimental,NOT WORK AT ALL*)
-13. Dump version json into local
-14. Unlock LC debug mode
+12. [CelePatch](https://github.com/CubeWhyMC/celepatch) support
+13. Weave support (*Experimental,NOT WORK AT ALL*)
+14. Dump version json into local
 
 ## Get celestial
 
