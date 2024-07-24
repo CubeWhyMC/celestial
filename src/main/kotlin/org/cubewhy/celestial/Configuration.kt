@@ -42,7 +42,8 @@ data class GameConfiguration(
     var javaagents: HashMap<String, String?> = HashMap(),
 
     var debug: Boolean = false,
-    var overrides: Map<String, String> = HashMap() // serviceOverrideXXX=address
+    var overrides: Map<String, String> = HashMap(), // serviceOverrideXXX=address
+    var patched: Map<String, String> = mapOf()
 )
 
 
@@ -101,7 +102,7 @@ data class BasicConfig(
     var maxThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
     var addon: AddonConfiguration = AddonConfiguration(),
     var proxy: ProxyConfig = ProxyConfig(),
-    var celeWrap: CeleWrapConfiguration = CeleWrapConfiguration()
+    var celeWrap: CeleWrapConfiguration = CeleWrapConfiguration(),
 )
 
 class Mirror(address: String) {
