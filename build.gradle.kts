@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "org.cubewhy.celestial"
-version = "2.6.2-SNAPSHOT"
+version = "2.7-SNAPSHOT"
 
 println("Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"))
 println("Celestial Launcher -> https://lunarclient.top/")
@@ -61,8 +61,6 @@ tasks.jar {
     manifest {
         attributes(
             "Main-Class" to "org.cubewhy.celestial.CelestialKt",
-            "Agent-Class" to "org.cubewhy.celestial.AgentKt",
-            "Premain-Class" to "org.cubewhy.celestial.AgentKt"
         )
         attributes(
             "Charset" to "UTF-8"

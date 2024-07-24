@@ -101,16 +101,8 @@ data class BasicConfig(
     var maxThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
     var addon: AddonConfiguration = AddonConfiguration(),
     var proxy: ProxyConfig = ProxyConfig(),
-//    var connectMethod: ConnectMethod = ConnectMethod.DISABLE,
     var celeWrap: CeleWrapConfiguration = CeleWrapConfiguration()
-) {
-
-    enum class ConnectMethod {
-        ATTACH, // using the attachment API to inject LunarClient (recommend)
-        CMDLINE, // using the "-javaagent" parameter
-        DISABLE
-    }
-}
+)
 
 class Mirror(address: String) {
     val host: String = address.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]
