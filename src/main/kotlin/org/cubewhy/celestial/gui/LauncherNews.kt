@@ -18,9 +18,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.Desktop
+import java.awt.Dimension
 import java.awt.Image
 import java.io.File
 import java.net.URI
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import javax.swing.*
 import javax.swing.border.TitledBorder
 
@@ -101,7 +104,7 @@ class LauncherNews(private val blogPost: Blogpost) : JPanel() {
     }
 }
 
-class LauncherBirthday(private val birthday: Int) : JPanel() {
+class LauncherBirthday(birthday: Int) : JPanel() {
     init {
         this.layout = BoxLayout(this, BoxLayout.Y_AXIS)
         this.border = TitledBorder(
@@ -113,8 +116,20 @@ class LauncherBirthday(private val birthday: Int) : JPanel() {
             Color.orange
         )
 
+        val today = LocalDate.now()
+        val nextBirthday = LocalDate.of(today.year + 1, 7, 29)
+        val betweenNext = ChronoUnit.DAYS.between(today, nextBirthday).toInt()
+
         if (birthday == 0) {
             this.add(f.getString("gui.news.birthday.today").toJLabel())
+        } else if (birthday == 1) {
+            this.add(f.getString("gui.news.birthday.tomorrow").toJLabel())
+        } else if (birthday == -1) {
+            this.add(f.getString("gui.news.birthday.yesterday").format(betweenNext).toJLabel())
+        } else if (birthday > 0) {
+            this.add(f.getString("gui.news.birthday.coming").format(birthday).toJLabel())
+        } else {
+            this.add(f.getString("gui.news.birthday.after").format(birthday, betweenNext).toJLabel())
         }
     }
 }
