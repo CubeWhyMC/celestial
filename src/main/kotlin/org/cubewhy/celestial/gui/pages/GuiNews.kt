@@ -54,7 +54,7 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
         log.info("Loading blogPosts (gui)")
         val birthday = calcBirthday()
         if (abs(birthday) <= 10) {
-            this.add(LauncherBirthday(birthday))
+            panel.add(LauncherBirthday(birthday))
         }
         if (blogPosts.isEmpty()) {
             log.error("Failed to load blog posts")

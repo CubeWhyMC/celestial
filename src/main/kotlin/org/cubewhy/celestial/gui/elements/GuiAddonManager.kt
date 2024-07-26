@@ -67,7 +67,7 @@ class GuiAddonManager : JPanel() {
         loadAgents()
         loadWeaveMods()
         loadLunarCNMods()
-        loadFabricMods(fabricList)
+        loadFabricMods()
 
         val jListLunarCN = JList(lunarcnList)
         val jListWeave = JList(weaveList)
@@ -260,7 +260,7 @@ class GuiAddonManager : JPanel() {
                 log.info(String.format("Rename Fabric mod %s -> %s", name, "$newName.jar"))
                 GuiLauncher.statusBar.text = String.format(f.getString("gui.addon.rename.success"), newName)
                 fabricList.clear()
-                loadFabricMods(fabricList)
+                loadFabricMods()
             }
         }
 
@@ -277,7 +277,7 @@ class GuiAddonManager : JPanel() {
                 GuiLauncher.statusBar.text =
                     f.format("gui.addon.mods.fabric.remove.success", name)
                 fabricList.clear()
-                loadFabricMods(fabricList)
+                loadFabricMods()
             }
         }
 
@@ -422,7 +422,7 @@ class GuiAddonManager : JPanel() {
                     AddonAddEvent(AddonType.FABRIC, mod)
                     GuiLauncher.statusBar.text = f.getString("gui.addon.mods.fabric.add.success")
                     fabricList.clear()
-                    loadFabricMods(fabricList)
+                    loadFabricMods()
                 } else {
                     JOptionPane.showMessageDialog(
                         this,
@@ -485,10 +485,18 @@ class GuiAddonManager : JPanel() {
         btnPanel4.add(createButtonOpenFolder(f.getString("gui.addon.folder"), FabricMod.modFolder))
         panelFabric.add(btnPanel4)
 
+        val panelCelePatch = JPanel()
+        panelCelePatch.name = "celepatch"
+        panelCelePatch.layout = BoxLayout(panelCelePatch, BoxLayout.Y_AXIS)
+        panelCelePatch.add(JLabel(f.getString("gui.addons.patch.drag")))
+        panelCelePatch.add(JButton("Make your own patch"))
+
         tab.addTab(f.getString("gui.addons.agents"), panelAgents)
         tab.addTab(f.getString("gui.addons.mods.cn"), panelLunarCN)
         tab.addTab(f.getString("gui.addons.mods.weave"), panelWeave)
         tab.addTab(f.getString("gui.addons.mods.fabric"), panelFabric)
+
+        tab.addTab(f.getString("gui.addons.patch"), panelCelePatch)
 
         this.add(tab)
         tab.addChangeListener {
@@ -518,14 +526,14 @@ class GuiAddonManager : JPanel() {
 
             "fabric" -> {
                 fabricList.clear()
-                loadFabricMods(fabricList)
+                loadFabricMods()
             }
         }
     }
 
-    private fun loadFabricMods(modList: DefaultListModel<FabricMod>) {
+    private fun loadFabricMods() {
         for (mod in FabricMod.findAll()) {
-            modList.addElement(mod)
+            fabricList.addElement(mod)
         }
     }
 
