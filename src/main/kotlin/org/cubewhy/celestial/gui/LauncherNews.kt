@@ -100,3 +100,21 @@ class LauncherNews(private val blogPost: Blogpost) : JPanel() {
         textLabel.labelFor = imageLabel
     }
 }
+
+class LauncherBirthday(private val birthday: Int) : JPanel() {
+    init {
+        this.layout = BoxLayout(this, BoxLayout.Y_AXIS)
+        this.border = TitledBorder(
+            null,
+            f.getString("gui.news.birthday.title"),
+            TitledBorder.DEFAULT_JUSTIFICATION,
+            TitledBorder.DEFAULT_POSITION,
+            null,
+            Color.orange
+        )
+
+        if (birthday == 0) {
+            this.add(f.getString("gui.news.birthday.today").toJLabel())
+        }
+    }
+}
