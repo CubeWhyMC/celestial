@@ -3,6 +3,7 @@ package org.cubewhy.celestial.gui.pages
 import cn.hutool.crypto.SecureUtil
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.files.DownloadManager.cache
+import org.cubewhy.celestial.gui.LauncherBirthday
 import org.cubewhy.celestial.gui.LauncherNews
 import org.cubewhy.celestial.metadata
 import org.cubewhy.celestial.toJLabel
@@ -19,6 +20,7 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.border.TitledBorder
+import kotlin.math.abs
 
 
 class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED) {
@@ -50,6 +52,10 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
         // render blogPosts
         getVerticalScrollBar().unitIncrement = 30
         log.info("Loading blogPosts (gui)")
+        val birthday = calcBirthday()
+        if (abs(birthday) <= 10) {
+            this.add(LauncherBirthday(birthday))
+        }
         if (blogPosts.isEmpty()) {
             log.error("Failed to load blog posts")
             this.add("Failed to load news (blogPosts is empty)".toJLabel())
