@@ -2,9 +2,9 @@ package org.cubewhy.celestial.gui.pages
 
 import cn.hutool.crypto.SecureUtil
 import org.cubewhy.celestial.f
-import org.cubewhy.celestial.metadata
 import org.cubewhy.celestial.files.DownloadManager.cache
 import org.cubewhy.celestial.gui.LauncherNews
+import org.cubewhy.celestial.metadata
 import org.cubewhy.celestial.toJLabel
 import org.cubewhy.celestial.utils.lunar.Blogpost
 import org.slf4j.Logger
@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.io.IOException
 import java.net.URL
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import javax.swing.BoxLayout
 import javax.swing.JLabel
 import javax.swing.JPanel
@@ -34,6 +36,14 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
         panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
         blogPosts = metadata.blogposts
         this.initGui()
+    }
+
+
+    private fun calcBirthday(): Int {
+        val birthday = LocalDate.of(LocalDate.now().year, 7, 29)
+        val today = LocalDate.now()
+
+        return ChronoUnit.DAYS.between(today, birthday).toInt()
     }
 
     private fun initGui() {
