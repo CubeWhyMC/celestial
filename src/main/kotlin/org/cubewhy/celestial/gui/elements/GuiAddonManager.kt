@@ -20,8 +20,10 @@ import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.game.addon.WeaveMod.Companion.add
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
+import org.cubewhy.celestial.utils.OSEnum
 import org.cubewhy.celestial.utils.chooseFile
 import org.cubewhy.celestial.utils.createButtonOpenFolder
+import org.cubewhy.celestial.utils.currentJavaExec
 import org.slf4j.LoggerFactory
 import java.awt.Color
 import java.awt.GridBagConstraints
@@ -613,6 +615,8 @@ class GuiAddonManager : JPanel() {
     }
 }
 
+val patchLogFile = configDir.resolve("logs/patch.log")
+
 class PatchDialog(panel: JPanel, private val patch: File): JDialog(SwingUtilities.getWindowAncestor(panel) as JFrame) {
 
     init {
@@ -631,13 +635,44 @@ class PatchDialog(panel: JPanel, private val patch: File): JDialog(SwingUtilitie
 
         this.add(patch.path.toJTextArea().readOnly())
         this.add(f.getString("gui.addons.patch.warn").toJTextArea().readOnly())
-        if (!gameDir.exists()) {
+        val lunarJar = gameDir.resolve("lunar.jar")
+        if (!(gameDir.exists() || lunarJar.exists())) {
             this.add(f.getString("gui.addons.patch.not-installed").toJLabel())
             return
         }
         if (!patch.isZipFile()) {
             this.add(f.getString("gui.addons.patch.not-zip").toJLabel())
         }
-        this.add(JButton(f.getString("gui.addons.patch.confirm")))
+        this.add(JButton(f.getString("gui.addons.patch.confirm")).apply {
+            addActionListener { e ->
+                // java -jar patch.jar lunar.jar out.jar
+                val source = e.source<JButton>()
+                source.isEnabled = false
+                Thread {
+                    val code = doPatch(lunarJar).start().waitFor()
+                    source.text = if (code == 0) f.getString("gui.addons.patch.done") else f.getString("gui.addons.patch.fail")
+                }.start()
+            }
+        })
+    }
+
+    private fun doPatch(lunar: File): ProcessBuilder {
+        val builder = ProcessBuilder()
+        if (OSEnum.Windows.isCurrent) {
+            // Windows
+            // delete the log file
+            patchLogFile.delete()
+
+            builder.command(
+                currentJavaExec.path,
+                "-jar \" ${patch.path} ${lunar.path} ${lunar.path} 1>>\"%s\" 2>&1\"".format(patchLogFile.path)
+            )
+
+        } else {
+            // others
+            builder.command(currentJavaExec.path, "-jar", patch.path, lunar.path, lunar.path, " > \"" + patchLogFile.path + "\"")
+        }
+        println(builder.command())
+        return builder
     }
 }
