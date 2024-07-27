@@ -6,27 +6,21 @@
 
 package org.cubewhy.celestial
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonParser
 import okhttp3.Response
 import org.cubewhy.celestial.game.AddonType
 import org.cubewhy.celestial.gui.GuiLauncher
 import java.awt.Component
-import java.awt.EventQueue
-import java.awt.event.ActionEvent
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
+import java.io.*
 import java.net.URI
 import java.net.URL
 import java.util.*
 import java.util.jar.JarFile
 import java.util.zip.ZipFile
-import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JScrollPane
 import javax.swing.JTextArea
 import javax.swing.SwingConstants
+
 
 fun String.toURI(): URI = URI.create(this)
 
@@ -142,3 +136,21 @@ fun JarFile.isMod(type: AddonType): Boolean =
         AddonType.WEAVE -> this.getJarEntry("weave.mod.json") != null
         else -> throw IllegalStateException(type.name + " is not a type of Lunar mods!")
     }
+
+fun File.isZipFile(): Boolean {
+    try {
+        FileInputStream(this).use { fis ->
+            val header = ByteArray(4)
+            if (fis.read(header) != 4) {
+                return false
+            }
+            return isZipSignature(header)
+        }
+    } catch (e: IOException) {
+        return false
+    }
+}
+
+private fun isZipSignature(header: ByteArray): Boolean {
+    return header[0] == 0x50.toByte() && header[1] == 0x4B.toByte() && header[2] == 0x03.toByte() && header[3] == 0x04.toByte()
+}

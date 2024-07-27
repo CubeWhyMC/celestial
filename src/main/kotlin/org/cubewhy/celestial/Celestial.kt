@@ -63,13 +63,6 @@ val config: BasicConfig = try {
     BasicConfig()
 }
 
-val proxy: ProxyConfig = try {
-    JSON.decodeFromString(proxyConfigFile.readText())
-} catch (e: FileNotFoundException) {
-    log.warn("Config not found, creating a new one...")
-    log.error(e.stackTraceToString())
-    ProxyConfig()
-}
 val gameLogFile: File = File(configDir, "logs/game.log")
 val launcherLogFile: File = File(configDir, "logs/launcher.log")
 

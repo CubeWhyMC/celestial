@@ -5,10 +5,9 @@
  */
 package org.cubewhy.celestial.gui.elements
 
-import org.cubewhy.celestial.f
+import org.cubewhy.celestial.*
 import org.cubewhy.celestial.event.impl.AddonAddEvent
 import org.cubewhy.celestial.files.DownloadManager
-import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.AddonType
 import org.cubewhy.celestial.game.BaseAddon
 import org.cubewhy.celestial.game.addon.FabricMod
@@ -20,20 +19,23 @@ import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.game.addon.WeaveMod.Companion.add
 import org.cubewhy.celestial.gui.GuiLauncher
-import org.cubewhy.celestial.isMod
-import org.cubewhy.celestial.toJLabel
-import org.cubewhy.celestial.toJar
+import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.utils.chooseFile
 import org.cubewhy.celestial.utils.createButtonOpenFolder
 import org.slf4j.LoggerFactory
 import java.awt.Color
+import java.awt.GridBagConstraints
+import java.awt.GridBagLayout
+import java.awt.datatransfer.DataFlavor
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.io.File
 import java.io.IOException
+import java.net.URI
 import javax.swing.*
 import javax.swing.border.TitledBorder
 import javax.swing.filechooser.FileNameExtensionFilter
+
 
 class GuiAddonManager : JPanel() {
     private val tab = JTabbedPane()
@@ -487,9 +489,15 @@ class GuiAddonManager : JPanel() {
 
         val panelCelePatch = JPanel()
         panelCelePatch.name = "celepatch"
-        panelCelePatch.layout = BoxLayout(panelCelePatch, BoxLayout.Y_AXIS)
-        panelCelePatch.add(JLabel(f.getString("gui.addons.patch.drag")))
-        panelCelePatch.add(JButton("Make your own patch"))
+        panelCelePatch.layout = GridBagLayout()
+        panelCelePatch.transferHandler = PatchTransferHandler()
+        val gbc = GridBagConstraints()
+
+        gbc.gridx = 0
+        gbc.gridy = 0
+        gbc.anchor = GridBagConstraints.CENTER // 居中对齐
+
+        panelCelePatch.add(JLabel(f.getString("gui.addons.patch.drag")), gbc)
 
         tab.addTab(f.getString("gui.addons.agents"), panelAgents)
         tab.addTab(f.getString("gui.addons.mods.cn"), panelLunarCN)
@@ -575,5 +583,61 @@ class GuiAddonManager : JPanel() {
         for (javaAgent in JavaAgent.findAll()) {
             agentList.addElement(javaAgent)
         }
+    }
+
+    private class PatchTransferHandler : TransferHandler() {
+        companion object {
+            private var log = LoggerFactory.getLogger(PatchTransferHandler::class.java)
+        }
+
+        override fun canImport(support: TransferSupport): Boolean {
+            return support.isDataFlavorSupported(DataFlavor.stringFlavor)
+        }
+
+        override fun importData(support: TransferSupport): Boolean {
+            if (!canImport(support)) {
+                return false
+            }
+
+            val data = support.transferable.getTransferData(DataFlavor.stringFlavor) as String
+            val patch = File(URI.create(data))
+            log.info("Dragged patch: $patch")
+            if (!patch.exists()) return false
+            val panel = support.component as JPanel
+            SwingUtilities.invokeLater {
+                PatchDialog(panel, patch).isVisible = true
+            }
+
+            return true
+        }
+    }
+}
+
+class PatchDialog(panel: JPanel, private val patch: File): JDialog(SwingUtilities.getWindowAncestor(panel) as JFrame) {
+
+    init {
+        this.title = f.getString("gui.addons.patch.title")
+        this.layout = VerticalFlowLayout()
+        this.modalityType = ModalityType.APPLICATION_MODAL
+        this.isLocationByPlatform = true
+
+        this.setSize(600, 600)
+
+        initGui()
+    }
+
+    fun initGui() {
+        val gameDir = config.installationDir.toFile()
+
+        this.add(patch.path.toJTextArea().readOnly())
+        this.add(f.getString("gui.addons.patch.warn").toJTextArea().readOnly())
+        if (!gameDir.exists()) {
+            this.add(f.getString("gui.addons.patch.not-installed").toJLabel())
+            return
+        }
+        if (!patch.isZipFile()) {
+            this.add(f.getString("gui.addons.patch.not-zip").toJLabel())
+        }
+        this.add(JButton(f.getString("gui.addons.patch.confirm")))
     }
 }
