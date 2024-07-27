@@ -657,7 +657,6 @@ class PatchDialog(panel: JPanel, private val patch: File): JDialog(SwingUtilitie
     private fun doPatch(lunar: File): ProcessBuilder {
         val builder = ProcessBuilder()
         builder.command(currentJavaExec.path, "-jar", patch.path, lunar.path, lunar.path)
-        println(builder.command())
         return builder
     }
 }
