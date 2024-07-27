@@ -6,7 +6,7 @@
 
 ## Features
 
-> Warning: Celestial doesn't include any features about "cracked LunarClient"
+> Celestial doesn't include any features about "cracked LunarClient"
 
 1. Full open source (GPLv3)
 2. No electron
