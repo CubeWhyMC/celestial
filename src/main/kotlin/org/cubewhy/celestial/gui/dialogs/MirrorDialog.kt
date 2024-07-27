@@ -8,7 +8,6 @@ package org.cubewhy.celestial.gui.dialogs
 import cn.hutool.core.util.NumberUtil
 import org.cubewhy.celestial.config
 import org.cubewhy.celestial.f
-import org.cubewhy.celestial.proxy
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger
