@@ -33,7 +33,7 @@ dependencies {
     implementation("com.formdev:flatlaf:3.4.1")
     implementation("commons-io:commons-io:2.16.1")
     implementation("cn.hutool:hutool-crypto:5.8.28")
-    implementation("org.java-websocket:Java-WebSocket:1.5.6")
+    implementation("org.java-websocket:Java-WebSocket:1.5.7")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
