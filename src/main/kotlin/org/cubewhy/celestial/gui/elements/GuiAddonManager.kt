@@ -615,8 +615,6 @@ class GuiAddonManager : JPanel() {
     }
 }
 
-val patchLogFile = configDir.resolve("logs/patch.log")
-
 class PatchDialog(panel: JPanel, private val patch: File): JDialog(SwingUtilities.getWindowAncestor(panel) as JFrame) {
 
     init {
@@ -658,20 +656,7 @@ class PatchDialog(panel: JPanel, private val patch: File): JDialog(SwingUtilitie
 
     private fun doPatch(lunar: File): ProcessBuilder {
         val builder = ProcessBuilder()
-        if (OSEnum.Windows.isCurrent) {
-            // Windows
-            // delete the log file
-            patchLogFile.delete()
-
-            builder.command(
-                currentJavaExec.path,
-                "-jar \" ${patch.path} ${lunar.path} ${lunar.path} 1>>\"%s\" 2>&1\"".format(patchLogFile.path)
-            )
-
-        } else {
-            // others
-            builder.command(currentJavaExec.path, "-jar", patch.path, lunar.path, lunar.path, " > \"" + patchLogFile.path + "\"")
-        }
+        builder.command(currentJavaExec.path, "-jar", patch.path, lunar.path, lunar.path)
         println(builder.command())
         return builder
     }
