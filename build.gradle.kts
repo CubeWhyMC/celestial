@@ -30,13 +30,13 @@ dependencies {
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.google.code.gson:gson:2.11.0")
-    implementation("com.formdev:flatlaf:3.4.1")
+    implementation("com.formdev:flatlaf:3.5")
     implementation("commons-io:commons-io:2.16.1")
-    implementation("cn.hutool:hutool-crypto:5.8.28")
-    implementation("org.java-websocket:Java-WebSocket:1.5.6")
+    implementation("cn.hutool:hutool-crypto:5.8.29")
+    implementation("org.java-websocket:Java-WebSocket:1.5.7")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
 
     implementation("org.ow2.asm:asm:9.7")
 }
