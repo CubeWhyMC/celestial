@@ -16,7 +16,7 @@ import javax.swing.filechooser.FileFilter
 import javax.swing.filechooser.FileNameExtensionFilter
 
 
-fun chooseFile(filter: FileFilter?): File? {
+fun chooseFile(filter: FileFilter? = null): File? {
     val fileDialog = JFileChooser()
     if (filter != null) {
         fileDialog.fileFilter = filter
