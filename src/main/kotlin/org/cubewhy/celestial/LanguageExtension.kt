@@ -10,16 +10,14 @@ import okhttp3.Response
 import org.cubewhy.celestial.game.AddonType
 import org.cubewhy.celestial.gui.GuiLauncher
 import java.awt.Component
+import java.awt.event.ActionListener
 import java.io.*
 import java.net.URI
 import java.net.URL
 import java.util.*
 import java.util.jar.JarFile
 import java.util.zip.ZipFile
-import javax.swing.JLabel
-import javax.swing.JScrollPane
-import javax.swing.JTextArea
-import javax.swing.SwingConstants
+import javax.swing.*
 
 
 fun String.toURI(): URI = URI.create(this)
@@ -69,6 +67,11 @@ fun <T> Array<T>.forEachIsEnd(action: (T, Boolean) -> Unit) {
 fun String.toJLabel(): JLabel =
     // todo multi line support
     JLabel(this)
+
+fun String.toJButton(func: ActionListener) =
+    JButton(this).apply {
+        addActionListener(func)
+    }
 
 fun String.toFile(): File = File(this)
 

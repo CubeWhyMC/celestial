@@ -497,9 +497,14 @@ class GuiAddonManager : JPanel() {
 
         gbc.gridx = 0
         gbc.gridy = 0
-        gbc.anchor = GridBagConstraints.CENTER // 居中对齐
+        gbc.anchor = GridBagConstraints.CENTER
+        // todo fix drag for Windows
 
-        panelCelePatch.add(JLabel(f.getString("gui.addons.patch.drag")), gbc)
+        panelCelePatch.add(f.getString("gui.addons.patch.drag").toJButton {
+            chooseFile(FileNameExtensionFilter("Celestial Patch", "jar"))?.let {
+                PatchDialog(panelCelePatch, it).isVisible = true
+            }
+        }, gbc)
 
         tab.addTab(f.getString("gui.addons.agents"), panelAgents)
         tab.addTab(f.getString("gui.addons.mods.cn"), panelLunarCN)
