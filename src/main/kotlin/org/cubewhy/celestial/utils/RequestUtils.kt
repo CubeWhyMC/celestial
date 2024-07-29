@@ -14,14 +14,25 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.dnsoverhttps.DnsOverHttps
 import org.cubewhy.celestial.JSON
 import org.cubewhy.celestial.config
+import org.cubewhy.celestial.configDir
+import java.io.File
+import java.net.InetAddress
 import java.net.URL
 
 object RequestUtils {
+    private val appCache = Cache(configDir.resolve("cache").resolve("okhttp"), 10 * 1024 * 1024)
+
+    private val bootstrapClient = OkHttpClient.Builder()
+        .cache(appCache)
+        .build()
+
     private val httpClient: OkHttpClient = OkHttpClient.Builder()
         .dns(
             if (config.proxy.doh)
                 DnsOverHttps.Builder()
+                    .client(bootstrapClient)
                     .url(config.proxy.dohServer.toHttpUrl())
+                    .bootstrapDnsHosts(InetAddress.getByName("8.8.4.4"), InetAddress.getByName("8.8.8.8"))
                     .build() else Dns.SYSTEM
         )
         .proxy(config.proxy.toProxy())
