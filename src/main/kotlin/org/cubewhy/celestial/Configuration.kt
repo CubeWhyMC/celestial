@@ -120,7 +120,7 @@ data class ProxyConfig(
     @SerialName("proxy")
     var proxyAddress: String = "http://127.0.0.1:8080",
     var mirror: HashMap<String, String> = HashMap(),
-    var doh: Boolean = true, // Dns over Https
+    var doh: Boolean = false, // Dns over Https
     var dohServer: String = "https://dns.alidns.com/dns-query"
 ) {
     operator fun get(address: String) =
