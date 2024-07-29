@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "org.cubewhy.celestial"
-version = "2.7.1-SNAPSHOT"
+version = "2.7.2-pre1-SNAPSHOT"
 
 println("Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"))
 println("Celestial Launcher -> https://lunarclient.top/")
@@ -29,6 +29,7 @@ dependencies {
     implementation("org.apache.logging.log4j:log4j-core:2.23.1")
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:okhttp-dnsoverhttps:4.12.0")
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("com.formdev:flatlaf:3.5")
     implementation("commons-io:commons-io:2.16.1")
