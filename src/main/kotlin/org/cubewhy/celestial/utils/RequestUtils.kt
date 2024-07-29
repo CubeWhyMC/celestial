@@ -8,14 +8,22 @@ package org.cubewhy.celestial.utils
 
 import kotlinx.serialization.encodeToString
 import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.dnsoverhttps.DnsOverHttps
 import org.cubewhy.celestial.JSON
 import org.cubewhy.celestial.config
 import java.net.URL
 
 object RequestUtils {
     private val httpClient: OkHttpClient = OkHttpClient.Builder()
+        .dns(
+            if (config.proxy.doh)
+                DnsOverHttps.Builder()
+                    .url(config.proxy.dohServer.toHttpUrl())
+                    .build() else Dns.SYSTEM
+        )
         .proxy(config.proxy.toProxy())
         .build()
 
@@ -39,7 +47,8 @@ object RequestUtils {
 
 
     fun post(url: String, json: String): Call {
-        val body: RequestBody = json.toRequestBody("application/json".toMediaType()) // MUST be JSON in the latest LC-API
+        val body: RequestBody =
+            json.toRequestBody("application/json".toMediaType()) // MUST be JSON in the latest LC-API
         val request: Request = Request.Builder()
             .url(url)
             .post(body)
