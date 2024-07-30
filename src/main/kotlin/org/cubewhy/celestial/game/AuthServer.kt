@@ -9,8 +9,7 @@ import co.gongzh.procbridge.IDelegate
 import co.gongzh.procbridge.Server
 import com.google.gson.JsonObject
 import launcher.Mslogin
-import launcher.Mslogin.GameRequest
-import launcher.Mslogin.LoginResponse
+import launcher.Mslogin.*
 import org.cubewhy.celestial.event.impl.AuthEvent
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
@@ -94,11 +93,16 @@ class NewAuthServer private constructor() : WebSocketServer(InetSocketAddress("1
             val responseUrl =
                 (AuthEvent(authURL = URL("https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service::user.auth.xboxlive.com::MBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf")).call() as AuthEvent).waitForAuth()
             conn.send(
-                LoginResponse.newBuilder()
-                    .setAuth(
-                        Mslogin.Auth.newBuilder()
-                            .setUrl(responseUrl)
-                            .build()
+                LoginResponseBase.newBuilder()
+                    .setResponse(
+                        LoginResponse.newBuilder()
+                            .setResponseId(request.requestId)
+                            .setAuth(
+                                AuthResponse.newBuilder()
+                                    .setStatus(1)
+                                    .setUrl(responseUrl)
+                                    .build()
+                            ).build()
                     ).build().toByteArray()
             )
         }
