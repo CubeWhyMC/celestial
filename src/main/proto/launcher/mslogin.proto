@@ -7,11 +7,16 @@ message GameRequest {
   string method = 3;
 }
 
-message LoginResponse {
-  string responseId = 1;
-  Auth auth = 2;
+message LoginResponseBase {
+  LoginResponse response = 1;
 }
 
-message Auth {
+message LoginResponse {
+  string responseId = 1;
+  AuthResponse auth = 2;
+}
+
+message AuthResponse {
+  int32 status = 1;
   string url = 2; // https://login.live.com/oauth20_desktop.srf?code=xxx
 }

@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "org.cubewhy.celestial"
-version = "2.7.2-pre1-SNAPSHOT"
+version = "2.7.2-SNAPSHOT"
 
 println("Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"))
 println("Celestial Launcher -> https://lunarclient.top/")
