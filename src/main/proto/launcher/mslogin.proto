@@ -1,0 +1,17 @@
+syntax = "proto3";
+package launcher;
+
+message GameRequest {
+  string requestId = 1;
+  string service = 2;
+  string method = 3;
+}
+
+message LoginResponse {
+  string responseId = 1;
+  Auth auth = 2;
+}
+
+message Auth {
+  string url = 2; // https://login.live.com/oauth20_desktop.srf?code=xxx
+}

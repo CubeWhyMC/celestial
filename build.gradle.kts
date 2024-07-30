@@ -2,6 +2,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.+"
     id ("com.gorylenko.gradle-git-properties") version "2.4.1"
     kotlin("jvm")
+    id("com.google.protobuf") version "0.9.3"
     kotlin("plugin.serialization") version "2.0.0"
 }
 
@@ -35,6 +36,7 @@ dependencies {
     implementation("commons-io:commons-io:2.16.1")
     implementation("cn.hutool:hutool-crypto:5.8.29")
     implementation("org.java-websocket:Java-WebSocket:1.5.7")
+    implementation("com.google.protobuf:protobuf-kotlin:4.27.0")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
@@ -54,6 +56,12 @@ tasks.shadowJar {
     exclude("META-INF/versions/**")
 
     exclude("org/junit/**")
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.23.4"
+    }
 }
 
 tasks.jar {
