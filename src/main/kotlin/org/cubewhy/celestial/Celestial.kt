@@ -18,6 +18,7 @@ import org.cubewhy.celestial.files.DownloadManager
 import org.cubewhy.celestial.files.Downloadable
 import org.cubewhy.celestial.game.AuthServer
 import org.cubewhy.celestial.game.GameArgs
+import org.cubewhy.celestial.game.NewAuthServer
 import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.game.thirdparty.CeleWrap
 import org.cubewhy.celestial.gui.GuiLauncher
@@ -184,6 +185,7 @@ private fun run() {
     // start auth server
     log.info("Starting LC auth server")
     AuthServer.instance.startServer()
+    NewAuthServer.instance.start()
 
     // start gui launcher
     launcherFrame = GuiLauncher()
