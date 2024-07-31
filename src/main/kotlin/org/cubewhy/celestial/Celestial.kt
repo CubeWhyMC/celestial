@@ -169,7 +169,7 @@ private fun run() {
             if (input == null) {
                 exitProcess(1)
             } else {
-                val proxyInput = JOptionPane.showInputDialog(f.getString("api.unreachable.proxy"), config.proxy.proxyAddress)
+                val proxyInput = JOptionPane.showInputDialog(f.getString("api.unreachable.proxy"), if (config.proxy.state) config.proxy.proxyAddress else "")
                 if (proxyInput.isNullOrBlank()) {
                     config.proxy.state = false
                 } else {
