@@ -36,7 +36,7 @@ dependencies {
     implementation("commons-io:commons-io:2.16.1")
     implementation("cn.hutool:hutool-crypto:5.8.29")
     implementation("org.java-websocket:Java-WebSocket:1.5.7")
-    implementation("com.google.protobuf:protobuf-kotlin:4.27.0")
+    implementation("com.google.protobuf:protobuf-kotlin:4.27.3")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
