@@ -60,7 +60,7 @@ tasks.shadowJar {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:4.27.4"
+        artifact = "com.google.protobuf:protoc:4.28.0"
     }
 }
 
