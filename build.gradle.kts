@@ -39,7 +39,7 @@ dependencies {
     implementation("com.google.protobuf:protobuf-kotlin:4.28.0")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.2")
 
     implementation("org.ow2.asm:asm:9.7")
 }
