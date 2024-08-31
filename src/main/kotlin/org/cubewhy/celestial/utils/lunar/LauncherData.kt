@@ -148,15 +148,15 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         fun getDefaultJvmArgs(json: GameArtifactInfo, installation: File): List<String> {
             val out: MutableList<String> = ArrayList()
             for (arg in json.jre.extraArguments) {
-                if (arg == "-Djna.boot.library.path=natives") {
-                    out.add("-Djna.boot.library.path=\"$installation/natives\"")
-                    continue
-                }
+//                if (arg == "-Djna.boot.library.path=natives") {
+//                    out.add("-Djna.boot.library.path=\"$installation/natives\"")
+//                    continue
+//                }
                 // block sentry
                 if (arg.startsWith("-Dichor.filteredGenesisSentries")) continue
                 out.add(arg)
             }
-            out.add("-Djava.library.path=\"$installation/natives\"")
+            out.add("-Djava.library.path=natives")
             return out
         }
 
