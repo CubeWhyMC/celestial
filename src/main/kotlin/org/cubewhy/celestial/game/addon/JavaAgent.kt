@@ -9,11 +9,13 @@ import com.google.gson.JsonObject
 import org.cubewhy.celestial.config
 import org.cubewhy.celestial.configDir
 import org.cubewhy.celestial.game.BaseAddon
+import org.cubewhy.celestial.toFile
 import org.jetbrains.annotations.Contract
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.*
+import kotlin.io.path.relativeTo
 
 class JavaAgent : BaseAddon {
     /**
@@ -58,7 +60,8 @@ class JavaAgent : BaseAddon {
          * @return args for jvm
          */
         get() {
-            var jvmArgs = "-javaagent:\"" + file.absolutePath + "\""
+            val installation = config.installationDir.toFile().toPath()
+            var jvmArgs = "-javaagent:\"" + file.toPath().relativeTo(installation) + "\""
             if (arg?.isNotEmpty() == true) {
                 jvmArgs += if (arg!!.contains(" ")) {
                     "=\"" + this.arg + "\""
