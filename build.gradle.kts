@@ -34,7 +34,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("com.formdev:flatlaf:3.5.1")
     implementation("commons-io:commons-io:2.16.1")
-    implementation("cn.hutool:hutool-crypto:5.8.31")
+    implementation("cn.hutool:hutool-crypto:5.8.32")
     implementation("org.java-websocket:Java-WebSocket:1.5.7")
     implementation("com.google.protobuf:protobuf-kotlin:4.28.0")
 
