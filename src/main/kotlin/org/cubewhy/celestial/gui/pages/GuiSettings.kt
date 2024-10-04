@@ -140,7 +140,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         p3.add(wrapperInput)
         val btnSetVMArgs = JButton(f.getString("gui.settings.jvm.args"))
         btnSetVMArgs.addActionListener {
-            ArgsConfigDialog("vm-args", config).isVisible = true
+            ArgsConfigDialog("vmArgs", config.game).isVisible = true
         }
         panelVM.add(btnSetVMArgs)
         panelVM.add(p3)
@@ -392,7 +392,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         val btnProgramArgs = JButton(f.getString("gui.settings.game.args"))
         btnProgramArgs.addActionListener {
             ArgsConfigDialog(
-                "program-args",
+                "args",
                 config.game
             ).isVisible = true
         }
