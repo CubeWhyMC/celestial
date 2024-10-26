@@ -5,7 +5,7 @@ import java.util.*
 enum class OSEnum(val os: String, val jsName: String = os.lowercase(Locale.getDefault())) {
     Any("any", "any"),
     Linux("Linux", "linux"),
-    Mac_OS("Mac OS", "macos"),
+    Mac_OS("Mac OS", "darwin"),
     Mac_OS_X("Mac OS X", "osx"),
     Windows("Windows", "win32"),
     FreeBSD("FreeBSD", "freebsd"),
