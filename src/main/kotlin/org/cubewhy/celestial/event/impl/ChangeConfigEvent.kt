@@ -8,4 +8,4 @@ package org.cubewhy.celestial.event.impl
 
 import org.cubewhy.celestial.event.Event
 
-class ChangeConfigEvent<T>(val configObject: Any, val key: String, val value: T?) : Event()
+class ChangeConfigEvent<T>(val configObject: Any, val key: String, val newValue: T?, val oldValue: T? = null) : Event()
