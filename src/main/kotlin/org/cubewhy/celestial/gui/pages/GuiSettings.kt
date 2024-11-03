@@ -9,6 +9,7 @@ package org.cubewhy.celestial.gui.pages
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.*
 import org.cubewhy.celestial.event.EventManager
+import org.cubewhy.celestial.event.impl.ChangeConfigEvent
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.gui.GuiLauncher
@@ -566,8 +567,8 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             if (source.selectedItem == null) {
                 return@addActionListener
             }
-            if (finalIsLanguage) obj3ct.setKotlinField(key, source.selectedItem as Language)
-            else obj3ct.setKotlinField(key, source.selectedItem?.toString())
+            if (finalIsLanguage) obj3ct.saveConfig(key, source.selectedItem as Language)
+            else obj3ct.saveConfig(key, source.selectedItem?.toString())
 
 
         }
@@ -594,7 +595,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             spinner.addChangeListener { e: ChangeEvent ->
                 val source = e.source as JSpinner
                 val v = if (forceInt) (source.value as Number).toInt() else source.value as Number
-                obj3ct.setKotlinField(key, v)
+                obj3ct.saveConfig(key, v)
             }
             textField.columns = 20
             return spinner
@@ -605,7 +606,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             cb.isSelected = obj3ct.getKotlinField(key)
             cb.addActionListener { e: ActionEvent ->
                 val source = e.source as JCheckBox
-                obj3ct.setKotlinField(key, source.isSelected)
+                obj3ct.saveConfig(key, source.isSelected)
             }
             return cb
         }
@@ -616,16 +617,22 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             input.addActionListener { e: ActionEvent ->
                 val source = e.source as JTextField
                 // save value
-                obj3ct.setKotlinField(key, source.text)
+                obj3ct.saveConfig(key, source.text)
             }
             input.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
                     val source = e.source as JTextField
                     // save value
-                    obj3ct.setKotlinField(key, source.text)
+                    obj3ct.saveConfig(key, source.text)
                 }
             })
             return input
+        }
+
+        private inline fun <reified T> Any.saveConfig(name: String, value: T?) {
+            log.info("Saving ${this.javaClass.name} (key=${name}, value=${value})")
+            ChangeConfigEvent(this, name, value).call()
+            this.setKotlinField(name, value)
         }
     }
 }
