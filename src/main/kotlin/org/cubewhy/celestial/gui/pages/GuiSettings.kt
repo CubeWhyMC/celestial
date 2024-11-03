@@ -9,6 +9,8 @@ package org.cubewhy.celestial.gui.pages
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.*
 import org.cubewhy.celestial.event.EventManager
+import org.cubewhy.celestial.event.EventTarget
+import org.cubewhy.celestial.event.impl.APIReadyEvent
 import org.cubewhy.celestial.event.impl.ChangeConfigEvent
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
@@ -20,6 +22,7 @@ import org.cubewhy.celestial.gui.dialogs.MirrorDialog
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.OSEnum.Companion.current
+import org.cubewhy.celestial.utils.lunar.LauncherData
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
@@ -52,6 +55,19 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         panel.layout = VerticalFlowLayout(VerticalFlowLayout.LEFT)
         getVerticalScrollBar().unitIncrement = 30
         this.initGui()
+    }
+
+    /**
+     * Hot reload config
+     * */
+    @EventTarget
+    fun onChangeConfig(e: ChangeConfigEvent<*>) {
+        if (e.configObject is BasicConfig && e.key == "api") {
+            log.info("API changed, hot reloading...")
+            launcherData = LauncherData(e.newValue as String)
+            metadata = launcherData.metadata()
+            APIReadyEvent().call()
+        }
     }
 
     private fun initGui() {
@@ -574,7 +590,6 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         }
         return cb
     }
-
 
     companion object {
         private val panel = JPanel()

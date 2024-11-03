@@ -13,6 +13,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonParser
 import kotlinx.serialization.json.Json
 import org.apache.commons.io.FileUtils
+import org.cubewhy.celestial.event.impl.APIReadyEvent
 import org.cubewhy.celestial.event.impl.CreateLauncherEvent
 import org.cubewhy.celestial.files.DownloadManager
 import org.cubewhy.celestial.files.Downloadable
@@ -55,7 +56,6 @@ val JSON = Json { ignoreUnknownKeys = true; prettyPrint = true }
 val configDir = File(System.getProperty("user.home"), ".cubewhy/lunarcn")
 val themesDir = File(configDir, "themes")
 val configFile = configDir.resolve("celestial.json")
-val proxyConfigFile = configDir.resolve("proxy.json")
 val config: BasicConfig = try {
     JSON.decodeFromString(configFile.readText())
 } catch (e: FileNotFoundException) {
@@ -81,7 +81,6 @@ private var sessionFile: File = if (OSEnum.Windows.isCurrent) {
     File(System.getProperty("user.home"), ".config/launcher/sentry/session.json")
 } else {
     // Macos...
-    // TODO support MACOS
     // Not tested yet
     File(System.getProperty("user.home"), "Library/Application Support//launcher/sentry/session.json")
 }
@@ -95,7 +94,6 @@ private lateinit var userLanguage: String
 
 var runningOnGui = false
 var jar = Celestial::class.java.getProtectionDomain().codeSource.location.path.toFile()
-var isRunningInJar = jar.isFile
 
 val minecraftFolder: File
     /**
@@ -193,6 +191,7 @@ private fun run() {
     CreateLauncherEvent(launcherFrame).call()
     launcherFrame.isVisible = true
     runningOnGui = true
+    APIReadyEvent().call()
 
     launcherFrame.addWindowListener(object : WindowAdapter() {
         override fun windowClosing(e: WindowEvent) {

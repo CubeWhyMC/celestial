@@ -9,6 +9,8 @@ import com.sun.tools.attach.AttachNotSupportedException
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.*
 import org.cubewhy.celestial.event.EventManager
+import org.cubewhy.celestial.event.EventTarget
+import org.cubewhy.celestial.event.impl.APIReadyEvent
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.files.DownloadManager.waitForAll
@@ -53,6 +55,8 @@ class GuiVersionSelect : JPanel() {
     }
 
     init {
+        EventManager.register(this
+        )
         this.border = TitledBorder(
             null,
             f.getString("gui.version-select.title"),
@@ -62,10 +66,13 @@ class GuiVersionSelect : JPanel() {
             Color.orange
         )
         this.layout = GridLayout(5, 2, 5, 5)
-
-        this.initGui()
     }
 
+    @EventTarget
+    fun onAPIReady(e: APIReadyEvent) {
+        this.removeAll()
+        initGui()
+    }
 
     private fun initGui() {
         this.add(JLabel(f.getString("gui.version-select.label.version")))
