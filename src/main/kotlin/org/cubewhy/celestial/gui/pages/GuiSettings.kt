@@ -323,6 +323,9 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             Color.ORANGE
         )
         panelLunarQT.add(
+            f.getString("gui.settings.addons.lcqt.compatibility").toJLabel()
+        )
+        panelLunarQT.add(
             getAutoSaveCheckBox(
                 config.addon.lcqt,
                 "state",
