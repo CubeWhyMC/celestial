@@ -631,7 +631,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
 
         private inline fun <reified T> Any.saveConfig(name: String, value: T?) {
             log.info("Saving ${this.javaClass.name} (key=${name}, value=${value})")
-            ChangeConfigEvent(this, name, value).call()
+            ChangeConfigEvent(this, name, value, this.getKotlinField(name)).call()
             this.setKotlinField(name, value)
         }
     }
