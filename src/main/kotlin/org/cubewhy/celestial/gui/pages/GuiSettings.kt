@@ -66,6 +66,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             log.info("API changed, hot reloading...")
             launcherData = LauncherData(e.newValue as String)
             metadata = launcherData.metadata()
+            // todo check API status before call event
             APIReadyEvent().call()
         }
     }
