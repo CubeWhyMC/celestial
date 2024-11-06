@@ -405,9 +405,13 @@ fun getArgs(
         javaAgents.add(JavaAgent(CeleWrap.installation)) // patch classloader and anti antiagent check
     }
     if (weave.state) {
-        val file = weave.installationDir
-        log.info("Weave enabled! $file")
-        javaAgents.add(JavaAgent(file))
+        if (version == "1.8.9") {
+            val file = weave.installationDir
+            log.info("Weave enabled! $file")
+            javaAgents.add(JavaAgent(file))
+        } else {
+            log.info("Weave disabled due to version is not 1.8.9!")
+        }
     }
     if (cn.state) {
         val file = cn.installationDir
