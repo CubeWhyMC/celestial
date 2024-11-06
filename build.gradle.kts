@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "org.cubewhy.celestial"
-version = "2.7.4-SNAPSHOT"
+version = "2.8-SNAPSHOT"
 
 println("Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"))
 println("Celestial Launcher -> https://lunarclient.top/")
@@ -40,8 +40,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
-
-    implementation("org.ow2.asm:asm:9.7.1")
 }
 
 tasks.shadowJar {

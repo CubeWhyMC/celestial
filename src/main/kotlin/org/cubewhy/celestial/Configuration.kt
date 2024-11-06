@@ -83,7 +83,7 @@ data class AddonConfiguration(
 
 @Serializable
 data class CeleWrapConfiguration(
-    var state: Boolean = true,
+    var state: Boolean = false,
     var checkUpdate: Boolean = true
 )
 

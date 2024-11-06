@@ -8,10 +8,11 @@ package org.cubewhy.celestial.gui
 
 import com.sun.tools.attach.AttachNotSupportedException
 import org.cubewhy.celestial.config
+import org.cubewhy.celestial.event.EventManager
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.gamePid
 import org.cubewhy.celestial.metadata
-import org.cubewhy.celestial.event.EventManager.register
+
 import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.AuthEvent
 import org.cubewhy.celestial.event.impl.GameStartEvent
@@ -37,8 +38,7 @@ class GuiLauncher : JFrame() {
     lateinit var mainPanel: JPanel
 
     init {
-        // register with EventManager
-        register(this)
+        EventManager.register(this)
 
         this.setBounds(100, 100, 1200, 700)
         this.title = f.getString("gui.launcher.title")

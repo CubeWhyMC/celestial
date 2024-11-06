@@ -5,6 +5,8 @@
  */
 package org.cubewhy.celestial.gui.pages
 
+import org.cubewhy.celestial.event.EventTarget
+import org.cubewhy.celestial.event.impl.APIReadyEvent
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.launcherData
 import org.cubewhy.celestial.format
@@ -42,7 +44,11 @@ class GuiPlugins : JPanel() {
         this.layout = BoxLayout(this, BoxLayout.Y_AXIS)
 
         this.tab = JTabbedPane()
+    }
 
+    @EventTarget
+    fun onAPIReady(e: APIReadyEvent) {
+        this.removeAll()
         this.initGui()
     }
 
