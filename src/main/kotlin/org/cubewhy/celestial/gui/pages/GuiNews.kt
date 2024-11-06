@@ -1,6 +1,9 @@
 package org.cubewhy.celestial.gui.pages
 
 import cn.hutool.crypto.SecureUtil
+import org.cubewhy.celestial.event.EventManager
+import org.cubewhy.celestial.event.EventTarget
+import org.cubewhy.celestial.event.impl.APIReadyEvent
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.files.DownloadManager.cache
 import org.cubewhy.celestial.gui.LauncherBirthday
@@ -24,9 +27,10 @@ import kotlin.math.abs
 
 
 class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED) {
-    private val blogPosts: List<Blogpost>
+    private lateinit var blogPosts: List<Blogpost>
 
     init {
+        EventManager.register(this)
         this.border = TitledBorder(
             null,
             f.getString("gui.news.title"),
@@ -36,8 +40,7 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
             Color.orange
         )
         panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
-        blogPosts = metadata.blogposts
-        this.initGui()
+        getVerticalScrollBar().unitIncrement = 30
     }
 
 
@@ -48,9 +51,15 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
         return ChronoUnit.DAYS.between(today, birthday).toInt()
     }
 
+    @EventTarget
+    fun onAPIReady(event: APIReadyEvent) {
+        blogPosts = metadata.blogposts
+        panel.removeAll()
+        initGui()
+    }
+
     private fun initGui() {
         // render blogPosts
-        getVerticalScrollBar().unitIncrement = 30
         log.info("Loading blogPosts (gui)")
         val birthday = calcBirthday()
         if (abs(birthday) <= 10) {
