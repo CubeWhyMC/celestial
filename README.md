@@ -12,6 +12,7 @@ Let's Make LunarClient Great Again
 * No electron
 * Lite, high performance
 * No installation needed
+* No ads
 * Ready out of the box
 * External browser login support
 * Cross-platform (*Experimental*)
