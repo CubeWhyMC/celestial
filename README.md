@@ -2,26 +2,25 @@
 
 [中文介绍](./README_zh.md)
 
-> Celestial is a high performance LC Launcher
+Let's Make LunarClient Great Again
 
 ## Features
 
 > Celestial doesn't include any features about "cracked LunarClient"
 
-1. Full open source (GPLv3)
-2. No electron
-3. Lite, high performance
-4. No installation needed
-5. Ready out of the box
-6. External browser login support
-7. Cross-platform (*Experimental*)
-8. Custom API address
-9. Multi version, one jre
-10. Javaagent support (*EXPERIMENTAL*)
-11. ~~LunarCN support~~ (*EXPERIMENTAL,REMOVED*)
-12. [CelePatch](https://github.com/CubeWhyMC/celepatch) support
-13. Weave support (*Experimental,NOT WORK AT ALL*)
-14. Dump version json into local
+* Fully open source (License under GPLv3)
+* No electron
+* Lite, high performance
+* No installation needed
+* Ready out of the box
+* External browser login support
+* Cross-platform (*Experimental*)
+* Custom API address
+* Multi version, one jre
+* Javaagent support (*EXPERIMENTAL*)
+* [CelePatch](https://github.com/CubeWhyMC/celepatch) support
+* Weave support (*Experimental*)
+* Dump version json into local
 
 ## Get celestial
 
@@ -31,7 +30,9 @@ Download at [releases](https://github.com/cubewhy/celestial/releases) (often out
 
 ## Donate
 
-Donate at [lunarclient.top](https://lunarclient.top/donate) (CNY only/仅支持中国元)
+Due to some reasons, we only support USD₮ now
+
+USD₮(TRC20): TAgpMk6cPJhsMNDq5UEF6P9L15R24CyBNn
 
 ## Translation
 
