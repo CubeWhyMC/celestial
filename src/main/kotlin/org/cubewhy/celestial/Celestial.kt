@@ -168,7 +168,10 @@ private fun run() {
             if (input == null) {
                 exitProcess(1)
             } else {
-                val proxyInput = JOptionPane.showInputDialog(f.getString("api.unreachable.proxy"), if (config.proxy.state) config.proxy.proxyAddress else "")
+                val proxyInput = JOptionPane.showInputDialog(
+                    f.getString("api.unreachable.proxy"),
+                    if (config.proxy.state) config.proxy.proxyAddress else ""
+                )
                 if (proxyInput.isNullOrBlank()) {
                     config.proxy.state = false
                 } else {
@@ -353,7 +356,12 @@ fun launch(wrapLog: Boolean = true): ProcessBuilder {
  * Get args
  */
 fun getArgs(
-    version: String, branch: String?, module: String?, installation: File, gameArgs: GameArgs, givenAgents: List<JavaAgent> = emptyList()
+    version: String,
+    branch: String?,
+    module: String?,
+    installation: File,
+    gameArgs: GameArgs,
+    givenAgents: List<JavaAgent> = emptyList()
 ): GameArgsResult {
     val args: MutableList<String> = ArrayList()
     val json = launcherData.getVersion(version, branch, module)
@@ -484,7 +492,7 @@ fun getArgs(
     }
     // === game args ===
     val ichorEnabled = LauncherData.getIchorState(json)
-    args.add("--version $version") // what version will lunarClient inject
+    args.add("--version $version") // what version will lunarClient inject to
     args.add("--accessToken 0")
     args.add("--userProperties {}")
     args.add("--launcherVersion 2.15.1")
@@ -497,6 +505,7 @@ fun getArgs(
     args.add("--gameDir " + gameArgs.gameDir)
     args.add("--texturesDir textures")
     args.add("--uiDir ui")
+    args.add("--ipcPort " + NewAuthServer.instance.port)
     if (gameArgs.server != null) {
         args.add("--server " + gameArgs.server) // Join server after launch
     }
@@ -525,7 +534,13 @@ fun getArgs(
  * @param branch  Git branch (LunarClient)
  * @return natives file
  */
-fun launch(version: String, branch: String?, module: String?, javaagents: List<JavaAgent> = emptyList(), beforeLaunch: () -> Unit = {}): File {
+fun launch(
+    version: String,
+    branch: String?,
+    module: String?,
+    javaagents: List<JavaAgent> = emptyList(),
+    beforeLaunch: () -> Unit = {}
+): File {
     completeSession()
     beforeLaunch()
     val installationDir = File(config.installationDir)
@@ -640,10 +655,14 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
     }
     // dump to .minecraft/assets/indexes
     val assetsFolder = minecraftFolder.resolve("assets")
-    val indexFile = File(assetsFolder,
-        "indexes/" + Arrays.copyOfRange(version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray(),
+    val indexFile = File(
+        assetsFolder,
+        "indexes/" + Arrays.copyOfRange(
+            version.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray(),
             0,
-            2).joinToString(".") + ".json")
+            2
+        ).joinToString(".") + ".json"
+    )
     FileUtils.writeStringToFile(indexFile, Gson().toJson(textureIndex), StandardCharsets.UTF_8)
 
     val objects = textureIndex.objects
