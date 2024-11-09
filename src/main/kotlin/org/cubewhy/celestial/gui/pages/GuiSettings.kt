@@ -64,10 +64,24 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
     fun onChangeConfig(e: ChangeConfigEvent<*>) {
         if (e.configObject is BasicConfig && e.key == "api") {
             log.info("API changed, hot reloading...")
-            launcherData = LauncherData(e.newValue as String)
-            metadata = launcherData.metadata()
-            // todo check API status before call event
-            APIReadyEvent().call()
+            val newApi = e.newValue as String
+            try {
+                launcherData = LauncherData(newApi)
+                metadata = launcherData.metadata()
+                log.info("API is ready.")
+                APIReadyEvent().call()
+            } catch (ex: Exception) {
+                log.info("Failed to apply API ${e.newValue}")
+                log.error(ex.message, ex)
+                // rollback
+                e.cancel() // cancel the change
+                JOptionPane.showMessageDialog(
+                    this,
+                    f.format("gui.settings.launcher.api.error.connection.message", newApi),
+                    f.getString("gui.settings.launcher.api.error.connection.title"),
+                    JOptionPane.ERROR_MESSAGE
+                )
+            }
         }
     }
 
@@ -247,8 +261,20 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             null,
             Color.ORANGE
         )
-        panelCeleWrap.add(getAutoSaveCheckBox(config.celeWrap, "state", f.getString("gui.settings.launcher.celewrap.state")))
-        panelCeleWrap.add(getAutoSaveCheckBox(config.celeWrap, "checkUpdate", f.getString("gui.settings.launcher.celewrap.update")))
+        panelCeleWrap.add(
+            getAutoSaveCheckBox(
+                config.celeWrap,
+                "state",
+                f.getString("gui.settings.launcher.celewrap.state")
+            )
+        )
+        panelCeleWrap.add(
+            getAutoSaveCheckBox(
+                config.celeWrap,
+                "checkUpdate",
+                f.getString("gui.settings.launcher.celewrap.update")
+            )
+        )
         panelLauncher.add(panelCeleWrap)
         // max-threads
         val p7 = JPanel()
@@ -630,11 +656,11 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         private fun getAutoSaveTextField(obj3ct: Any, key: String): JTextField {
             val value = obj3ct.getKotlinField<String>(key)
             val input = JTextField(value)
-            input.addActionListener { e: ActionEvent ->
-                val source = e.source as JTextField
-                // save value
-                obj3ct.saveConfig(key, source.text)
-            }
+//            input.addActionListener { e: ActionEvent ->
+//                val source = e.source as JTextField
+//                // save value
+//                obj3ct.saveConfig(key, source.text)
+//            }
             input.addFocusListener(object : FocusAdapter() {
                 override fun focusLost(e: FocusEvent) {
                     val source = e.source as JTextField
@@ -647,8 +673,9 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
 
         private inline fun <reified T> Any.saveConfig(name: String, value: T?) {
             log.info("Saving ${this.javaClass.name} (key=${name}, value=${value})")
-            ChangeConfigEvent(this, name, value, this.getKotlinField(name)).call()
-            this.setKotlinField(name, value)
+            if (!ChangeConfigEvent(this, name, value, this.getKotlinField(name)).call()) {
+                this.setKotlinField(name, value)
+            }
         }
     }
 }

@@ -71,6 +71,8 @@ class GuiVersionSelect : JPanel() {
     @EventTarget
     fun onAPIReady(e: APIReadyEvent) {
         this.removeAll()
+        this.isFinishOk = false
+        versionSelect.removeAllItems()
         initGui()
     }
 
@@ -433,6 +435,9 @@ class GuiVersionSelect : JPanel() {
 
     private fun refreshModuleSelect(reset: Boolean) {
         moduleSelect.removeAllItems()
+        if (versionSelect.selectedItem == null) {
+            return
+        }
         val map = getSupportModules(metadata, (versionSelect.selectedItem as String))
         val modules: List<String> = map["modules"] as ArrayList<String>
         val defaultValue = map["default"] as String?

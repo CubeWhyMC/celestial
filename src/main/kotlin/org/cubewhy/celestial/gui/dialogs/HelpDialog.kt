@@ -31,7 +31,6 @@ class HelpDialog : JDialog() {
     }
 
     private fun initGui() {
-        // TODO Help dialog
         val panelDocument = JPanel()
         val layout = CardLayout()
         panelDocument.layout = layout

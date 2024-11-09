@@ -6,12 +6,10 @@
 
 package org.cubewhy.celestial.utils.lunar
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import org.cubewhy.celestial.JSON
-import org.cubewhy.celestial.config
 import org.cubewhy.celestial.event.impl.CrashReportUploadEvent
 import org.cubewhy.celestial.game.AddonMeta
 import org.cubewhy.celestial.game.RemoteAddon
@@ -20,7 +18,6 @@ import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.OSEnum
 import org.cubewhy.celestial.utils.RequestUtils.get
 import org.cubewhy.celestial.utils.RequestUtils.post
-import org.cubewhy.celestial.utils.arch
 import java.io.File
 import java.net.URI
 import java.net.URL
@@ -135,7 +132,14 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         fun getMainClass(json: GameArtifactInfo? = null): String =
             json?.launchTypeData?.mainClass ?: "com.moonsworth.lunar.genesis.Genesis"
 
-
+        fun check(api: String): Boolean {
+            try {
+                get(api).execute()
+                return true
+            } catch (e: Exception) {
+                return false
+            }
+        }
 
         /**
          * Get ICHOR state
@@ -250,6 +254,8 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         }
     }
 }
+
+// Entities
 
 @Serializable
 data class LunarVersion(

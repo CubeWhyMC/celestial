@@ -9,12 +9,14 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 open class Event {
+    private var canceled: Boolean = false
+
     /**
      * Call a event
      *
-     * @return Event
+     * @return isCanceled
      */
-    fun call(): Event {
+    fun call(): Boolean {
         val dataList = EventManager.get(this.javaClass)
 
         if (dataList != null) {
@@ -26,7 +28,11 @@ open class Event {
                 }
             }
         }
-        return this
+        return canceled
+    }
+
+    fun cancel() {
+        this.canceled = true
     }
 
     companion object {
