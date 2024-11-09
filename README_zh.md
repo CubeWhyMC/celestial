@@ -1,5 +1,9 @@
 # Celestial
 
+[![Discord](https://img.shields.io/discord/1047866655033802802?label=Discord)](https://discord.lunarclient.top)
+[![GitHub Release](https://img.shields.io/github/v/release/CubeWhy/celestial)](https://github.com/CubeWhyMC/celestial/releases/latest)
+
+
 [English](./README.md)
 
 让LunarClient再次辉煌
@@ -7,6 +11,8 @@
 ## 特性
 
 > Celestial不是破解LunarClient, 且以后也不会更新相关功能!
+
+给我们Star!
 
 * 开源 (GPLv3)
 * 不使用electron
