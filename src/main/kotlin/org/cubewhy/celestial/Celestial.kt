@@ -514,7 +514,7 @@ fun getArgs(
         args.add("--ichorClassPath")
         args.add(classpath.joinToString(","))
         args.add("--ichorExternalFiles")
-        args.add(classpath.joinToString(","))
+        args.add(ichorPath.joinToString(","))
     }
     args.add("--webosrDir")
     args.add("\"" + natives!!.path + "\"")
