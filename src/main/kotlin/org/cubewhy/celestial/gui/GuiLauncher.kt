@@ -92,7 +92,6 @@ class GuiLauncher : JFrame() {
         menu.add(btnNext)
         menu.add(btnDonate)
         menu.add(btnHelp)
-        //        menu.add(btnLanguage);
         menu.setSize(100, 20)
 
         this.add(menu, BorderLayout.NORTH)
