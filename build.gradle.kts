@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "org.cubewhy.celestial"
-version = "2.8-SNAPSHOT"
+version = "2.8.1-SNAPSHOT"
 
 println("Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"))
 println("Celestial Launcher -> https://lunarclient.top/")
@@ -83,9 +83,4 @@ tasks.jar {
             "Charset" to "UTF-8"
         )
     }
-}
-
-
-kotlin {
-    jvmToolchain(17)
 }
