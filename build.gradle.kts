@@ -1,3 +1,6 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+
 plugins {
     id("com.github.johnrengelman.shadow") version "8.+"
     id ("com.gorylenko.gradle-git-properties") version "2.4.1"
@@ -11,6 +14,13 @@ version = "2.8-SNAPSHOT"
 
 println("Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"))
 println("Celestial Launcher -> https://lunarclient.top/")
+
+val isGitHubActions = System.getenv("GITHUB_ACTIONS") == "true"
+
+if (isGitHubActions) {
+    val timeStamp = SimpleDateFormat("yyyyMMdd-HHmm").format(Date())
+    version = "nightly-$timeStamp"
+}
 
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
