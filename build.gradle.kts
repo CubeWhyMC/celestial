@@ -39,7 +39,7 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.16")
     implementation("org.slf4j:slf4j-log4j12:2.0.16")
     implementation("org.apache.logging.log4j:log4j-api:2.24.1")
-    implementation("org.apache.logging.log4j:log4j-core:2.24.1")
+    implementation("org.apache.logging.log4j:log4j-core:2.24.2")
 
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:okhttp-dnsoverhttps:4.12.0")
