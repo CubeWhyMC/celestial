@@ -573,7 +573,7 @@ fun launch(
 //            writer.write("@rem Version %s\r\n".format(GitUtils.buildVersion))
 //            writer.write("@rem Please donate to support us to continue develop https://lunarclient.top/donate\r\n")
 //            writer.write("@rem You can run this script to debug your game, or share this script to developers to resolve your launch problem\r\n")
-            writer.write("cd /d $installationDir\r\n")
+            writer.write("cd /d \"$installationDir\"\r\n")
         } else {
             // Others
             writer.write("#!/bin/bash\n")
