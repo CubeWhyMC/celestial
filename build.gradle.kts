@@ -6,7 +6,7 @@ plugins {
     id ("com.gorylenko.gradle-git-properties") version "2.4.1"
     kotlin("jvm")
     id("com.google.protobuf") version "0.9.4"
-    kotlin("plugin.serialization") version "2.0.21"
+    kotlin("plugin.serialization") version "2.1.0"
 }
 
 group = "org.cubewhy.celestial"
