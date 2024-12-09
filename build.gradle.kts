@@ -44,7 +44,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("com.squareup.okhttp3:okhttp-dnsoverhttps:4.12.0")
     implementation("com.google.code.gson:gson:2.11.0")
-    implementation("com.formdev:flatlaf:3.5.2")
+    implementation("com.formdev:flatlaf:3.5.4")
     implementation("commons-io:commons-io:2.18.0")
     implementation("cn.hutool:hutool-crypto:5.8.34")
     implementation("org.java-websocket:Java-WebSocket:1.5.7")
