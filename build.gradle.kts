@@ -47,7 +47,7 @@ dependencies {
     implementation("com.formdev:flatlaf:3.5.2")
     implementation("commons-io:commons-io:2.18.0")
     implementation("cn.hutool:hutool-crypto:5.8.34")
-    implementation("org.java-websocket:Java-WebSocket:1.5.7")
+    implementation("org.java-websocket:Java-WebSocket:1.6.0")
     implementation("com.google.protobuf:protobuf-kotlin:4.29.1")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
