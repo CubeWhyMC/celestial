@@ -9,13 +9,12 @@ package org.cubewhy.celestial
 import okhttp3.Response
 import org.cubewhy.celestial.game.AddonType
 import org.cubewhy.celestial.gui.GuiLauncher
+import org.cubewhy.celestial.utils.OSEnum
 import java.awt.Component
+import java.awt.Desktop
 import java.awt.event.ActionListener
 import java.io.*
 import java.net.URI
-import java.net.URL
-import java.nio.file.Path
-import java.nio.file.Paths
 import java.util.*
 import java.util.jar.JarFile
 import java.util.zip.ZipFile
@@ -24,11 +23,22 @@ import javax.swing.*
 
 fun String.toURI(): URI = URI.create(this)
 
+fun URI.open() {
+    try {
+        Desktop.getDesktop().browse(this)
+    } catch (e: UnsupportedOperationException) {
+        // open with native methods
+        when (OSEnum.current) {
+            OSEnum.Linux -> Runtime.getRuntime().exec("xdg-open $this")
+            OSEnum.MacOS, OSEnum.MacOSX, OSEnum.Darwin -> Runtime.getRuntime().exec("open $this")
+            OSEnum.Windows -> Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler $this")
+            else -> throw RuntimeException(e) // really unsupported
+        }
+    }
+}
+
 fun ResourceBundle.format(key: String, vararg args: Any?): String =
     this.getString(key).format(*args)
-
-fun String.toURL(): URL =
-    URL(this)
 
 
 fun String.hasNonAscii(): Boolean {

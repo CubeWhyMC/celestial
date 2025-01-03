@@ -3,12 +3,10 @@ package org.cubewhy.celestial.utils
 import java.util.*
 
 enum class OSEnum(val os: String, val jsName: String = os.lowercase(Locale.getDefault())) {
-    Any("any", "any"),
     Linux("Linux", "linux"),
-    Mac_OS("Mac OS", "darwin"),
-    Mac_OS_X("Mac OS X", "osx"),
     Windows("Windows", "win32"),
-    FreeBSD("FreeBSD", "freebsd"),
+    MacOS("Mac OS", "darwin"),
+    MacOSX("Mac OS X", "osx"),
     Darwin("Darwin", "darwin");
 
     val isCurrent: Boolean

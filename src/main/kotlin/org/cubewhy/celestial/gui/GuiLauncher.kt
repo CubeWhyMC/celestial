@@ -7,19 +7,14 @@
 package org.cubewhy.celestial.gui
 
 import com.sun.tools.attach.AttachNotSupportedException
-import org.cubewhy.celestial.config
+import org.cubewhy.celestial.*
 import org.cubewhy.celestial.event.EventManager
-import org.cubewhy.celestial.f
-import org.cubewhy.celestial.gamePid
-import org.cubewhy.celestial.metadata
 
 import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.AuthEvent
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
-import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.thirdparty.CeleWrap
-import org.cubewhy.celestial.getInputStream
 import org.cubewhy.celestial.gui.dialogs.HelpDialog
 import org.cubewhy.celestial.gui.elements.StatusBar
 import org.cubewhy.celestial.gui.pages.*
@@ -80,7 +75,7 @@ class GuiLauncher : JFrame() {
         val btnHelp = JButton(f.getString("gui.help"))
         btnDonate.addActionListener {
             try {
-                Desktop.getDesktop().browse(URI.create("https://lunarclient.top/donate"))
+                URI.create("https://lunarclient.top/donate").open()
             } catch (ignored: IOException) {
             }
         }

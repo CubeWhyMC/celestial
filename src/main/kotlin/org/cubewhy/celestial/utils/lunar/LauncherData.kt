@@ -18,7 +18,7 @@ import org.cubewhy.celestial.utils.CrashReportType
 import org.cubewhy.celestial.utils.OSEnum
 import org.cubewhy.celestial.utils.RequestUtils.get
 import org.cubewhy.celestial.utils.RequestUtils.post
-import java.io.File
+import org.cubewhy.celestial.utils.arch
 import java.net.URI
 import java.net.URL
 import java.util.*
@@ -58,8 +58,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
             "hwid" to "HWID-PUBLIC",
             "installation_id" to UUID(100, 0).toString(), // fake uuid
             "os" to OSEnum.find(System.getProperty("os.name"))?.jsName, // shit js
-//            "arch" to arch, // example: x64
-            "arch" to "x64", // example: x64
+            "arch" to arch, // example: x64
             "os_release" to "19045.3086", // fake os release
             "launcher_version" to "2.15.1",
             "launch_type" to "offline",
@@ -149,7 +148,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
 
         fun getIchorState(json: GameArtifactInfo?) = json?.launchTypeData?.ichor == true
 
-        fun getDefaultJvmArgs(json: GameArtifactInfo, installation: File): List<String> {
+        fun getDefaultJvmArgs(json: GameArtifactInfo): List<String> {
             val out: MutableList<String> = ArrayList()
             for (arg in json.jre.extraArguments) {
 //                if (arg == "-Djna.boot.library.path=natives") {

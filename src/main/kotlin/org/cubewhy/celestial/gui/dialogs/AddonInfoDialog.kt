@@ -6,19 +6,14 @@
 
 package org.cubewhy.celestial.gui.dialogs
 
-import org.cubewhy.celestial.f
+import org.cubewhy.celestial.*
 import org.cubewhy.celestial.files.DownloadManager
 import org.cubewhy.celestial.files.Downloadable
-import org.cubewhy.celestial.forEachIsEnd
-import org.cubewhy.celestial.format
 import org.cubewhy.celestial.game.RemoteAddon
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
-import org.cubewhy.celestial.toURI
-import org.cubewhy.celestial.withScroller
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import java.awt.Desktop
 import java.io.File
 import java.net.URI
 import javax.swing.*
@@ -125,7 +120,7 @@ class AddonInfoDialog(val addon: RemoteAddon, val file: File) : JDialog() {
     private fun createOpenWebsiteButton(text: String, uri: URI): JButton {
         val button = JButton(text)
         button.addActionListener {
-            Desktop.getDesktop().browse(uri)
+            uri.open()
         }
         return button
     }

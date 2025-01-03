@@ -38,5 +38,6 @@ val totalMem: Int
         return (osBean.totalMemorySize / 1048576).toInt()
     }
 
-val arch = System.getProperty("os.arch").let { if (it == "x86_64") "x64" else it }
+// https://github.com/openjdk/jdk/blob/master/src/java.base/windows/native/libjava/java_props_md.c
+val arch = System.getProperty("os.arch", "unknown").let { if (it == "x86_64") "x64" else it }
 

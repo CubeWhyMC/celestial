@@ -23,10 +23,7 @@ import org.cubewhy.celestial.game.NewAuthServer
 import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.game.thirdparty.CeleWrap
 import org.cubewhy.celestial.gui.GuiLauncher
-import org.cubewhy.celestial.utils.CrashReportType
-import org.cubewhy.celestial.utils.GitUtils
-import org.cubewhy.celestial.utils.OSEnum
-import org.cubewhy.celestial.utils.currentJavaExec
+import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.game.MinecraftData
 import org.cubewhy.celestial.utils.game.MinecraftManifest
 import org.cubewhy.celestial.utils.lunar.GameArtifactInfo
@@ -117,6 +114,7 @@ fun main() {
     log.info("Celestial v${GitUtils.buildVersion} build by ${GitUtils.buildUser}")
     log.info("Git remote: ${GitUtils.remote} (${GitUtils.branch})")
     log.info("Classpath: ${System.getProperty("java.class.path")}")
+    log.info("CPU Arch: $arch (nodejs)")
     try {
         System.setProperty("file.encoding", "UTF-8")
         run()
@@ -388,9 +386,9 @@ fun getArgs(
     log.info("RAM: " + ram + "MB")
     args.add("-Xms" + ram + "m")
     args.add("-Xmx" + ram + "m")
-    args.addAll(LauncherData.getDefaultJvmArgs(json, installation))
+    args.addAll(LauncherData.getDefaultJvmArgs(json))
     // serviceOverride
-    config.game.overrides.forEach { ov, address ->
+    config.game.overrides.forEach { (ov, address) ->
         args.add("-DserviceOverride$ov=$address")
     }
     // === javaagents ===
@@ -467,6 +465,8 @@ fun getArgs(
             }
         }
     }
+    // add javaagents to class path
+    classpath.addAll(javaAgents.map { it.file.path }.toList())
     if (config.celeWrap.state) {
         // [celewrap] add Celestial's classpath
         log.info("CeleWrap is enabled")

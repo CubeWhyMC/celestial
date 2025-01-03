@@ -7,21 +7,14 @@
 package org.cubewhy.celestial.gui
 
 import cn.hutool.crypto.SecureUtil
-import org.cubewhy.celestial.config
-import org.cubewhy.celestial.f
+import org.cubewhy.celestial.*
 import org.cubewhy.celestial.files.DownloadManager.cacheDir
-import org.cubewhy.celestial.gui.elements.GuiVersionSelect
-import org.cubewhy.celestial.toJLabel
-import org.cubewhy.celestial.toURI
 import org.cubewhy.celestial.utils.lunar.Blogpost
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
-import java.awt.Desktop
-import java.awt.Dimension
 import java.awt.Image
 import java.io.File
-import java.net.URI
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import javax.swing.*
@@ -70,7 +63,7 @@ class LauncherNews(private val blogPost: Blogpost) : JPanel() {
         val button = JButton(text)
         button.addActionListener {
             when (blogPost.type) {
-                Blogpost.ButtonType.OPEN_LINK -> Desktop.getDesktop().browse(blogPost.link.toURI())
+                Blogpost.ButtonType.OPEN_LINK -> blogPost.link.toURI().open()
                 Blogpost.ButtonType.CHANGE_API -> {
                     if (JOptionPane.showConfirmDialog(
                             this,

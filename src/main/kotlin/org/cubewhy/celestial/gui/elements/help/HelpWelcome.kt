@@ -9,8 +9,8 @@ package org.cubewhy.celestial.gui.elements.help
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.gui.elements.HelpPage
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
+import org.cubewhy.celestial.open
 import org.cubewhy.celestial.toJLabel
-import java.awt.Desktop
 import java.net.URI
 import javax.swing.JButton
 
@@ -21,7 +21,7 @@ class HelpWelcome : HelpPage("Welcome") {
 
         val online = JButton(f.getString("gui.help.document"))
         online.addActionListener {
-            Desktop.getDesktop().browse(URI.create("https://lunarclient.top/help"))
+            URI.create("https://lunarclient.top/help").open()
         }
         this.add(online)
     }

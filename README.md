@@ -3,9 +3,14 @@
 [![Discord](https://img.shields.io/discord/1047866655033802802?label=Discord)](https://discord.lunarclient.top)
 [![GitHub Release](https://img.shields.io/github/v/release/CubeWhy/celestial)](https://github.com/CubeWhyMC/celestial/releases/latest)
 
-[中文介绍](./README_zh.md)
+[中文](./README_zh.md)
 
 Let's Make LunarClient Great Again
+
+# Requirements
+
+* A Windows/Linux/MacOS PC
+* Zulu JDK 21
 
 ## Features
 
