@@ -1,16 +1,16 @@
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 plugins {
+    kotlin("jvm")
+    kotlin("plugin.serialization") version "2.1.0"
     id("com.github.johnrengelman.shadow") version "8.+"
     id ("com.gorylenko.gradle-git-properties") version "2.4.1"
-    kotlin("jvm")
     id("com.google.protobuf") version "0.9.4"
-    kotlin("plugin.serialization") version "2.1.0"
 }
 
 group = "org.cubewhy.celestial"
-version = "2.8.1-SNAPSHOT"
+version = "2.8.2-SNAPSHOT"
 
 println("Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty("java.vm.version") + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch"))
 println("Celestial Launcher -> https://lunarclient.top/")

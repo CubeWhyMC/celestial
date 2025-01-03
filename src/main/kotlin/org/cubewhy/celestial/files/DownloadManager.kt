@@ -20,9 +20,7 @@ import java.io.File
 import java.net.URL
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import java.util.concurrent.ThreadFactory
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicInteger
 
 object DownloadManager {
     val cacheDir: File = File(configDir, "cache")
@@ -120,15 +118,5 @@ object DownloadManager {
             pool = Executors.newWorkStealingPool(config.maxThreads)
         }
         pool!!.execute(downloadable)
-    }
-
-    private class DownloadThreadFactory : ThreadFactory {
-        private val i = AtomicInteger(0)
-
-        override fun newThread(r: Runnable): Thread {
-            val thread = Thread(r)
-            thread.name = "downloader-thread-" + i.getAndIncrement()
-            return thread
-        }
     }
 }

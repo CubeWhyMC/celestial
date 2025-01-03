@@ -39,5 +39,10 @@ val totalMem: Int
     }
 
 // https://github.com/openjdk/jdk/blob/master/src/java.base/windows/native/libjava/java_props_md.c
-val arch = System.getProperty("os.arch", "unknown").let { if (it == "x86_64") "x64" else it }
+val arch = when (System.getProperty("os.arch", "unknown")) {
+    "amd64", "x86_64" -> "x64"
+    "aarch64", "arm64" -> "arm64"
+    "arm" -> "arm"
+    else -> throw IllegalStateException("Unsupported CPU Arch: ${System.getProperty("os.arch")}")
+}
 

@@ -336,7 +336,7 @@ data class Blogpost(
 
 @Serializable
 data class Alert(
-    val name: String? = "Failed to get title",
+    val name: String? = "News",
     val text: String? = null
 )
 

@@ -268,7 +268,7 @@ private fun checkJava() {
     )
 
     if (javaVersion != "17" && javaVersion != "21") {
-        log.warn("Compatibility warning: The Java you are currently using may not be able to start LunarClient properly (Java 17 is recommended)")
+        log.warn("Compatibility warning: The Java you are currently using may not be able to start LunarClient properly (Java 21 is recommended)")
         JOptionPane.showMessageDialog(
             null,
             f.getString("compatibility.warn.message"),

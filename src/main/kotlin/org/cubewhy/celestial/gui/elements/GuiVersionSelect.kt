@@ -32,7 +32,6 @@ import java.awt.Color
 import java.awt.GridLayout
 import java.io.File
 import java.io.IOException
-import java.io.NotActiveException
 import java.nio.charset.StandardCharsets
 import javax.swing.*
 import javax.swing.border.TitledBorder
@@ -86,7 +85,7 @@ class GuiVersionSelect : JPanel() {
 
         // add items
         val map = getSupportVersions(metadata)
-        val supportVersions: List<String> = map["versions"] as ArrayList<String>
+        @Suppress("UNCHECKED_CAST") val supportVersions: List<String> = map["versions"] as ArrayList<String>
         for (version in supportVersions) {
             versionSelect.addItem(version)
         }
@@ -323,7 +322,7 @@ class GuiVersionSelect : JPanel() {
                                 throw RuntimeException("Failed to upload crash report")
                             }
                         } else {
-                            throw NotActiveException()
+                            throw UnsupportedOperationException("Unsupported")
                         }
                     } catch (e: Exception) {
                         JOptionPane.showMessageDialog(
@@ -336,7 +335,7 @@ class GuiVersionSelect : JPanel() {
                             "Game crashed!",
                             JOptionPane.ERROR_MESSAGE
                         )
-                        if (e !is NotActiveException) {
+                        if (e !is UnsupportedOperationException) {
                             throw RuntimeException(e)
                         }
                     }
@@ -439,7 +438,7 @@ class GuiVersionSelect : JPanel() {
             return
         }
         val map = getSupportModules(metadata, (versionSelect.selectedItem as String))
-        val modules: List<String> = map["modules"] as ArrayList<String>
+        @Suppress("UNCHECKED_CAST") val modules: List<String> = map["modules"] as ArrayList<String>
         val defaultValue = map["default"] as String?
         for (module in modules) {
             moduleSelect.addItem(module)
