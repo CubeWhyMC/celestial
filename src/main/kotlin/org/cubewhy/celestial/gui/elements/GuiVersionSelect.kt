@@ -351,9 +351,7 @@ class GuiVersionSelect : JPanel() {
             waitForAll()
             log.info("Everything is OK, starting game...")
             isLaunching = false
-            val process = launch(launchCommand)
-            val code = process.waitFor()
-            GameTerminateEvent(code).call()
+            launch(launchCommand).waitFor()
         }.start()
     }
 
@@ -361,9 +359,7 @@ class GuiVersionSelect : JPanel() {
         beforeLaunch()
         Thread {
             statusBar.text = f.getString("status.launch.call-process")
-            val process = launchPrevious()
-            val code = process.waitFor()
-            GameTerminateEvent(code).call()
+            launchPrevious().waitFor()
         }.start()
     }
 

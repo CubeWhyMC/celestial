@@ -30,10 +30,11 @@ data class LaunchCommand(
     val gameVersion: String,
     val gameProperties: GameProperties
 ) {
-    fun startAuthServer() {
+    fun startAuthServer(): NewAuthServer {
         val server = NewAuthServer(ipcPort)
         server.start()
         ipcPort = server.port // override ipcPort with the real port
+        return server
     }
 
     fun generateCommand(): List<String> {

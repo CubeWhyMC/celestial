@@ -9,6 +9,7 @@ package org.cubewhy.celestial
 import com.google.gson.JsonParser
 import org.apache.commons.io.FileUtils
 import org.cubewhy.celestial.event.impl.GameStartEvent
+import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.game.GameProperties
 import org.cubewhy.celestial.game.LaunchCommand
 import org.cubewhy.celestial.game.LaunchCommandJson
@@ -132,7 +133,7 @@ fun launch(cmd: LaunchCommand): Process {
         log.error(e.stackTraceToString())
     }
     log.info("Starting auth server...")
-    cmd.startAuthServer()
+    val server = cmd.startAuthServer()
     log.info("Generating command...")
     val commandList = cmd.generateCommand()
     log.debug(commandList.joinToString(" "))
@@ -145,6 +146,10 @@ fun launch(cmd: LaunchCommand): Process {
     Thread.sleep(3000) // wait 3s
     log.info("Game is running! (PID: $pid)")
     GameStartEvent(pid).call()
+    process.onExit().thenAccept {
+        GameTerminateEvent(it.exitValue()).call()
+        server.stop()
+    }
     return process
 }
 
