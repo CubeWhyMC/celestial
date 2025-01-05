@@ -137,7 +137,7 @@ fun launch(cmd: LaunchCommand): Process {
     log.info("Generating command...")
     // wait 1s for the auth server start
     Thread.sleep(1000)
-    val commandList = cmd.generateCommand()
+    val commandList = cmd.generateCommand(server.port)
     log.debug(commandList.joinToString(" "))
     log.info("Executing command...")
     val pb = ProcessBuilder(commandList)

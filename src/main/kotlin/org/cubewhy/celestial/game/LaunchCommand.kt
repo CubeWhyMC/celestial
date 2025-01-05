@@ -33,11 +33,10 @@ data class LaunchCommand(
     fun startAuthServer(): NewAuthServer {
         val server = NewAuthServer(ipcPort)
         server.start()
-        ipcPort = server.port // override ipcPort with the real port
         return server
     }
 
-    fun generateCommand(): List<String> {
+    fun generateCommand(ipcPort: Int = this.ipcPort): List<String> {
         val tempClasspath = mutableListOf<File>().apply {
             addAll(classpath)
         }
@@ -86,7 +85,7 @@ data class LaunchCommand(
         commands.add("--classpathDir")
         commands.add(installation.path)
         commands.add("--ipcPort")
-        commands.add(this.ipcPort.toString())
+        commands.add(ipcPort.toString())
         commands.add("--width")
         commands.add(gameProperties.width.toString())
         commands.add("--height")
