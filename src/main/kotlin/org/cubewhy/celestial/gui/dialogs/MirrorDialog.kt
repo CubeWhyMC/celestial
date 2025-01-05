@@ -34,7 +34,7 @@ class MirrorDialog : JDialog() {
         this.input = JTextArea(header)
         this.add(input.withScroller())
 
-        val btnCheckSyntax: JButton = JButton(f.getString("gui.mirror.syntax"))
+        val btnCheckSyntax = JButton(f.getString("gui.mirror.syntax"))
 
         btnCheckSyntax.addActionListener {
             log.info("Check syntax")

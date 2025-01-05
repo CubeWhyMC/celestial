@@ -19,6 +19,7 @@ import org.cubewhy.celestial.gui.Language
 import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog
 import org.cubewhy.celestial.gui.dialogs.LunarQTDialog
 import org.cubewhy.celestial.gui.dialogs.MirrorDialog
+import org.cubewhy.celestial.gui.dialogs.SortPagesDialog
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.OSEnum.Companion.current
@@ -40,8 +41,6 @@ import javax.swing.event.ChangeEvent
 import javax.swing.filechooser.FileNameExtensionFilter
 
 class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED) {
-    private val claimed: MutableSet<String> = HashSet()
-
     init {
         EventManager.register(this)
         this.border = TitledBorder(
@@ -202,6 +201,9 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
                 f.getString("gui.settings.launcher.data-sharing")
             )
         )
+        panelLauncher.add(f.getString("gui.settings.pages.manage").toJButton {
+            SortPagesDialog().isVisible = true
+        })
         // theme
         val p5 = JPanel()
         p5.add(JLabel(f.getString("gui.settings.launcher.theme")))
