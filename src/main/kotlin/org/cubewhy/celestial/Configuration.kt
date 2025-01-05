@@ -82,12 +82,6 @@ data class AddonConfiguration(
 )
 
 @Serializable
-data class CeleWrapConfiguration(
-    var state: Boolean = false,
-    var checkUpdate: Boolean = true
-)
-
-@Serializable
 data class BasicConfig(
     var api: String = "https://lunarclient.top/api",
     var jre: String = "", // // leave empty if you want to use the default one
@@ -102,7 +96,6 @@ data class BasicConfig(
     var maxThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
     var addon: AddonConfiguration = AddonConfiguration(),
     var proxy: ProxyConfig = ProxyConfig(),
-    var celeWrap: CeleWrapConfiguration = CeleWrapConfiguration(),
 )
 
 class Mirror(address: String) {

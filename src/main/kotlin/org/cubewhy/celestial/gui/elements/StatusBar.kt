@@ -5,12 +5,12 @@
  */
 package org.cubewhy.celestial.gui.elements
 
-import org.cubewhy.celestial.f
-import org.cubewhy.celestial.gamePid
 import org.cubewhy.celestial.event.EventManager
 import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
+import org.cubewhy.celestial.f
+import org.cubewhy.celestial.gamePid
 import org.cubewhy.celestial.getInputStream
 import org.cubewhy.celestial.gui.dialogs.LogsDialog
 import org.cubewhy.celestial.toJLabel
@@ -73,11 +73,13 @@ class StatusBar : JPanel() {
 
     @EventTarget
     fun onGameStart(e: GameStartEvent) {
+        gamePid.set(e.pid)
         this.isRunningGame = true
     }
 
     @EventTarget
     fun onGameTerminate(e: GameTerminateEvent) {
+        gamePid.set(0)
         this.isRunningGame = false
     }
 }

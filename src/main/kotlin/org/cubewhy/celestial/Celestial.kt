@@ -18,10 +18,9 @@ import org.cubewhy.celestial.event.impl.CreateLauncherEvent
 import org.cubewhy.celestial.files.DownloadManager
 import org.cubewhy.celestial.files.Downloadable
 import org.cubewhy.celestial.game.AuthServer
-import org.cubewhy.celestial.game.GameArgs
-import org.cubewhy.celestial.game.NewAuthServer
+import org.cubewhy.celestial.game.GameProperties
+import org.cubewhy.celestial.game.LaunchCommand
 import org.cubewhy.celestial.game.addon.JavaAgent
-import org.cubewhy.celestial.game.thirdparty.CeleWrap
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.game.MinecraftData
@@ -34,7 +33,6 @@ import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileWriter
 import java.net.MalformedURLException
 import java.net.URL
 import java.nio.charset.StandardCharsets
@@ -43,7 +41,6 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicLong
 import javax.swing.JDialog
 import javax.swing.JOptionPane
-import kotlin.io.path.relativeTo
 import kotlin.system.exitProcess
 
 object Celestial
@@ -62,7 +59,6 @@ val config: BasicConfig = try {
     BasicConfig()
 }
 
-val gameLogFile: File = File(configDir, "logs/game.log")
 val launcherLogFile: File = File(configDir, "logs/launcher.log")
 
 val gamePid: AtomicLong = AtomicLong()
@@ -70,19 +66,18 @@ lateinit var f: ResourceBundle
 lateinit var launcherData: LauncherData
 lateinit var metadata: LauncherMetadata
 lateinit var launcherFrame: GuiLauncher
-private var sessionFile: File = if (OSEnum.Windows.isCurrent) {
+var sessionFile: File = if (OSEnum.Windows.isCurrent) {
     // Microsoft Windows
     File(System.getenv("APPDATA"), "launcher/sentry/session.json")
 } else if (OSEnum.Linux.isCurrent) {
     // Linux
     File(System.getProperty("user.home"), ".config/launcher/sentry/session.json")
 } else {
-    // Macos...
-    // Not tested yet
+    // MacOS
     File(System.getProperty("user.home"), "Library/Application Support//launcher/sentry/session.json")
 }
 
-
+val launchJson = File(configDir, "launch-data.json")
 val launchScript: File = File(configDir, if (OSEnum.Windows.isCurrent) "launch.bat" else "launch.sh")
 private lateinit var minecraftManifest: MinecraftManifest
 
@@ -90,7 +85,7 @@ private lateinit var locale: Locale
 private lateinit var userLanguage: String
 
 var runningOnGui = false
-var jar = Celestial::class.java.getProtectionDomain().codeSource.location.path.toFile()
+var jar = Celestial::class.java.protectionDomain.codeSource.location.path.toFile()
 
 val minecraftFolder: File
     /**
@@ -182,10 +177,9 @@ private fun run() {
         }
     }
 
-    // start auth server
+    // start the old auth server
     log.info("Starting LC auth server")
     AuthServer.instance.startServer()
-    NewAuthServer.instance.start()
 
     // start gui launcher
     launcherFrame = GuiLauncher()
@@ -312,84 +306,43 @@ fun wipeCache(id: String?): Boolean {
 }
 
 /**
- * Launch LunarClient offline
- */
-fun launch(wrapLog: Boolean = true): ProcessBuilder {
-    // wrapper was applied in the script
-    log.info("Launching with script")
-    log.info("delete the log file")
-    gameLogFile.delete()
-    if (OSEnum.Windows.isCurrent) {
-        // Windows
-        // delete the log file
-        val builder = ProcessBuilder()
-        if (wrapLog) {
-            builder.command(
-                System.getenv("WINDIR") + "/System32/cmd.exe",
-                "/C \"" + launchScript.path + " 1>>\"%s\" 2>&1\"".format(gameLogFile.path)
-            )
-        } else {
-            builder.command(
-                System.getenv("WINDIR") + "/System32/cmd.exe",
-                "/C \"" + launchScript.path
-            )
-        }
-        return builder
-    } else {
-        // others
-        // do chmod
-        Runtime.getRuntime().exec("chmod 777 " + launchScript.path)
-        val builder = ProcessBuilder()
-        if (wrapLog) {
-            builder.command("/bin/bash", "-c", "\"" + launchScript.path + "\" > \"" + gameLogFile.path + "\"")
-        } else {
-            builder.command("/bin/bash", "-c", "\"" + launchScript.path)
-        }
-        return builder
-    }
-}
-
-
-/**
- * Get args
+ * Generate args
  */
 fun getArgs(
     version: String,
     branch: String?,
     module: String?,
     installation: File,
-    gameArgs: GameArgs,
+    gameProperties: GameProperties,
     givenAgents: List<JavaAgent> = emptyList()
-): GameArgsResult {
-    val args: MutableList<String> = ArrayList()
+): LaunchCommand {
     val json = launcherData.getVersion(version, branch, module)
     // === JRE ===
     val wrapper = config.game.wrapper
     val customJre = config.jre
+    val vmArgs = mutableListOf<String>()
     if (wrapper.isNotBlank()) {
         log.warn("Launch the game via the wrapper: $wrapper")
-        args.add(wrapper)
     }
-    if (customJre.isEmpty()) {
-        val java = currentJavaExec
-        if (!java.exists()) {
-            log.error("Java executable not found, please specify it in the config file")
-        }
-        log.info("Use default jre: $java")
-        args.add("\"" + java.path + "\"") // Note: Java may not be found through this method on some non-Windows computers. You can manually specify the Java executable file.
-    } else {
+    var java = currentJavaExec
+    if (!java.exists()) {
+        log.error("Java executable not found, please specify it in the config file")
+    }
+    if (customJre.isNotEmpty()) {
         log.info("Use custom jre: $customJre")
-        args.add("\"" + customJre + "\"")
+        val customJreFile = customJre.toFile()
+        if (!customJreFile.exists()) {
+            log.warn("Custom jre is not exist on the filesystem, launch may fail.")
+        }
+        java = customJreFile
+    } else {
+        log.info("Use default jre: $java")
     }
     // === default vm args ===
-    val ram = config.game.ram
-    log.info("RAM: " + ram + "MB")
-    args.add("-Xms" + ram + "m")
-    args.add("-Xmx" + ram + "m")
-    args.addAll(LauncherData.getDefaultJvmArgs(json))
+    vmArgs.addAll(LauncherData.getDefaultJvmArgs(json))
     // serviceOverride
     config.game.overrides.forEach { (ov, address) ->
-        args.add("-DserviceOverride$ov=$address")
+        vmArgs.add("-DserviceOverride$ov=$address")
     }
     // === javaagents ===
     val javaAgents = JavaAgent.findEnabled()
@@ -406,9 +359,6 @@ fun getArgs(
     val weave = config.addon.weave
     val cn = config.addon.lunarcn
     val lcqt = config.addon.lcqt
-    if (config.celeWrap.state) {
-        javaAgents.add(JavaAgent(CeleWrap.installation)) // patch classloader and anti antiagent check
-    }
     if (weave.state) {
         if (version == "1.8.9") {
             val file = weave.installationDir
@@ -427,37 +377,30 @@ fun getArgs(
     if (lcqt.state) {
         val file = lcqt.installationDir
         log.info("LunarQT enabled! $file")
+        log.warn("Stop using LunarQT! This feature is DEPRECATED")
         javaAgents.add(JavaAgent(file))
     }
-    for (agent in javaAgents) {
-        args.add(agent.jvmArg)
-    }
     // === custom vm args ===
-    val customVMArgs: MutableList<String> = ArrayList()
-    for (element in config.game.vmArgs) {
-        customVMArgs.add(element)
-    }
-    args.addAll(customVMArgs)
+    vmArgs.addAll(config.game.vmArgs)
     // === classpath ===
-    val classpath: MutableList<String> = ArrayList()
-    val ichorPath: MutableList<String> = ArrayList()
+    val classpath: MutableList<File> = ArrayList()
+    val ichorPath: MutableList<File> = ArrayList()
     var natives: File? = null
-    args.add("-cp")
     for (artifact in json.launchTypeData.artifacts) {
         when (artifact.type) {
             GameArtifactInfo.Artifact.ArtifactType.CLASS_PATH -> {
                 // is ClassPath
-                classpath.add(artifact.name)
+                classpath.add(installation.resolve(artifact.name))
             }
 
             GameArtifactInfo.Artifact.ArtifactType.EXTERNAL_FILE -> {
                 // is external file
-                ichorPath.add("\"" + File(artifact.name).path + "\"")
+                ichorPath.add(installation.resolve(artifact.name))
             }
 
             GameArtifactInfo.Artifact.ArtifactType.NATIVES -> {
                 // natives
-                natives = installation.resolve(artifact.name).toPath().relativeTo(installation.toPath()).toFile()
+                natives = installation.resolve(artifact.name)
             }
 
             GameArtifactInfo.Artifact.ArtifactType.JAVAAGENT -> {
@@ -465,149 +408,22 @@ fun getArgs(
             }
         }
     }
-    // add javaagents to class path
-    classpath.addAll(javaAgents.map { it.file.path }.toList())
-    if (config.celeWrap.state) {
-        // [celewrap] add Celestial's classpath
-        log.info("CeleWrap is enabled")
-        if (config.celeWrap.checkUpdate && CeleWrap.checkUpdate()) {
-            log.info("CeleWrap upgraded successful")
-        }
-        classpath.add("\"${CeleWrap.installation.path}\"")
-    }
-    if (OSEnum.Windows.isCurrent) {
-        args.add(classpath.joinToString(";"))
-    } else {
-        args.add(classpath.joinToString(":"))
-    }
-    // === main class ===
-    val mainClass = LauncherData.getMainClass(json)
-    if (config.celeWrap.state) {
-        // using celestial
-        args.add("-DlunarMain=$mainClass")
-        args.add("-DcelestialVersion=${GitUtils.buildVersion}")
-        args.add("org.cubewhy.CeleWrapKt") // celestial wrapper
-    } else {
-        args.add(mainClass)
-    }
-    // === game args ===
-    val ichorEnabled = LauncherData.getIchorState(json)
-    args.add("--version $version") // what version will lunarClient inject to
-    args.add("--accessToken 0")
-    args.add("--userProperties {}")
-    args.add("--launcherVersion 2.15.1")
-    args.add("--hwid PUBLIC-HWID")
-    args.add("--installationId INSTALLATION-ID")
-    args.add("--workingDirectory .")
-    args.add("--classpathDir .")
-    args.add("--width " + gameArgs.width)
-    args.add("--height " + gameArgs.height)
-    args.add("--gameDir " + gameArgs.gameDir)
-    args.add("--texturesDir textures")
-    args.add("--uiDir ui")
-    args.add("--ipcPort " + NewAuthServer.instance.port)
-    if (gameArgs.server != null) {
-        args.add("--server " + gameArgs.server) // Join server after launch
-    }
-    args.add("--assetIndex " + version.substring(0, version.lastIndexOf(".")))
-    if (ichorEnabled) {
-        args.add("--ichorClassPath")
-        args.add(classpath.joinToString(","))
-        args.add("--ichorExternalFiles")
-        args.add(ichorPath.joinToString(","))
-    }
-    args.add("--webosrDir")
-    args.add("\"" + natives!!.path + "\"")
-    // === custom game args ===
-    for (arg in config.game.args) {
-        args.add(arg)
-    }
     // === finish ===
-    return GameArgsResult(args, File(installation, natives.path))
-}
-
-/**
- * Launch LunarClient with the online config
- *
- * @param version Minecraft version
- * @param module  LunarClient module
- * @param branch  Git branch (LunarClient)
- * @return natives file
- */
-fun launch(
-    version: String,
-    branch: String?,
-    module: String?,
-    javaagents: List<JavaAgent> = emptyList(),
-    beforeLaunch: () -> Unit = {}
-): File {
-    completeSession()
-    beforeLaunch()
-    val installationDir = File(config.installationDir)
-
-    log.info(String.format("Launching (%s, %s, %s)", version, module, branch))
-    log.info("Generating launch params")
-    val resize = config.game.resize
-    val width = resize.width
-    val height = resize.height
-    log.info(String.format("Resize: (%d, %d)", width, height))
-    val gameArgs = GameArgs(width, height, File(config.game.gameDir))
-    val argsResult = getArgs(version, branch, module, installationDir, gameArgs, javaagents)
-    val args = argsResult.args
-    val argsString = args.joinToString(" ")
-    val natives = argsResult.natives
-    // dump launch script
-    if (launchScript.delete()) {
-        log.info("Delete launch script")
-    }
-    if (launchScript.createNewFile()) {
-        log.info("Launch script was created")
-    }
-    FileWriter(launchScript, StandardCharsets.UTF_8).use { writer ->
-        if (OSEnum.Windows.isCurrent) {
-            // Microsoft Windows
-            // NEW: Use CRLF (Windows 7)
-            writer.write("@echo off\r\n")
-            writer.write("chcp 65001\r\n") // unicode support for Windows which uses Chinese
-//            writer.write("@rem Generated by LunarCN (Celestial Launcher)\r\n@rem Website: https://lunarclient.top/\r\n")
-//            writer.write("@rem Version %s\r\n".format(GitUtils.buildVersion))
-//            writer.write("@rem Please donate to support us to continue develop https://lunarclient.top/donate\r\n")
-//            writer.write("@rem You can run this script to debug your game, or share this script to developers to resolve your launch problem\r\n")
-            writer.write("cd /d \"$installationDir\"\r\n")
-        } else {
-            // Others
-            writer.write("#!/bin/bash\n")
-            writer.write("# Generated by LunarCN (Celestial Launcher)\n# Website: https://lunarclient.top/\n")
-            writer.write("# Please donate to support us to continue develop https://lunarclient.top/donate\n")
-            writer.write("# You can run this script to debug your game, or share this script to developers to resolve your launch problem\n")
-            writer.write("cd $installationDir\n")
-        }
-        writer.write("\n")
-        writer.write(argsString)
-    }
-    log.info("Args was dumped to $launchScript")
-    log.info("Natives file: $natives")
-    return natives // success
-}
-
-/**
- * Patching network disabling for LunarClient
- */
-fun completeSession() {
-    if (!sessionFile.exists()) {
-        log.info("Completing session.json to fix the network error for LunarClient")
-        var json: ByteArray?
-        "/game/session.json".getInputStream().use { stream ->
-            json = stream?.readAllBytes()
-        }
-        FileUtils.writeStringToFile(
-            sessionFile, JsonParser.parseString(
-                String(
-                    json!!, StandardCharsets.UTF_8
-                )
-            ).toString(), StandardCharsets.UTF_8
-        )
-    }
+    return LaunchCommand(
+        installation = installation, // LunarClient installation
+        jre = java, // java executable
+        wrapper = config.game.wrapper.ifEmpty { null },
+        mainClass = LauncherData.getMainClass(json), // Genesis main class
+        natives = natives!!, // Minecraft Natives
+        vmArgs = vmArgs, // jvm args
+        javaAgents = javaAgents,
+        classpath = classpath, // jvm classpath
+        ichorpath = ichorPath,
+        gameVersion = version, // Minecraft version
+        gameProperties = gameProperties, // Minecraft args
+        programArgs = config.game.args, // custom game args
+        ipcPort = 0
+    )
 }
 
 /**
@@ -626,7 +442,13 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
     // download artifacts
     val artifacts = versionJson.launchTypeData.artifacts
     for (artifact in artifacts) {
-        DownloadManager.download(Downloadable(URL(artifact.url), File(installation, artifact.name), artifact.sha1))
+        DownloadManager.download(
+            Downloadable(
+                artifact.url.toURI().toURL(),
+                File(installation, artifact.name),
+                artifact.sha1
+            )
+        )
     }
 
     // download textures
@@ -634,7 +456,7 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
     index.forEach { (fileName: String, urlString: String) ->
         val url: URL
         try {
-            url = URL(urlString)
+            url = urlString.toURI().toURL()
         } catch (e: MalformedURLException) {
             throw RuntimeException(e)
         }
@@ -670,7 +492,7 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
     for (resource in objects.values) {
         val hash = resource.hash
         val folder = hash.substring(0, 2)
-        val finalURL = URL(String.format("%s/%s/%s", MinecraftData.texture, folder, hash))
+        val finalURL = String.format("%s/%s/%s", MinecraftData.texture, folder, hash).toURI().toURL()
         val finalFile = File(assetsFolder, "objects/$folder/$hash")
         DownloadManager.download(Downloadable(finalURL, finalFile, hash))
     }
@@ -680,5 +502,3 @@ private fun File.isReallyOfficial(): Boolean {
     val json = JsonParser.parseString(FileUtils.readFileToString(this, StandardCharsets.UTF_8)).asJsonObject
     return !json.has("celestial")
 }
-
-data class GameArgsResult(val args: List<String>, val natives: File)

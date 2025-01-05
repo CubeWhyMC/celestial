@@ -8,6 +8,11 @@
 
 让LunarClient再次辉煌
 
+## 配置要求
+
+* 一个搭载Windows/Linux/macOS操作系统的的电脑
+* Zulu JDK 21
+
 ## 特性
 
 > Celestial不是破解LunarClient, 且以后也不会更新相关功能!
@@ -28,6 +33,7 @@
 * 支持Weave (*实验*)
 * 支持[CelePatch](https://github.com/CubeWhyMC/celepatch) (半成品)
 * 将版本Json的响应保存在本地
+* 离线启动
 
 ## 获取Celestial
 
@@ -43,12 +49,11 @@
 
 在[releases](https://github.com/cubewhy/celestial/releases)下载 (可能是过期的版本)
 
-
 ## 捐赠
 
-我们暂时仅支持USD₮.
+我们暂时不接受捐赠
 
-USD₮(TRC20): TAgpMk6cPJhsMNDq5UEF6P9L15R24CyBNn
+如果你要支持哦我们请点击Star
 
 ## 翻译
 

@@ -5,17 +5,14 @@
  */
 package org.cubewhy.celestial.game.addon
 
-import com.google.gson.JsonObject
 import org.cubewhy.celestial.config
 import org.cubewhy.celestial.configDir
 import org.cubewhy.celestial.game.BaseAddon
-import org.cubewhy.celestial.toFile
 import org.jetbrains.annotations.Contract
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.util.*
-import kotlin.io.path.relativeTo
 
 class JavaAgent : BaseAddon {
     /**
@@ -60,14 +57,9 @@ class JavaAgent : BaseAddon {
          * @return args for jvm
          */
         get() {
-            val installation = config.installationDir.toFile().toPath()
-            var jvmArgs = "-javaagent:\"" + file.toPath().relativeTo(installation) + "\""
+            var jvmArgs = "-javaagent:$file"
             if (arg?.isNotEmpty() == true) {
-                jvmArgs += if (arg!!.contains(" ")) {
-                    "=\"" + this.arg + "\""
-                } else {
-                    "=" + this.arg
-                }
+                jvmArgs += "=" + this.arg
             }
             return jvmArgs
         }
@@ -119,7 +111,7 @@ class JavaAgent : BaseAddon {
             return list
         }
 
-        fun findDisabled(): List<JavaAgent> {
+        private fun findDisabled(): List<JavaAgent> {
             val list: MutableList<JavaAgent> = ArrayList()
             if (javaAgentFolder.isDirectory) {
                 for (file in Objects.requireNonNull<Array<File>>(javaAgentFolder.listFiles())) {
@@ -160,13 +152,13 @@ class JavaAgent : BaseAddon {
             ja[name] = arg
         }
 
-        fun findAgentArg(name: String): String {
+        private fun findAgentArg(name: String): String {
             val ja = config.game.javaagents
             if (!ja.containsKey(name)) {
                 // create config for the agent
                 ja[name] = "" // leave empty
             }
-            return ja[name]?: ""
+            return ja[name] ?: ""
         }
 
 
@@ -188,7 +180,7 @@ class JavaAgent : BaseAddon {
         fun migrate(old: String, n3w: String) {
             val ja = config.game.javaagents
             val arg = if (ja[old] == null) "" else ja[old]
-            ja[n3w] =  arg // leave empty
+            ja[n3w] = arg // leave empty
             ja.remove(old)
         }
     }

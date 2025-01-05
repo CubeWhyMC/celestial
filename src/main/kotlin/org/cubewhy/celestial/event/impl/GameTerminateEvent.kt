@@ -7,4 +7,4 @@ package org.cubewhy.celestial.event.impl
 
 import org.cubewhy.celestial.event.Event
 
-class GameTerminateEvent : Event()
+class GameTerminateEvent(val code: Int) : Event()

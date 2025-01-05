@@ -7,9 +7,9 @@
 
 Let's Make LunarClient Great Again
 
-# Requirements
+## Requirements
 
-* A Windows/Linux/MacOS PC
+* A Windows/Linux/macOS PC
 * Zulu JDK 21
 
 ## Features
@@ -32,6 +32,7 @@ Star us on GitHub!
 * [CelePatch](https://github.com/CubeWhyMC/celepatch) support
 * Weave support (*Experimental*)
 * Dump version json into local
+* Offline launch
 
 ## Get celestial
 
@@ -39,11 +40,11 @@ Get celestial at [GitHub Actions](https://github.com/CubeWhyMC/celestial/actions
 
 Download at [releases](https://github.com/cubewhy/celestial/releases) (often outdated)
 
-## Donate
+## Donation
 
-Due to some reasons, we only support USD₮ now
+We are not accepting donations at the moment
 
-USD₮(TRC20): TAgpMk6cPJhsMNDq5UEF6P9L15R24CyBNn
+If you want to support us, please give us Stars
 
 ## Translation
 

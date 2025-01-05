@@ -5,8 +5,6 @@
  */
 package org.cubewhy.celestial.gui.dialogs
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import org.cubewhy.celestial.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -32,7 +30,7 @@ class ArgsConfigDialog(private val key: String, private val obj3ct: Any) : JDial
         this.add(f.getString("gui.settings.args.tip").toJLabel(), BorderLayout.SOUTH)
         this.add(input.withScroller(), BorderLayout.CENTER)
 
-        this.addWindowListener(object: WindowAdapter() {
+        this.addWindowListener(object : WindowAdapter() {
             override fun windowClosing(e: WindowEvent?) {
                 saveArgs()
             }
@@ -41,7 +39,9 @@ class ArgsConfigDialog(private val key: String, private val obj3ct: Any) : JDial
 
     private fun saveArgs() {
         log.info("Save args")
-        val lines = input.text.split("\n")
+        val lines = input.text
+            .split(" ", "\n")
+            .filter { it.isNotBlank() }
         array.removeAll { true }
         array.addAll(lines)
         obj3ct.setKotlinField(key, array)

@@ -8,7 +8,6 @@ package org.cubewhy.celestial.game
 import co.gongzh.procbridge.IDelegate
 import co.gongzh.procbridge.Server
 import com.google.gson.JsonObject
-import launcher.Mslogin
 import launcher.Mslogin.*
 import org.cubewhy.celestial.event.impl.AuthEvent
 import org.java_websocket.WebSocket
@@ -21,8 +20,8 @@ import java.net.URL
 import java.nio.ByteBuffer
 
 // Please notice that: Moonsworth changed its auth method since 2024/4, AuthServer is now deprecated
-class AuthServer private constructor() {
-    private val server: Server = Server(28189, IDelegate { method: String?, args: Any? ->
+class AuthServer(private val port: Int = 28189) {
+    private val server: Server = Server(port, IDelegate { method: String?, args: Any? ->
         try {
             return@IDelegate if (method != null) handleRequest(method, args) else null
         } catch (e: Exception) {
@@ -36,7 +35,7 @@ class AuthServer private constructor() {
      * Start the server
      */
     fun startServer() {
-        log.info("Starting auth server at port 28189")
+        log.info("Starting auth server at port $port")
         Thread { server.start() }.start()
     }
 
@@ -52,7 +51,13 @@ class AuthServer private constructor() {
             // Old auth function
             // Pop a token url
             val url = URL(args.get("url").asString)
-            val auth = (AuthEvent(url).call() as AuthEvent).waitForAuth()
+            val event = AuthEvent(url)
+            if (event.call()) {
+                log.info("User canceled auth")
+                result["status"] = "CLOSED_WITH_NO_URL"
+                return result
+            }
+            val auth = event.waitForAuth()
             if (auth.isBlank()) {
                 result["status"] = "CLOSED_WITH_NO_URL"
             } else {
@@ -69,10 +74,9 @@ class AuthServer private constructor() {
     }
 }
 
-class NewAuthServer private constructor() : WebSocketServer(InetSocketAddress("127.0.0.1", 28190)) {
+class NewAuthServer(serverPort: Int = 28190) : WebSocketServer(InetSocketAddress("127.0.0.1", serverPort)) {
     companion object {
         private val log = LoggerFactory.getLogger(NewAuthServer::class.java)
-        val instance = NewAuthServer()
     }
 
     override fun onOpen(p0: WebSocket?, p1: ClientHandshake?) {
@@ -90,8 +94,13 @@ class NewAuthServer private constructor() : WebSocketServer(InetSocketAddress("1
         val request = GameRequest.parseFrom(message)
         if (request.method == "OpenMicrosoftPopup") {
             log.info("Client request login")
-            val responseUrl =
-                (AuthEvent(authURL = URL("https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service::user.auth.xboxlive.com::MBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf")).call() as AuthEvent).waitForAuth()
+            val event =
+                AuthEvent(authURL = URL("https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service::user.auth.xboxlive.com::MBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf"))
+            if (event.call()) {
+                log.info("Login request canceled")
+                return
+            }
+            val responseUrl = event.waitForAuth()
             conn.send(
                 LoginResponseBase.newBuilder()
                     .setResponse(

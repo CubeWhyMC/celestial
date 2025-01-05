@@ -221,7 +221,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             val file = chooseFile(FileNameExtensionFilter("Intellij IDEA theme (.json)", "json"))
                 ?: return@addActionListener
             // copy
-            val f1: File = File(themesDir, file.name)
+            val f1 = File(themesDir, file.name)
             if (f1.exists()) {
                 JOptionPane.showMessageDialog(
                     this,
@@ -252,30 +252,30 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
         )
         panelLauncher.add(p6)
         // cele wrap
-        val panelCeleWrap = JPanel()
-        panelCeleWrap.border = TitledBorder(
-            null,
-            f.getString("gui.settings.launcher.celewrap"),
-            TitledBorder.DEFAULT_JUSTIFICATION,
-            TitledBorder.DEFAULT_POSITION,
-            null,
-            Color.ORANGE
-        )
-        panelCeleWrap.add(
-            getAutoSaveCheckBox(
-                config.celeWrap,
-                "state",
-                f.getString("gui.settings.launcher.celewrap.state")
-            )
-        )
-        panelCeleWrap.add(
-            getAutoSaveCheckBox(
-                config.celeWrap,
-                "checkUpdate",
-                f.getString("gui.settings.launcher.celewrap.update")
-            )
-        )
-        panelLauncher.add(panelCeleWrap)
+        /*        val panelCeleWrap = JPanel()
+                panelCeleWrap.border = TitledBorder(
+                    null,
+                    f.getString("gui.settings.launcher.celewrap"),
+                    TitledBorder.DEFAULT_JUSTIFICATION,
+                    TitledBorder.DEFAULT_POSITION,
+                    null,
+                    Color.ORANGE
+                )
+                panelCeleWrap.add(
+                    getAutoSaveCheckBox(
+                        config.celeWrap,
+                        "state",
+                        f.getString("gui.settings.launcher.celewrap.state")
+                    )
+                )
+                panelCeleWrap.add(
+                    getAutoSaveCheckBox(
+                        config.celeWrap,
+                        "checkUpdate",
+                        f.getString("gui.settings.launcher.celewrap.update")
+                    )
+                )
+                panelLauncher.add(panelCeleWrap)*/
         // max-threads
         val p7 = JPanel()
         p7.add(JLabel(f.getString("gui.settings.launcher.max-threads")))

@@ -12,7 +12,7 @@ import java.net.URL
 class Downloadable(
     private val url: URL,
     private val file: File,
-    private val crcSha: String?,
+    private val hash: String?,
     private val type: Type
 ) : Runnable {
 
@@ -33,7 +33,7 @@ class Downloadable(
             try {
                 DownloadManager.download0(
                     this.url,
-                    file, this.crcSha, this.type
+                    file, this.hash, this.type
                 )
             } catch (e: Exception) {
                 log.error("Download ${this.url} failed, try again... [$i/$FALL_BACK]")

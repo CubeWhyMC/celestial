@@ -9,12 +9,10 @@ package org.cubewhy.celestial.gui
 import com.sun.tools.attach.AttachNotSupportedException
 import org.cubewhy.celestial.*
 import org.cubewhy.celestial.event.EventManager
-
 import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.AuthEvent
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
-import org.cubewhy.celestial.game.thirdparty.CeleWrap
 import org.cubewhy.celestial.gui.dialogs.HelpDialog
 import org.cubewhy.celestial.gui.elements.StatusBar
 import org.cubewhy.celestial.gui.pages.*
@@ -22,7 +20,10 @@ import org.cubewhy.celestial.utils.findJava
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.CardLayout
+import java.awt.Panel
+import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 import java.io.IOException
 import java.net.URI
@@ -120,7 +121,7 @@ class GuiLauncher : JFrame() {
 
     private fun findExistGame() {
         try {
-            val java = if (config.celeWrap.state) findJava(CeleWrap.MAIN_CLASS) else findJava(getMainClass(null))
+            val java = /*if (config.celeWrap.state) findJava(CeleWrap.MAIN_CLASS) else */findJava(getMainClass(null))
             if (java != null) {
                 val pid = java.id()
                 log.info("Exist game process found! Pid: $pid")

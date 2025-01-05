@@ -14,9 +14,10 @@ import org.cubewhy.celestial.event.impl.APIReadyEvent
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.files.DownloadManager.waitForAll
+import org.cubewhy.celestial.game.GameProperties
+import org.cubewhy.celestial.game.LaunchCommandJson
 import org.cubewhy.celestial.game.addon.LunarCNMod
 import org.cubewhy.celestial.game.addon.WeaveMod
-import org.cubewhy.celestial.game.thirdparty.CeleWrap
 import org.cubewhy.celestial.game.thirdparty.LunarQT
 import org.cubewhy.celestial.gui.GuiLauncher.Companion.statusBar
 import org.cubewhy.celestial.utils.CrashReportType
@@ -48,13 +49,9 @@ class GuiVersionSelect : JPanel() {
     private val btnOffline: JButton = JButton(f.getString("gui.version.offline"))
     private var isLaunching = false
 
-    private fun interface CreateProcess {
-
-        fun create(): Process?
-    }
-
     init {
-        EventManager.register(this
+        EventManager.register(
+            this
         )
         this.border = TitledBorder(
             null,
@@ -192,7 +189,7 @@ class GuiVersionSelect : JPanel() {
 
     private fun beforeLaunch() {
         if (gamePid.get() != 0L) {
-            if (findJava(if (config.celeWrap.state) CeleWrap.MAIN_CLASS else getMainClass(null)) != null) {
+            if (findJava(/*if (config.celeWrap.state) CeleWrap.MAIN_CLASS else */getMainClass(null)) != null) {
                 JOptionPane.showMessageDialog(
                     this,
                     f.getString("gui.version.launched.message"),
@@ -250,136 +247,96 @@ class GuiVersionSelect : JPanel() {
         }
     }
 
+    @EventTarget
+    fun onGameStart(event: GameStartEvent) {
+        statusBar.text = f.format("status.launch.started", event.pid)
+    }
 
-    private fun runGame(cp: CreateProcess, run: Runnable?) {
-        val p = arrayOfNulls<Process>(1) // create process
-
-        val threadGetId = Thread {
-            // find the game process
-            Thread.sleep(3000) // sleep 3s
-            if (p[0]!!.isAlive) {
-                try {
-                    val java = (if (config.celeWrap.state) findJava(CeleWrap.MAIN_CLASS) else findJava(getMainClass(null)))!!
-                    val id = java.id()
-                    gamePid.set(id.toLong())
-                    // inject celestial
-//                    try {
-//                        if (isRunningInJar && config.connectMethod == BasicConfig.ConnectMethod.ATTACH) {
-//                            log.info("Injecting celestial... [ATTACH]")
-//                            java.loadAgent(jar.path)
-//                            log.info("Inject successful")
-//                        }
-//                    } catch (e: Exception) {
-//                        log.error(e.stackTraceToString())
-//                    }
-                    java.detach()
-                } catch (ex: Exception) {
-                    log.error(ex.stackTraceToString())
-                    log.error("Failed to get the real pid of the game, is Celestial launched non java program?")
-                    log.warn("process.pid() will be used to get the process id, which may not be the real PID")
-                    gamePid.set(p[0]!!.pid())
-                }
-                log.info("Pid: $gamePid")
-                statusBar.text = f.format("status.launch.started", gamePid)
-                GameStartEvent(gamePid.get()).call()
-            }
-        }
-        Thread {
+    @EventTarget
+    fun onGameTerminate(event: GameTerminateEvent) {
+        statusBar.text = f.getString("status.launch.terminated")
+        if (event.code != 0) {
+            // upload crash report
+            statusBar.text = f.getString("status.launch.crashed")
+            log.info("Client looks crashed (code ${event.code})")
             try {
-                run?.run()
-                p[0] = cp.create()
-                threadGetId.start()
-                val code = p[0]!!.waitFor()
-                log.info("Game terminated")
-                statusBar.text = f.getString("status.launch.terminated")
-                gamePid.set(0)
-                GameTerminateEvent().call()
-                if (code != 0) {
-                    // upload crash report
-                    statusBar.text = f.getString("status.launch.crashed")
-                    log.info("Client looks crashed")
-                    try {
-                        if (config.dataSharing) {
-                            val trace = FileUtils.readFileToString(gameLogFile, StandardCharsets.UTF_8)
-                            val script = FileUtils.readFileToString(launchScript, StandardCharsets.UTF_8)
-                            val result = launcherData.uploadCrashReport(trace, CrashReportType.GAME, script)
-                            if (result != null) {
-                                val url = result.url
-                                val id = result.id
-                                JOptionPane.showMessageDialog(
-                                    this,
-                                    String.format(
-                                        f.getString("gui.message.clientCrash1"),
-                                        id,
-                                        url,
-                                        gameLogFile.path,
-                                        f.getString("gui.version.crash.tip")
-                                    ),
-                                    "Game crashed!",
-                                    JOptionPane.ERROR_MESSAGE
-                                )
-                            } else {
-                                throw RuntimeException("Failed to upload crash report")
-                            }
-                        } else {
-                            throw UnsupportedOperationException("Unsupported")
-                        }
-                    } catch (e: Exception) {
+                if (config.dataSharing) {
+                    val trace = FileUtils.readFileToString(launcherLogFile, StandardCharsets.UTF_8)
+                    val script = FileUtils.readFileToString(launchJson, StandardCharsets.UTF_8)
+                    val result = launcherData.uploadCrashReport(trace, CrashReportType.GAME, script)
+                    if (result != null) {
+                        val url = result.url
+                        val id = result.id
                         JOptionPane.showMessageDialog(
                             this,
                             String.format(
-                                f.getString("gui.message.clientCrash2"),
-                                gameLogFile.path,
+                                f.getString("gui.message.clientCrash1"),
+                                id,
+                                url,
+                                launcherLogFile.path,
                                 f.getString("gui.version.crash.tip")
                             ),
                             "Game crashed!",
                             JOptionPane.ERROR_MESSAGE
                         )
-                        if (e !is UnsupportedOperationException) {
-                            throw RuntimeException(e)
-                        }
+                    } else {
+                        throw RuntimeException("Failed to upload crash report")
                     }
+                } else {
+                    throw UnsupportedOperationException("Unsupported")
                 }
-            } catch (e: InterruptedException) {
-                log.error(e.stackTraceToString())
-            } catch (e: IOException) {
-                throw RuntimeException(e)
+            } catch (e: Exception) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    String.format(
+                        f.getString("gui.message.clientCrash2"),
+                        launcherLogFile.path,
+                        f.getString("gui.version.crash.tip")
+                    ),
+                    "Game crashed!",
+                    JOptionPane.ERROR_MESSAGE
+                )
+                if (e !is UnsupportedOperationException) {
+                    throw RuntimeException(e)
+                }
             }
-        }.start()
+        }
     }
 
 
     private fun online() {
         beforeLaunch()
-        val natives =
-            launch((versionSelect.selectedItem as String), branchInput.text, moduleSelect.selectedItem as String)
-        runGame({
+        val version = versionSelect.selectedItem as String
+        val module = moduleSelect.selectedItem as String
+        val branch = branchInput.text
+        val launchCommand = getArgs(
+            version, branch, module, config.installationDir.toFile(),
+            gameProperties = GameProperties(
+                config.game.resize.width,
+                config.game.resize.height,
+                File(config.game.gameDir)
+            )
+        )
+        // save launch command
+        log.info("Saving launch command to $launchJson")
+        launchJson.writeText(
+            JSON.encodeToString(
+                LaunchCommandJson.serializer(),
+                LaunchCommandJson.create(launchCommand)
+            )
+        )
+        log.info("Generating launch scripts...")
+        launchScript.writeText(generateScripts())
+
+        Thread {
+            isLaunching = true
+            statusBar.text = f.getString("status.launch.begin")
             try {
-                statusBar.text = f.getString("status.launch.call-process")
-                return@runGame launch().start()
-            } catch (e: InterruptedException) {
-                throw RuntimeException(e)
-            }
-        }) {
-            try {
-                isLaunching = true
-                statusBar.text = f.getString("status.launch.begin")
                 checkUpdate(
                     (versionSelect.selectedItem as String),
                     moduleSelect.selectedItem as String,
                     branchInput.text
                 )
-                waitForAll()
-                try {
-                    statusBar.text = f.getString("status.launch.natives")
-                    natives.unzipNatives(File(config.installationDir))
-                } catch (e: Exception) {
-                    log.error("Is game launched? Failed to unzip natives.")
-                    log.error(e.stackTraceToString())
-                }
-                // exec, run
-                log.info("Everything is OK, starting game...")
-                isLaunching = false
             } catch (e: Exception) {
                 log.error("Failed to check update")
                 val trace = e.stackTraceToString()
@@ -391,22 +348,23 @@ class GuiVersionSelect : JPanel() {
                     JOptionPane.ERROR_MESSAGE
                 )
             }
-        }
+            waitForAll()
+            log.info("Everything is OK, starting game...")
+            isLaunching = false
+            val process = launch(launchCommand)
+            val code = process.waitFor()
+            GameTerminateEvent(code).call()
+        }.start()
     }
 
     private fun offline() {
         beforeLaunch()
-        val process = launch()
-        runGame({
-            try {
-                statusBar.text = f.getString("status.launch.call-process")
-                return@runGame process.start()
-            } catch (e: IOException) {
-                throw RuntimeException(e)
-            } catch (e: InterruptedException) {
-                throw RuntimeException(e)
-            }
-        }, null)
+        Thread {
+            statusBar.text = f.getString("status.launch.call-process")
+            val process = launchPrevious()
+            val code = process.waitFor()
+            GameTerminateEvent(code).call()
+        }.start()
     }
 
     private fun initInput(versionSelect: JComboBox<String>, moduleSelect: JComboBox<String>, branchInput: JTextField) {

@@ -2,7 +2,7 @@ package org.cubewhy.celestial.game
 
 import java.io.File
 
-class GameArgs {
+class GameProperties {
     var width: Int = 0
     var height: Int = 0
     var gameDir: File? = null
