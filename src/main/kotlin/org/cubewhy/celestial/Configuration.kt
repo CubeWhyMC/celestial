@@ -9,11 +9,13 @@ package org.cubewhy.celestial
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.cubewhy.celestial.gui.Language
+import org.cubewhy.celestial.gui.pages.*
 import org.cubewhy.celestial.utils.totalMem
 import java.io.File
 import java.net.InetSocketAddress
 import java.net.Proxy
 import java.net.URL
+import javax.swing.JComponent
 
 @Serializable
 data class GameVersionInfo(
@@ -96,7 +98,17 @@ data class BasicConfig(
     var maxThreads: Int = Runtime.getRuntime().availableProcessors() * 2,
     var addon: AddonConfiguration = AddonConfiguration(),
     var proxy: ProxyConfig = ProxyConfig(),
+
+    var pages: List<LauncherPage> = LauncherPage.entries
 )
+
+enum class LauncherPage(val pageName: String, val translateKey: String, val clazz: Class<out JComponent>) {
+    NEWS("news", "gui.news.title", GuiNews::class.java),
+    VERSION("version", "gui.version.title", GuiVersion::class.java),
+    PLUGINS("plugins", "gui.plugins.title", GuiPlugins::class.java),
+    SETTINGS("settings", "gui.settings.title", GuiSettings::class.java),
+    ABOUT("about", "gui.about.title", GuiAbout::class.java)
+}
 
 class Mirror(address: String) {
     val host: String = address.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[0]

@@ -15,7 +15,6 @@ import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.gui.dialogs.HelpDialog
 import org.cubewhy.celestial.gui.elements.StatusBar
-import org.cubewhy.celestial.gui.pages.*
 import org.cubewhy.celestial.utils.findJava
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
 import org.slf4j.Logger
@@ -97,11 +96,9 @@ class GuiLauncher : JFrame() {
         mainPanel.layout = layoutX
 
         // add pages
-        mainPanel.add("news", GuiNews())
-        mainPanel.add("version", GuiVersion())
-        mainPanel.add("plugins", GuiPlugins())
-        mainPanel.add("settings", GuiSettings())
-        mainPanel.add("about", GuiAbout())
+        config.pages.forEach { page ->
+            mainPanel.add(page.pageName, page.clazz.getConstructor().newInstance())
+        }
 
         // bind buttons
         btnPrevious.addActionListener { layoutX.previous(mainPanel) }
