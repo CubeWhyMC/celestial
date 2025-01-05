@@ -135,6 +135,8 @@ fun launch(cmd: LaunchCommand): Process {
     log.info("Starting auth server...")
     val server = cmd.startAuthServer()
     log.info("Generating command...")
+    // wait 1s for the auth server start
+    Thread.sleep(1000)
     val commandList = cmd.generateCommand()
     log.debug(commandList.joinToString(" "))
     log.info("Executing command...")
