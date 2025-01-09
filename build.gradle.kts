@@ -48,10 +48,10 @@ dependencies {
     implementation("commons-io:commons-io:2.18.0")
     implementation("cn.hutool:hutool-crypto:5.8.35")
     implementation("org.java-websocket:Java-WebSocket:1.6.0")
-    implementation("com.google.protobuf:protobuf-kotlin:4.29.2")
+    implementation("com.google.protobuf:protobuf-kotlin:4.29.3")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 }
 
 tasks.shadowJar {
@@ -70,7 +70,7 @@ tasks.shadowJar {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:4.29.2"
+        artifact = "com.google.protobuf:protoc:4.29.3"
     }
 }
 
