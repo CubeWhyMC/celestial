@@ -12,6 +12,7 @@ import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.utils.GitUtils
 import org.cubewhy.celestial.utils.OSEnum
 import java.io.File
+import java.util.*
 
 data class LaunchCommand(
     val installation: File,
@@ -70,8 +71,12 @@ data class LaunchCommand(
         commands.add("0")
         commands.add("--userProperties")
         commands.add("{}")
+        commands.add("--canaryToken")
+        commands.add("control")
+        commands.add("--launchId")
+        commands.add(UUID.randomUUID().toString())
         commands.add("--launcherVersion")
-        commands.add("2.15.1")
+        commands.add("10.0.0-ow") // latest version
         commands.add("--hwid")
         commands.add("PUBLIC-HWID")
         commands.add("--installationId")

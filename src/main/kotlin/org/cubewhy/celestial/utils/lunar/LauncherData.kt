@@ -156,7 +156,10 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
 //                    continue
 //                }
                 // block sentry
-                if (arg.startsWith("-Dichor.filteredGenesisSentries")) continue
+                if (arg.startsWith("-Dichor.filteredGenesisSentries")) {
+                    out.add("-Dichor.filteredGenesisSentries=.*") // block sentry
+                    continue
+                }
                 out.add(arg)
             }
             out.add("-Djava.library.path=natives")
