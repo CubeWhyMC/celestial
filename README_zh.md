@@ -8,6 +8,20 @@
 
 让LunarClient再次辉煌
 
+## 我们需要重新抓包LC API
+
+自 2025 年 1 月起，Lunar 再次更新了其 API。
+
+目前, Celestial 总是下载过时的版本。
+
+为了解决这个问题，我们需要捕获新的 Lunar API 并在 Celestial 中调用新API。
+
+但是，我不知道我是否有足够的时间完成这项工作。
+
+感谢大家的理解和支持。
+
+![version outdated](/docs/images/version-outdated-zh.png)
+
 ## 配置要求
 
 * 一个搭载Windows/Linux/macOS操作系统的的电脑

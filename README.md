@@ -7,6 +7,19 @@
 
 Let's Make LunarClient Great Again
 
+## We need capture the LC API again
+
+Since January 2025, Lunar has updated its API again.
+
+Currently, Celestial always downloads an outdated version.
+
+To address this, we need to capture the new Lunar API and implement the necessary updates in Celestial.
+
+However, I'm unsure if I have enough time to complete this work.
+
+Thank you all for your understanding and support.
+![version outdated](/docs/images/version-outdated-en.png)
+
 ## Requirements
 
 * A Windows/Linux/macOS PC
