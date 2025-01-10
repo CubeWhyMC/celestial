@@ -100,6 +100,7 @@ fun ZipFile.unzip(targetDir: File) {
         if (entry.isDirectory) {
             out.mkdirs()
         } else {
+            out.parentFile.mkdirs()
             out.createNewFile()
             val entryInputStream = this.getInputStream(entry)
             FileOutputStream(out).use { fileOutPutStream ->

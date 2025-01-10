@@ -88,7 +88,7 @@ private fun LaunchCommandJson.complete(): LaunchCommand {
         jre = this.jre.toFile(),
         wrapper = this.wrapper,
         mainClass = this.mainClass,
-        natives = this.natives.toFile(),
+        natives = this.natives.map { File(it) },
         vmArgs = this.vmArgs,
         programArgs = this.programArgs,
         javaAgents = javaAgents,
@@ -129,7 +129,9 @@ fun launch(cmd: LaunchCommand): Process {
     completeSession()
     log.info("Unzipping natives")
     try {
-        cmd.natives.unzipNatives(cmd.installation)
+        cmd.natives.forEach {
+            it.unzipNatives(cmd.installation)
+        }
     } catch (e: Exception) {
         log.error("Failed to unzip natives. Does the game running?")
         log.error(e.stackTraceToString())

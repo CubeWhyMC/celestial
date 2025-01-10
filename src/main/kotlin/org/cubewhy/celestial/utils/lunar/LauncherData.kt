@@ -8,7 +8,6 @@ package org.cubewhy.celestial.utils.lunar
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.encodeToString
 import org.cubewhy.celestial.JSON
 import org.cubewhy.celestial.event.impl.CrashReportUploadEvent
 import org.cubewhy.celestial.game.AddonMeta

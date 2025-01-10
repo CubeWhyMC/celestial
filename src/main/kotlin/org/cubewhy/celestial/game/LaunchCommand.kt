@@ -20,7 +20,7 @@ data class LaunchCommand(
     val jre: File,
     val wrapper: String?,
     val mainClass: String,
-    val natives: File,
+    val natives: List<File>,
     val vmArgs: List<String>,
     val programArgs: List<String>,
     val javaAgents: List<JavaAgent>,
@@ -109,7 +109,7 @@ data class LaunchCommand(
         commands.add("--ichorExternalFiles")
         commands.add(ichorpath.joinToString(","))
         commands.add("--webosrDir")
-        commands.add(natives.path)
+        commands.add(installation.resolve("natives").path)
         // custom args
         commands.addAll(programArgs)
         return commands
@@ -123,7 +123,7 @@ data class LaunchCommandJson(
     val jre: String,
     val wrapper: String?,
     val mainClass: String,
-    val natives: String,
+    val natives: List<String>,
     val vmArgs: List<String>,
     val programArgs: List<String>,
     val classpath: List<String>,
@@ -139,7 +139,7 @@ data class LaunchCommandJson(
                 jre = cmd.jre.path,
                 wrapper = cmd.wrapper,
                 mainClass = cmd.mainClass,
-                natives = cmd.natives.path,
+                natives = cmd.natives.map { it.path },
                 vmArgs = cmd.vmArgs,
                 programArgs = cmd.programArgs,
                 classpath = cmd.classpath.map { it.path }.toList(),

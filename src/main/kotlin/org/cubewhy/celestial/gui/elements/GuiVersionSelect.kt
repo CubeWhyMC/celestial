@@ -404,7 +404,7 @@ class GuiVersionSelect : JPanel() {
 }
 
 fun File.unzipNatives(baseDir: File) {
-    log.info("Unzipping natives...")
+    log.info("Unzipping natives ${this.path}")
     val dir = File(baseDir, "natives")
     if (!dir.exists()) {
         dir.mkdirs()

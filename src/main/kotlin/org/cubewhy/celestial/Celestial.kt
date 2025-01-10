@@ -385,7 +385,7 @@ fun getArgs(
     // === classpath ===
     val classpath: MutableList<File> = ArrayList()
     val ichorPath: MutableList<File> = ArrayList()
-    var natives: File? = null
+    var natives = mutableListOf<File>()
     for (artifact in json.launchTypeData.artifacts) {
         when (artifact.type) {
             GameArtifactInfo.Artifact.ArtifactType.CLASS_PATH -> {
@@ -400,7 +400,7 @@ fun getArgs(
 
             GameArtifactInfo.Artifact.ArtifactType.NATIVES -> {
                 // natives
-                natives = installation.resolve(artifact.name)
+                natives.add(installation.resolve(artifact.name))
             }
 
             GameArtifactInfo.Artifact.ArtifactType.JAVAAGENT -> {
