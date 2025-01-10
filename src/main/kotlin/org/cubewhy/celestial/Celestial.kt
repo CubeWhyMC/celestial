@@ -385,7 +385,7 @@ fun getArgs(
     // === classpath ===
     val classpath: MutableList<File> = ArrayList()
     val ichorPath: MutableList<File> = ArrayList()
-    var natives = mutableListOf<File>()
+    val natives = mutableListOf<File>()
     for (artifact in json.launchTypeData.artifacts) {
         when (artifact.type) {
             GameArtifactInfo.Artifact.ArtifactType.CLASS_PATH -> {
@@ -414,7 +414,7 @@ fun getArgs(
         jre = java, // java executable
         wrapper = config.game.wrapper.ifEmpty { null },
         mainClass = LauncherData.getMainClass(json), // Genesis main class
-        natives = natives!!, // Minecraft Natives
+        natives = natives, // Minecraft Natives
         vmArgs = vmArgs, // jvm args
         javaAgents = javaAgents,
         classpath = classpath, // jvm classpath

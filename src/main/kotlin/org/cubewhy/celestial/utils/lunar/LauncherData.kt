@@ -139,21 +139,9 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
             }
         }
 
-        /**
-         * Get ICHOR state
-         *
-         * @return true (always)
-         */
-
-        fun getIchorState(json: GameArtifactInfo?) = json?.launchTypeData?.ichor == true
-
         fun getDefaultJvmArgs(json: GameArtifactInfo): List<String> {
             val out: MutableList<String> = ArrayList()
             for (arg in json.jre.extraArguments) {
-//                if (arg == "-Djna.boot.library.path=natives") {
-//                    out.add("-Djna.boot.library.path=\"$installation/natives\"")
-//                    continue
-//                }
                 // block sentry
                 if (arg.startsWith("-Dichor.filteredGenesisSentries")) {
                     out.add("-Dichor.filteredGenesisSentries=.*") // block sentry

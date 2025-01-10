@@ -40,17 +40,6 @@ fun URI.open() {
 fun ResourceBundle.format(key: String, vararg args: Any?): String =
     this.getString(key).format(*args)
 
-
-fun String.hasNonAscii(): Boolean {
-    // todo make it high performance
-    this.toCharArray().forEach {
-        if (it.code !in 0..127) {
-            return false
-        }
-    }
-    return true
-}
-
 fun Component.withScroller(
     vsbPolicy: Int = JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
     hsbPolicy: Int = JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED
