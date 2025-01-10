@@ -76,9 +76,9 @@ class AuthServer(private val port: Int = 28189) {
     }
 }
 
-class NewAuthServer(serverPort: Int = 28190) : WebSocketServer(InetSocketAddress("127.0.0.1", serverPort)) {
+class GameWebsocketServer(serverPort: Int = 28190) : WebSocketServer(InetSocketAddress("127.0.0.1", serverPort)) {
     companion object {
-        private val log = LoggerFactory.getLogger(NewAuthServer::class.java)
+        private val log = LoggerFactory.getLogger(GameWebsocketServer::class.java)
     }
 
     override fun onOpen(p0: WebSocket?, p1: ClientHandshake?) {

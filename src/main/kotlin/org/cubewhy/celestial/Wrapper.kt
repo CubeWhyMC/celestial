@@ -51,6 +51,11 @@ fun main() {
     EventManager.register(Wrapper) // handle login requests
     log.info("Powered by Celestial")
     log.info("https://lunarclient.top")
+    log.info(
+        "Celestial is running on Java: " + System.getProperty("java.version") + " JVM: " + System.getProperty(
+            "java.vm.version"
+        ) + "(" + System.getProperty("java.vendor") + ") Arch: " + System.getProperty("os.arch")
+    )
     log.info("Celestial v${GitUtils.buildVersion} build by ${GitUtils.buildUser}")
     log.info("Git remote: ${GitUtils.remote} (${GitUtils.branch})")
     val jsonPath = System.getProperty("celestial.json")
@@ -157,12 +162,15 @@ fun launch(cmd: LaunchCommand): Process {
         log.error("Failed to unzip natives. Does the game running?")
         log.error(e.stackTraceToString())
     }
-    log.info("Starting auth server...")
-    val server = cmd.startAuthServer()
+    log.info("Starting websocket server...")
+    val server = cmd.startWebsocketServer()
+    if (server == null) {
+        log.info("The websocket server was disabled.")
+    }
     log.info("Generating command...")
-    // wait 1s for the auth server start
+    // wait 1s for the websocket server start
     Thread.sleep(1000)
-    val commandList = cmd.generateCommand(server.port)
+    val commandList = cmd.generateCommand(server?.port ?: -1)
     log.debug(commandList.joinToString(" "))
     log.info("Executing command...")
     val pb = ProcessBuilder(commandList)
@@ -175,7 +183,7 @@ fun launch(cmd: LaunchCommand): Process {
     GameStartEvent(pid).call()
     process.onExit().thenAccept {
         GameTerminateEvent(it.exitValue()).call()
-        server.stop()
+        server?.stop()
     }
     return process
 }

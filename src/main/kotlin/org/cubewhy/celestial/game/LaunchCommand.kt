@@ -7,7 +7,7 @@
 package org.cubewhy.celestial.game
 
 import kotlinx.serialization.Serializable
-import org.cubewhy.celestial.JSON
+import kotlinx.serialization.json.Json
 import org.cubewhy.celestial.config
 import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.lunarConfigFolder
@@ -15,6 +15,10 @@ import org.cubewhy.celestial.utils.GitUtils
 import org.cubewhy.celestial.utils.OSEnum
 import java.io.File
 import java.util.*
+
+private val JSONInternal = Json {
+    ignoreUnknownKeys = true
+}
 
 data class LaunchCommand(
     val installation: File,
@@ -33,8 +37,9 @@ data class LaunchCommand(
     val gameVersion: String,
     val gameProperties: GameProperties
 ) {
-    fun startAuthServer(): NewAuthServer {
-        val server = NewAuthServer(ipcPort)
+    fun startWebsocketServer(): GameWebsocketServer? {
+        if (ipcPort == -1) return null // disabled
+        val server = GameWebsocketServer(ipcPort)
         server.start()
         return server
     }
@@ -102,7 +107,7 @@ data class LaunchCommand(
         commands.add("--assetIndex")
         commands.add(gameVersion.substring(0, gameVersion.lastIndexOf(".")))
         commands.add("--launcherFeatureFlags")
-        commands.add(JSON.encodeToString(LauncherFeatureFlagsJson.serializer(), config.game.flags.toJson()))
+        commands.add(JSONInternal.encodeToString(LauncherFeatureFlagsJson.serializer(), config.game.flags.toJson()))
         if (gameProperties.server != null) {
             commands.add("--server ") // Join server after launch
             commands.add(gameProperties.server!!)
