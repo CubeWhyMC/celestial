@@ -42,7 +42,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
 
     fun metadata(): LauncherMetadata {
         // do request with fake system info
-        get("$api/launcher/metadata?installation_id=469a9de3-49b1-489f-ad67-ec55b9e0e727&os=NMSLOS&arch=x64&launcher_version=114.514.191&branch=master&branch_changed=true&private=true&os_release=114.514").execute()
+        get("$api/launcher/metadata?installation_id=${UUID.randomUUID()}&os=${OSEnum.current!!.jsName}&arch=${arch}&launcher_version=${config.api.versionSpoof}&branch=master&branch_changed=true&private=true&os_release=114.514").execute()
             .use { response ->
                 assert(response.code == 200) {
                     "Code = " + response.code
@@ -57,7 +57,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
         val map = mapOf(
             "hwid" to "HWID-PUBLIC",
             "installation_id" to UUID.randomUUID().toString(), // fake uuid
-            "os" to OSEnum.find(System.getProperty("os.name"))?.jsName, // shit js
+            "os" to OSEnum.current!!.jsName, // shit js
             "arch" to arch, // example: x64
             "os_release" to "19045.3086", // fake os release
             "launcher_version" to config.api.versionSpoof, // fake version
