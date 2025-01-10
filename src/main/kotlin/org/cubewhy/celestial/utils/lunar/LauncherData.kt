@@ -9,6 +9,7 @@ package org.cubewhy.celestial.utils.lunar
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.cubewhy.celestial.JSON
+import org.cubewhy.celestial.config
 import org.cubewhy.celestial.event.impl.CrashReportUploadEvent
 import org.cubewhy.celestial.game.AddonMeta
 import org.cubewhy.celestial.game.RemoteAddon
@@ -59,7 +60,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
             "os" to OSEnum.find(System.getProperty("os.name"))?.jsName, // shit js
             "arch" to arch, // example: x64
             "os_release" to "19045.3086", // fake os release
-            "launcher_version" to "10.3.3-ow",
+            "launcher_version" to config.api.versionSpoof, // fake version
             "launch_type" to "offline",
             "version" to version,
             "branch" to branch,
@@ -326,8 +327,9 @@ data class Blogpost(
 
 @Serializable
 data class Alert(
-    val name: String? = "News",
-    val text: String? = null
+    val name: String? = "Alert",
+    val text: String? = null,
+    val link: String? = null
 )
 
 @Serializable

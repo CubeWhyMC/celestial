@@ -85,7 +85,7 @@ data class AddonConfiguration(
 
 @Serializable
 data class BasicConfig(
-    var api: String = "https://lunarclient.top/api",
+    var api: APIConfig = APIConfig(),
     var jre: String = "", // // leave empty if you want to use the default one
     var language: Language = Language.ENGLISH,
     var theme: String = "dark",
@@ -100,6 +100,12 @@ data class BasicConfig(
     var proxy: ProxyConfig = ProxyConfig(),
 
     var pages: List<LauncherPage> = LauncherPage.entries
+)
+
+@Serializable
+data class APIConfig(
+    var address: String = "https://api.lunarclientprod.com",
+    var versionSpoof: String = "10.0.0-ow"
 )
 
 enum class LauncherPage(val pageName: String, val translateKey: String, val clazz: Class<out JComponent>) {

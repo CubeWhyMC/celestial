@@ -54,8 +54,10 @@ val config: BasicConfig = try {
     JSON.decodeFromString(configFile.readText())
 } catch (e: FileNotFoundException) {
     log.info("Config not found, creating a new one...")
-    log.debug("This is not a bug, please DO NOT report this to developers!")
-    log.debug(e.stackTraceToString())
+    BasicConfig()
+} catch (e: Exception) {
+    log.info("Unexpected error detected, are you upgrading Celestial?")
+    log.info("Creating a new config file...")
     BasicConfig()
 }
 
@@ -144,7 +146,7 @@ private fun run() {
 
     log.info("Language: $userLanguage")
     checkJava()
-    launcherData = LauncherData(config.api)
+    launcherData = LauncherData(config.api.address)
     if (config.proxy.state) log.info("Use proxy ${config.proxy.proxyAddress}")
     while (true) {
         try {
@@ -157,7 +159,7 @@ private fun run() {
             log.warn("API is unreachable")
             log.error(e.stackTraceToString())
             // shell we switch an api?
-            val input = JOptionPane.showInputDialog(f.getString("api.unreachable"), config.api)
+            val input = JOptionPane.showInputDialog(f.getString("api.unreachable"), config.api.address)
             if (input == null) {
                 exitProcess(1)
             } else {
@@ -172,7 +174,7 @@ private fun run() {
                     config.proxy.proxyAddress = proxyInput
                 }
                 launcherData = LauncherData(input)
-                config.api = input
+                config.api.address = input
             }
         }
     }

@@ -76,7 +76,7 @@ data class LaunchCommand(
         commands.add("--launchId")
         commands.add(UUID.randomUUID().toString())
         commands.add("--launcherVersion")
-        commands.add("10.0.0-ow") // latest version
+        commands.add(config.api.versionSpoof) // latest version
         commands.add("--hwid")
         commands.add("PUBLIC-HWID")
         commands.add("--installationId")

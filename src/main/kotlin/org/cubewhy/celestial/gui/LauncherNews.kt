@@ -9,6 +9,7 @@ package org.cubewhy.celestial.gui
 import cn.hutool.crypto.SecureUtil
 import org.cubewhy.celestial.*
 import org.cubewhy.celestial.files.DownloadManager.cacheDir
+import org.cubewhy.celestial.utils.lunar.Alert
 import org.cubewhy.celestial.utils.lunar.Blogpost
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -72,7 +73,7 @@ class LauncherNews(private val blogPost: Blogpost) : JPanel() {
                             JOptionPane.YES_NO_OPTION
                         ) == JOptionPane.OK_OPTION
                     ) {
-                        config.api = blogPost.link // set api
+                        config.api.address = blogPost.link // set api
                         log.info("Change API into ${config.api}")
                         JOptionPane.showMessageDialog(
                             this,
@@ -94,6 +95,30 @@ class LauncherNews(private val blogPost: Blogpost) : JPanel() {
         this.add(button)
 
         textLabel.labelFor = imageLabel
+    }
+}
+
+class LauncherAlert(alert: Alert) : JPanel() {
+    init {
+        this.layout = BoxLayout(this, BoxLayout.Y_AXIS)
+        this.border = TitledBorder(
+            null,
+            f.getString("gui.news.alert.title"),
+            TitledBorder.DEFAULT_JUSTIFICATION,
+            TitledBorder.DEFAULT_POSITION,
+            null,
+            Color.orange
+        )
+        alert.text?.let {
+            this.add(it.toJLabel())
+        }
+        alert.link?.let { link ->
+            this.add(JButton("View").apply {
+                addActionListener {
+                    link.toURI().open()
+                }
+            })
+        }
     }
 }
 

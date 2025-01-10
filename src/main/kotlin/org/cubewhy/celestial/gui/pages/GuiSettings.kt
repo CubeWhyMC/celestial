@@ -19,7 +19,6 @@ import org.cubewhy.celestial.gui.Language
 import org.cubewhy.celestial.gui.dialogs.ArgsConfigDialog
 import org.cubewhy.celestial.gui.dialogs.LunarQTDialog
 import org.cubewhy.celestial.gui.dialogs.MirrorDialog
-import org.cubewhy.celestial.gui.dialogs.SortPagesDialog
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.OSEnum.Companion.current
@@ -188,9 +187,26 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             Color.orange
         )
         // api
-        val p4 = JPanel()
-        p4.add(JLabel(f.getString("gui.settings.launcher.api")))
-        p4.add(getAutoSaveTextField(config, "api"))
+        val p4 = JPanel().apply {
+            border = TitledBorder(
+                null,
+                f.getString("gui.settings.launcher.api"),
+                TitledBorder.DEFAULT_JUSTIFICATION,
+                TitledBorder.DEFAULT_POSITION,
+                null,
+                Color.orange
+            )
+
+            layout = VerticalFlowLayout(VerticalFlowLayout.LEFT)
+
+            add(f.getString("gui.settings.launcher.api.address").toJLabel())
+            add(getAutoSaveTextField(config.api, "address"))
+
+            add(f.getString("gui.settings.launcher.api.spoof").toJLabel())
+            add(getAutoSaveTextField(config.api, "versionSpoof"))
+        }
+
+
 
         panelLauncher.add(p4)
         // data sharing
@@ -201,9 +217,9 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
                 f.getString("gui.settings.launcher.data-sharing")
             )
         )
-        panelLauncher.add(f.getString("gui.settings.pages.manage").toJButton {
-            SortPagesDialog().isVisible = true
-        })
+//        panelLauncher.add(f.getString("gui.settings.pages.manage").toJButton {
+//            SortPagesDialog().isVisible = true
+//        })
         // theme
         val p5 = JPanel()
         p5.add(JLabel(f.getString("gui.settings.launcher.theme")))
