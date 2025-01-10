@@ -6,6 +6,7 @@ import org.cubewhy.celestial.event.EventTarget
 import org.cubewhy.celestial.event.impl.APIReadyEvent
 import org.cubewhy.celestial.f
 import org.cubewhy.celestial.files.DownloadManager.cache
+import org.cubewhy.celestial.gui.LauncherAlert
 import org.cubewhy.celestial.gui.LauncherBirthday
 import org.cubewhy.celestial.gui.LauncherNews
 import org.cubewhy.celestial.metadata
@@ -59,6 +60,19 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
     }
 
     private fun initGui() {
+        // render alert
+        try {
+            val alert = metadata.alert
+            if (alert != null) {
+                val title = alert.name
+                val message = alert.text
+                log.info("$title: $message")
+                panel.add(LauncherAlert(alert))
+            }
+        } catch (e: Exception) {
+            log.warn("Warning: Load alert failed")
+            log.error(e.stackTraceToString())
+        }
         // render blogPosts
         log.info("Loading blogPosts (gui)")
         val birthday = calcBirthday()
