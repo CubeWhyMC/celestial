@@ -7,8 +7,10 @@
 package org.cubewhy.celestial.game
 
 import kotlinx.serialization.Serializable
+import org.cubewhy.celestial.JSON
 import org.cubewhy.celestial.config
 import org.cubewhy.celestial.game.addon.JavaAgent
+import org.cubewhy.celestial.lunarConfigFolder
 import org.cubewhy.celestial.utils.GitUtils
 import org.cubewhy.celestial.utils.OSEnum
 import java.io.File
@@ -82,7 +84,7 @@ data class LaunchCommand(
         commands.add("--installationId")
         commands.add("INSTALLATION-ID")
         commands.add("--uiDir")
-        commands.add("ui")
+        commands.add(lunarConfigFolder.resolve("ui").path)
         commands.add("--texturesDir")
         commands.add("textures")
         commands.add("--workingDirectory")
@@ -99,6 +101,8 @@ data class LaunchCommand(
         commands.add(gameProperties.gameDir!!.path)
         commands.add("--assetIndex")
         commands.add(gameVersion.substring(0, gameVersion.lastIndexOf(".")))
+        commands.add("--launcherFeatureFlags")
+        commands.add(JSON.encodeToString(LauncherFeatureFlagsJson.serializer(), config.game.flags.toJson()))
         if (gameProperties.server != null) {
             commands.add("--server ") // Join server after launch
             commands.add(gameProperties.server!!)

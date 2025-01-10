@@ -8,6 +8,9 @@ package org.cubewhy.celestial
 
 import com.google.gson.JsonParser
 import org.apache.commons.io.FileUtils
+import org.cubewhy.celestial.event.EventManager
+import org.cubewhy.celestial.event.EventTarget
+import org.cubewhy.celestial.event.impl.AuthEvent
 import org.cubewhy.celestial.event.impl.GameStartEvent
 import org.cubewhy.celestial.event.impl.GameTerminateEvent
 import org.cubewhy.celestial.game.GameProperties
@@ -19,15 +22,33 @@ import org.cubewhy.celestial.utils.GitUtils
 import org.cubewhy.celestial.utils.OSEnum
 import org.cubewhy.celestial.utils.currentJavaExec
 import org.slf4j.LoggerFactory
+import java.awt.Toolkit
+import java.awt.datatransfer.StringSelection
 import java.io.File
 import java.nio.charset.StandardCharsets
+import javax.swing.JOptionPane
 import kotlin.system.exitProcess
 
 private var log = LoggerFactory.getLogger(Wrapper::class.java)
 
-object Wrapper
+object Wrapper {
+    @EventTarget
+    fun onAuth(e: AuthEvent) {
+        log.info("Request for login")
+        val clipboard = Toolkit.getDefaultToolkit().systemClipboard
+        clipboard.setContents(StringSelection(e.authURL.toString()), null)
+        val link = JOptionPane.showInputDialog(
+            null,
+            f.getString("gui.launcher.auth.message"),
+            f.getString("gui.launcher.auth.title"),
+            JOptionPane.QUESTION_MESSAGE
+        )
+        e.put(link)
+    }
+}
 
 fun main() {
+    EventManager.register(Wrapper) // handle login requests
     log.info("Powered by Celestial")
     log.info("https://lunarclient.top")
     log.info("Celestial v${GitUtils.buildVersion} build by ${GitUtils.buildUser}")

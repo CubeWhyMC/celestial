@@ -8,6 +8,7 @@ package org.cubewhy.celestial
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.cubewhy.celestial.game.LauncherFeatureFlags
 import org.cubewhy.celestial.gui.Language
 import org.cubewhy.celestial.gui.pages.*
 import org.cubewhy.celestial.utils.totalMem
@@ -45,8 +46,10 @@ data class GameConfiguration(
 
     var debug: Boolean = false,
     var overrides: Map<String, String> = HashMap(), // serviceOverrideXXX=address
-    var patched: Map<String, String> = mapOf()
-)
+    var patched: Map<String, String> = mapOf(),
+    var flags: LauncherFeatureFlags = LauncherFeatureFlags(),
+) {
+}
 
 
 enum class CloseFunction(val jsonValue: String, val text: String) {

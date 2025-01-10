@@ -48,6 +48,7 @@ object Celestial
 private var log = LoggerFactory.getLogger(Celestial::class.java)
 val JSON = Json { ignoreUnknownKeys = true; prettyPrint = true }
 val configDir = File(System.getProperty("user.home"), ".cubewhy/lunarcn")
+val lunarConfigFolder = File(System.getProperty("user.home"), ".lunarclient")
 val themesDir = File(configDir, "themes")
 val configFile = configDir.resolve("celestial.json")
 val config: BasicConfig = try {

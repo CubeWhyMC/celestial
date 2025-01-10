@@ -10,6 +10,8 @@ import co.gongzh.procbridge.Server
 import com.google.gson.JsonObject
 import launcher.Mslogin.*
 import org.cubewhy.celestial.event.impl.AuthEvent
+import org.cubewhy.celestial.open
+import org.cubewhy.celestial.toURI
 import org.java_websocket.WebSocket
 import org.java_websocket.handshake.ClientHandshake
 import org.java_websocket.server.WebSocketServer
@@ -92,29 +94,38 @@ class NewAuthServer(serverPort: Int = 28190) : WebSocketServer(InetSocketAddress
 
     override fun onMessage(conn: WebSocket, message: ByteBuffer) {
         val request = GameRequest.parseFrom(message)
-        if (request.method == "OpenMicrosoftPopup") {
-            log.info("Client request login")
-            val event =
-                AuthEvent(authURL = URL("https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service::user.auth.xboxlive.com::MBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf"))
-            if (event.call()) {
-                log.info("Login request canceled")
-                return
+        when (request.method) {
+            "OpenMicrosoftPopup" -> {
+                log.info("Client request login")
+                val event =
+                    AuthEvent(authURL = URL("https://login.live.com/oauth20_authorize.srf?client_id=00000000402b5328&response_type=code&scope=service::user.auth.xboxlive.com::MBI_SSL&redirect_uri=https%3A%2F%2Flogin.live.com%2Foauth20_desktop.srf"))
+                if (event.call()) {
+                    log.info("Login request canceled")
+                    return
+                }
+                val responseUrl = event.waitForAuth()
+                conn.send(
+                    LoginResponseBase.newBuilder()
+                        .setResponse(
+                            LoginResponse.newBuilder()
+                                .setResponseId(request.requestId)
+                                .setAuth(
+                                    AuthResponse.newBuilder()
+                                        .setStatus(1)
+                                        .setUrl(responseUrl)
+                                        .build()
+                                ).build()
+                        ).build().toByteArray()
+                )
             }
-            val responseUrl = event.waitForAuth()
-            conn.send(
-                LoginResponseBase.newBuilder()
-                    .setResponse(
-                        LoginResponse.newBuilder()
-                            .setResponseId(request.requestId)
-                            .setAuth(
-                                AuthResponse.newBuilder()
-                                    .setStatus(1)
-                                    .setUrl(responseUrl)
-                                    .build()
-                            ).build()
-                    ).build().toByteArray()
-            )
+
+            "OpenUrl" -> {
+                val url = request.payload.data
+                log.info("Open URL: $url")
+                url.toURI().open()
+            }
         }
+        // todo handle radio
     }
 
     override fun onError(p0: WebSocket?, p1: Exception?) {

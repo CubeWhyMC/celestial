@@ -5,6 +5,12 @@ message GameRequest {
   string requestId = 1;
   string service = 2;
   string method = 3;
+
+  Payload payload = 4;
+}
+
+message Payload {
+  string data = 1;
 }
 
 message LoginResponseBase {
