@@ -219,8 +219,6 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             })
         }
 
-
-
         panelLauncher.add(p4)
         // data sharing
         panelLauncher.add(
