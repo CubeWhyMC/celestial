@@ -39,6 +39,8 @@ import javax.swing.border.TitledBorder
 import javax.swing.event.ChangeEvent
 import javax.swing.filechooser.FileNameExtensionFilter
 
+private val log: Logger = LoggerFactory.getLogger(GuiSettings::class.java)
+
 class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED) {
     init {
         EventManager.register(this)
@@ -60,7 +62,7 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
      * */
     @EventTarget
     fun onChangeConfig(e: ChangeConfigEvent<*>) {
-        if (e.configObject is BasicConfig && e.key == "api") {
+        if (e.configObject is APIConfig && e.key == "address") {
             log.info("API changed, hot reloading...")
             val newApi = e.newValue as String
             try {
@@ -203,7 +205,18 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             add(getAutoSaveTextField(config.api, "address"))
 
             add(f.getString("gui.settings.launcher.api.spoof").toJLabel())
-            add(getAutoSaveTextField(config.api, "versionSpoof"))
+            add(getAutoSaveTextField(config.api, "versionSpoof") { callback ->
+                // check
+                if (!isValidVersion(callback.value)) {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        f.getString("gui.settings.launcher.api.spoof.bad-version.message"),
+                        f.getString("gui.settings.launcher.api.spoof.bad-version.title"),
+                        JOptionPane.ERROR_MESSAGE
+                    )
+                    callback.revert()
+                }
+            })
         }
 
 
@@ -611,11 +624,11 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
 
     private fun getAutoSaveComboBox(obj3ct: Any, key: String, items: List<*>): JComboBox<*> {
         val cb = JComboBox<Any>()
-        var isString = false
+//        var isString = false
         var isLanguage = false
         for (item in items) {
             if (item is Language) isLanguage = true
-            if (item is String) isString = true
+//            if (item is String) isString = true
             cb.addItem(item)
 
         }
@@ -630,22 +643,20 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             }
             if (finalIsLanguage) obj3ct.saveConfig(key, source.selectedItem as Language)
             else obj3ct.saveConfig(key, source.selectedItem?.toString())
-
-
         }
         return cb
     }
 
     companion object {
         private val panel = JPanel()
-        private val log: Logger = LoggerFactory.getLogger(GuiSettings::class.java)
         private fun getAutoSaveSpinner(
             obj3ct: Any,
             key: String,
             min: Double,
             max: Double,
             step: Double,
-            forceInt: Boolean = false
+            forceInt: Boolean = false,
+            checkAction: (value: AutoSaveCallback<Number>) -> Unit = { }
         ): JSpinner {
             val value = obj3ct.getKotlinField<Double>(key)
             val spinner = JSpinner(SpinnerNumberModel(value, min, max, step))
@@ -655,23 +666,36 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
             spinner.addChangeListener { e: ChangeEvent ->
                 val source = e.source as JSpinner
                 val v = if (forceInt) (source.value as Number).toInt() else source.value as Number
-                obj3ct.saveConfig(key, v)
+                val callback = AutoSaveCallback(v, key, obj3ct, source)
+                checkAction.invoke(callback)
+                callback.apply() // apply changes
             }
             textField.columns = 20
             return spinner
         }
 
-        private fun getAutoSaveCheckBox(obj3ct: Any, key: String, text: String): JCheckBox {
+        private fun getAutoSaveCheckBox(
+            obj3ct: Any,
+            key: String,
+            text: String,
+            checkAction: (value: AutoSaveCallback<Boolean>) -> Unit = { }
+        ): JCheckBox {
             val cb = JCheckBox(text)
             cb.isSelected = obj3ct.getKotlinField(key)
             cb.addActionListener { e: ActionEvent ->
                 val source = e.source as JCheckBox
-                obj3ct.saveConfig(key, source.isSelected)
+                val callback = AutoSaveCallback(source.isSelected, key, obj3ct, source)
+                checkAction.invoke(callback)
+                callback.apply() // apply changes
             }
             return cb
         }
 
-        private fun getAutoSaveTextField(obj3ct: Any, key: String): JTextField {
+        private fun getAutoSaveTextField(
+            obj3ct: Any,
+            key: String,
+            checkAction: (value: AutoSaveCallback<String>) -> Unit = {}
+        ): JTextField {
             val value = obj3ct.getKotlinField<String>(key)
             val input = JTextField(value)
 //            input.addActionListener { e: ActionEvent ->
@@ -683,18 +707,57 @@ class GuiSettings : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_
                 override fun focusLost(e: FocusEvent) {
                     val source = e.source as JTextField
                     // save value
-                    obj3ct.saveConfig(key, source.text)
+                    val text = source.text
+                    val callback = AutoSaveCallback(text, key, obj3ct, source)
+                    checkAction.invoke(callback)
+                    callback.apply() // apply changes
                 }
             })
             return input
         }
+    }
+}
 
-        private inline fun <reified T> Any.saveConfig(name: String, value: T?) {
-            log.info("Saving ${this.javaClass.name} (key=${name}, value=${value})")
-            if (!ChangeConfigEvent(this, name, value, this.getKotlinField(name)).call()) {
-                this.setKotlinField(name, value)
+fun isValidVersion(version: String): Boolean {
+    val regex = """^\d+\.\d+\.\d+(-[a-zA-Z0-9\-]+)?$""".toRegex()
+    return version.matches(regex)
+}
+
+class AutoSaveCallback<T>(
+    var value: T,
+    private val key: String,
+    private val obj3ct: Any,
+    private val source: Any
+) {
+    val oldValue: T = obj3ct.getKotlinField(key)
+
+    fun revert() {
+        value = oldValue
+    }
+
+    fun apply() {
+        when (source) {
+            is JTextField -> {
+                source.text = value as String
+                obj3ct.saveConfig(key, value as String)
+            }
+
+            is JCheckBox -> {
+                source.isSelected = value as Boolean
+                obj3ct.saveConfig(key, value as Boolean)
+            }
+
+            is JSpinner -> {
+                source.value = value as Number
+                obj3ct.saveConfig(key, value as Number)
             }
         }
     }
 }
 
+private inline fun <reified T> Any.saveConfig(name: String, value: T?) {
+    log.debug("Saving {} (key={}, value={})", this.javaClass.name, name, value)
+    if (!ChangeConfigEvent(this, name, value, this.getKotlinField(name)).call()) {
+        this.setKotlinField(name, value)
+    }
+}

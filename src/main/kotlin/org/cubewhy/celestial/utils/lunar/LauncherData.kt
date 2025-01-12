@@ -42,7 +42,8 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
 
     fun metadata(): LauncherMetadata {
         // do request with fake system info
-        get("$api/launcher/metadata?installation_id=${UUID.randomUUID()}&os=${OSEnum.current!!.jsName}&arch=${arch}&launcher_version=${config.api.versionSpoof}&branch=master&branch_changed=true&private=true&os_release=114.514").execute()
+        // DO NOT REPLACE THE launcher_version FIELD TO config.api.versionSpoof
+        get("$api/launcher/metadata?installation_id=${UUID.randomUUID()}&os=${OSEnum.current!!.jsName}&arch=${arch}&launcher_version=114.514.191&branch=master&branch_changed=true&private=true&os_release=114.514").execute()
             .use { response ->
                 assert(response.code == 200) {
                     "Code = " + response.code
