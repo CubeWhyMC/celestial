@@ -89,7 +89,7 @@ data class LaunchCommand(
         commands.add("--installationId")
         commands.add("INSTALLATION-ID")
         commands.add("--uiDir")
-        commands.add(configDir.resolve("ui").path)
+        commands.add(installation.resolve("ui").path)
         commands.add("--texturesDir")
         commands.add("textures")
         commands.add("--workingDirectory")
