@@ -13,10 +13,17 @@ class Downloadable(
     private val url: URL,
     private val file: File,
     private val hash: String?,
-    private val type: Type
+    private val type: Type,
+    private val callback: (file: File) -> Unit = {}
 ) : Runnable {
 
-    constructor(url: URL, file: File, sha1: String?) : this(url, file, sha1, Type.SHA1)
+    constructor(url: URL, file: File, sha1: String?, callback: (file: File) -> Unit = {}) : this(
+        url,
+        file,
+        sha1,
+        Type.SHA1,
+        callback
+    )
 
 
     enum class Type {
@@ -41,6 +48,7 @@ class Downloadable(
             }
             break // no error
         }
+        callback.invoke(file)
     }
 
     companion object {

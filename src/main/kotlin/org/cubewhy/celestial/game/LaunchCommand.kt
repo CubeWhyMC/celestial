@@ -9,8 +9,8 @@ package org.cubewhy.celestial.game
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.cubewhy.celestial.config
+import org.cubewhy.celestial.configDir
 import org.cubewhy.celestial.game.addon.JavaAgent
-import org.cubewhy.celestial.lunarConfigFolder
 import org.cubewhy.celestial.utils.GitUtils
 import org.cubewhy.celestial.utils.OSEnum
 import java.io.File
@@ -89,7 +89,7 @@ data class LaunchCommand(
         commands.add("--installationId")
         commands.add("INSTALLATION-ID")
         commands.add("--uiDir")
-        commands.add(lunarConfigFolder.resolve("ui").path)
+        commands.add(configDir.resolve("ui").path)
         commands.add("--texturesDir")
         commands.add("textures")
         commands.add("--workingDirectory")

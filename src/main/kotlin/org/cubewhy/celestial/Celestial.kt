@@ -6,6 +6,7 @@
 
 package org.cubewhy.celestial
 
+import cn.hutool.crypto.SecureUtil
 import com.formdev.flatlaf.FlatDarkLaf
 import com.formdev.flatlaf.FlatLightLaf
 import com.formdev.flatlaf.IntelliJTheme
@@ -22,6 +23,7 @@ import org.cubewhy.celestial.game.GameProperties
 import org.cubewhy.celestial.game.LaunchCommand
 import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.gui.GuiLauncher
+import org.cubewhy.celestial.gui.elements.unzipUi
 import org.cubewhy.celestial.utils.*
 import org.cubewhy.celestial.utils.game.MinecraftData
 import org.cubewhy.celestial.utils.game.MinecraftManifest
@@ -48,7 +50,6 @@ object Celestial
 private var log = LoggerFactory.getLogger(Celestial::class.java)
 val JSON = Json { ignoreUnknownKeys = true; prettyPrint = true }
 val configDir = File(System.getProperty("user.home"), ".cubewhy/lunarcn")
-val lunarConfigFolder = File(System.getProperty("user.home"), ".lunarclient")
 val themesDir = File(configDir, "themes")
 val configFile = configDir.resolve("celestial.json")
 val config: BasicConfig = try {
@@ -455,17 +456,22 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
     }
 
     // download textures
-    val index = LauncherData.getLunarTexturesIndex(versionJson)!!
-    index.forEach { (fileName: String, urlString: String) ->
-        val url: URL
-        try {
-            url = urlString.toURI().toURL()
-        } catch (e: MalformedURLException) {
-            throw RuntimeException(e)
-        }
-        val full = urlString.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        val file = File(installation, "textures/$fileName")
-        DownloadManager.download(Downloadable(url, file, full[full.size - 1]))
+    LauncherData.getLunarTexturesIndex(versionJson)!!.forEach { (fileName: String, urlString: String) ->
+        downloadAssets(urlString, File(installation, "textures/$fileName"))
+    }
+    // download ui
+    // (old api doesn't contain this feature)
+    // ui html
+    val uiZip = installation.resolve("ui.zip")
+    versionJson.ui?.sourceUrl?.let {
+        DownloadManager.download(Downloadable(it.toURI().toURL(), uiZip, versionJson.ui.sourceSha1) { file ->
+            // unzip the file
+            file.unzipUi(installation)
+        })
+    }
+    // ui assets
+    LauncherData.getLunarUiAssetsIndex(versionJson).forEach { (fileName: String, urlString: String) ->
+        downloadAssets(urlString, File(installation, "ui/assets/$fileName"))
     }
 
     val minecraftFolder = File(config.game.gameDir)
@@ -499,6 +505,17 @@ fun checkUpdate(version: String, module: String?, branch: String?) {
         val finalFile = File(assetsFolder, "objects/$folder/$hash")
         DownloadManager.download(Downloadable(finalURL, finalFile, hash))
     }
+}
+
+private fun downloadAssets(urlString: String, file: File) {
+    val url: URL
+    try {
+        url = urlString.toURI().toURL()
+    } catch (e: MalformedURLException) {
+        throw RuntimeException(e)
+    }
+    val full = urlString.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    DownloadManager.download(Downloadable(url, file, full[full.size - 1]))
 }
 
 private fun File.isReallyOfficial(): Boolean {

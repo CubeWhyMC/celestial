@@ -410,7 +410,17 @@ fun File.unzipNatives(baseDir: File) {
         dir.mkdirs()
     }
     this.toZip().unzip(dir)
-    log.info("Unzipped successful")
+    log.info("Natives unzipped successful")
+}
+
+fun File.unzipUi(baseDir: File) {
+    log.info("Unzipping ui.zip ${this.path}")
+    val dir = File(baseDir, "ui")
+    if (!dir.exists()) {
+        dir.mkdirs()
+    }
+    this.toZip().unzip(dir)
+    log.info("Ui unzipped successful")
 }
 
 private operator fun File.plus(s: String): File {

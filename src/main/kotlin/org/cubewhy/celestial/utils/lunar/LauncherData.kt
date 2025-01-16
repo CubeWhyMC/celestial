@@ -227,6 +227,15 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
             val indexUrl = version.textures.indexUrl
             // get index json
             val baseUrl = version.textures.baseUrl
+            return getIndex(baseUrl, indexUrl)
+        }
+
+        fun getLunarUiAssetsIndex(version: GameArtifactInfo): Map<String, String> {
+            if (version.ui == null) return emptyMap() // there's no ui files for old LC
+            return getIndex(version.ui.assets.baseUrl, version.ui.assets.indexUrl)
+        }
+
+        private fun getIndex(baseUrl: String, indexUrl: String): Map<String, String> {
             get(indexUrl).execute().use { response ->
                 if (response.body != null) {
                     // parse
@@ -241,7 +250,7 @@ class LauncherData(val api: URI = URI.create("https://api.lunarclientprod.com"))
                     return map
                 }
             }
-            return null
+            return emptyMap()
         }
     }
 }
@@ -266,7 +275,9 @@ data class LunarSubVersion(
 data class GameArtifactInfo(
     val launchTypeData: LaunchTypeData,
     val textures: Textures,
-    val jre: RuntimeInfo
+    val jre: RuntimeInfo,
+    val ui: UiInfo? = null,
+    val canaryToken: String? = ""
 ) {
     @Serializable
     data class RuntimeInfo(
@@ -278,7 +289,7 @@ data class GameArtifactInfo(
         val name: String,
         val sha1: String,
         val url: String,
-        val type: ArtifactType
+        val type: ArtifactType,
     ) {
         enum class ArtifactType {
             CLASS_PATH,
@@ -300,6 +311,20 @@ data class GameArtifactInfo(
         val indexUrl: String,
         val indexSha1: String,
         val baseUrl: String
+    )
+
+    @Serializable
+    data class UiInfo(
+        val sourceUrl: String,
+        val sourceSha1: String,
+        val assets: UiAssets
+    )
+
+    @Serializable
+    data class UiAssets(
+        val baseUrl: String,
+        val indexUrl: String,
+        val indexSha1: String
     )
 }
 

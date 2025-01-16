@@ -74,8 +74,8 @@ object DownloadManager {
     fun download0(url: URL, file: File, crcSha: String?, type: Downloadable.Type): Boolean {
         // connect
         if (file.isFile && crcSha != null) {
-            // assert crcSha
-            if (compareSha(file, crcSha, type)) {
+            // compare hash
+            if (compareHash(file, crcSha, type)) {
                 return true
             }
         }
@@ -91,7 +91,7 @@ object DownloadManager {
         }
         if (runningOnGui) GuiLauncher.statusBar.text = "Download " + file.name + " success."
         if (crcSha != null) {
-            val result = compareSha(file, crcSha, type)
+            val result = compareHash(file, crcSha, type)
             if (!result) {
                 FileDownloadEvent(file, FileDownloadEvent.Type.FAILURE).call()
             }
@@ -101,7 +101,7 @@ object DownloadManager {
         return true
     }
 
-    private fun compareSha(file: File, crcSha: String, type: Downloadable.Type): Boolean {
+    private fun compareHash(file: File, crcSha: String, type: Downloadable.Type): Boolean {
         return type == Downloadable.Type.SHA1 && SecureUtil.sha1(file) == crcSha || type == Downloadable.Type.SHA256 && SecureUtil.sha256(
             file
         ) == crcSha
