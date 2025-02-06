@@ -21,7 +21,7 @@ class FabricMod(val file: File) : BaseAddon() {
             true
 
     override fun toggle(): Boolean {
-        return toggle0(file)
+        return toggle(file)
     }
 
     companion object {

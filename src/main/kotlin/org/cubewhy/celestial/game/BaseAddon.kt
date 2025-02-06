@@ -18,7 +18,7 @@ abstract class BaseAddon {
      */
     abstract fun toggle(): Boolean
 
-    protected fun toggle0(file: File): Boolean {
+    protected fun toggle(file: File): Boolean {
         if (isEnabled) {
             return !file.renameTo(File(file.path + ".disabled"))
         }

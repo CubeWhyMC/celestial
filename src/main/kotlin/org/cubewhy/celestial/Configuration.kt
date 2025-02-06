@@ -42,7 +42,7 @@ data class GameConfiguration(
     var args: ArrayList<String> = ArrayList(),
     @SerialName("vm-args")
     var vmArgs: ArrayList<String> = ArrayList(),
-    var javaagents: HashMap<String, String?> = HashMap(),
+    var javaagents: HashMap<String, JavaagentConfiguration?> = HashMap(),
 
     var debug: Boolean = false,
     var overrides: Map<String, String> = HashMap(), // serviceOverrideXXX=address
@@ -50,6 +50,12 @@ data class GameConfiguration(
     var flags: LauncherFeatureFlags = LauncherFeatureFlags(),
 ) {
 }
+
+@Serializable
+data class JavaagentConfiguration(
+    var arg: String? = null,
+    var classpath: Boolean = true // should Celestial put the agent into classpath?
+)
 
 
 enum class CloseFunction(val jsonValue: String, val text: String) {

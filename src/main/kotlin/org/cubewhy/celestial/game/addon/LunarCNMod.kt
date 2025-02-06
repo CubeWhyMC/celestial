@@ -27,7 +27,7 @@ class LunarCNMod(val file: File) : BaseAddon() {
         get() = file.name.endsWith(".jar")
 
     override fun toggle(): Boolean {
-        return toggle0(file)
+        return toggle(file)
     }
 
     companion object {

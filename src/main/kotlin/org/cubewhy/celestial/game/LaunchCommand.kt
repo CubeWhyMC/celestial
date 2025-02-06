@@ -9,7 +9,6 @@ package org.cubewhy.celestial.game
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.cubewhy.celestial.config
-import org.cubewhy.celestial.configDir
 import org.cubewhy.celestial.game.addon.JavaAgent
 import org.cubewhy.celestial.utils.GitUtils
 import org.cubewhy.celestial.utils.OSEnum
@@ -62,7 +61,11 @@ data class LaunchCommand(
         commands.add("-DcelestialVersion=${GitUtils.buildVersion}")
         // classpath
         // add javaagents to classpath
-        tempClasspath.addAll(javaAgents.map { it.file }.toList())
+        tempClasspath.addAll(
+            javaAgents
+            .filter { it.classpath }
+            .map { it.file }.toList()
+        )
         commands.add("-cp")
         if (OSEnum.Windows.isCurrent) {
             commands.add(tempClasspath.joinToString(";"))

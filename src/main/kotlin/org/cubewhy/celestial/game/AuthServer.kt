@@ -8,7 +8,7 @@ package org.cubewhy.celestial.game
 import co.gongzh.procbridge.IDelegate
 import co.gongzh.procbridge.Server
 import com.google.gson.JsonObject
-import launcher.Mslogin.*
+import launcher.Gameipc.*
 import org.cubewhy.celestial.event.impl.AuthEvent
 import org.cubewhy.celestial.open
 import org.cubewhy.celestial.toURI

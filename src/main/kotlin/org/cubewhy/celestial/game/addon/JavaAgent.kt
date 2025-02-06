@@ -5,6 +5,7 @@
  */
 package org.cubewhy.celestial.game.addon
 
+import org.cubewhy.celestial.JavaagentConfiguration
 import org.cubewhy.celestial.config
 import org.cubewhy.celestial.configDir
 import org.cubewhy.celestial.game.BaseAddon
@@ -29,14 +30,20 @@ class JavaAgent : BaseAddon {
     val file: File
 
     /**
+     * Should add the Javaagent into classpath?
+     * */
+    var classpath: Boolean
+
+    /**
      * Create an instance
      *
      * @param path Path to JavaAgent
      * @param arg  Arg of the JavaAgent
      */
-    constructor(path: String, arg: String? = null) {
+    constructor(path: String, arg: String? = null, classpath: Boolean = true) {
         this.file = File(path)
         this.arg = arg
+        this.classpath = classpath
     }
 
     /**
@@ -45,9 +52,10 @@ class JavaAgent : BaseAddon {
      * @param file File of the JavaAgent
      * @param arg  Arg of the JavaAgent
      */
-    constructor(file: File, arg: String? = null) {
+    constructor(file: File, arg: String? = null, classpath: Boolean = true) {
         this.file = file
         this.arg = arg
+        this.classpath = classpath
     }
 
     val jvmArg: String
@@ -65,7 +73,7 @@ class JavaAgent : BaseAddon {
         }
 
     override fun toString(): String {
-        var result = file.name
+        var result = (if (classpath) "" else "[*] ") + file.name
         if (arg?.isNotBlank() == true) {
             result += "=" + this.arg
         }
@@ -81,7 +89,17 @@ class JavaAgent : BaseAddon {
         } else {
             migrate(file.name, file.name.substring(0, file.name.length - 9))
         }
-        return toggle0(file)
+        return toggle(file)
+    }
+
+    fun toggleClasspath(): Boolean {
+        val ja = config.game.javaagents
+        if (!ja.containsKey(file.name)) {
+            ja[file.name] = JavaagentConfiguration(arg, !classpath)
+        } else {
+            ja[file.name]?.classpath = !classpath
+        }
+        return ja[file.name]?.classpath == true
     }
 
     companion object {
@@ -104,7 +122,8 @@ class JavaAgent : BaseAddon {
             if (javaAgentFolder.isDirectory) {
                 for (file in Objects.requireNonNull<Array<File>>(javaAgentFolder.listFiles())) {
                     if (file.name.endsWith(".jar") && file.isFile) {
-                        list.add(JavaAgent(file, findAgentArg(file.name)))
+                        val javaagentConfiguration = findAgentConfig(file.name)
+                        list.add(JavaAgent(file, javaagentConfiguration.arg, javaagentConfiguration.classpath))
                     }
                 }
             }
@@ -116,7 +135,8 @@ class JavaAgent : BaseAddon {
             if (javaAgentFolder.isDirectory) {
                 for (file in Objects.requireNonNull<Array<File>>(javaAgentFolder.listFiles())) {
                     if (file.name.endsWith(".jar.disabled") && file.isFile) {
-                        list.add(JavaAgent(file, findAgentArg(file.name)))
+                        val jaConfig = findAgentConfig(file.name)
+                        list.add(JavaAgent(file, jaConfig.arg, jaConfig.classpath))
                     }
                 }
             }
@@ -149,16 +169,20 @@ class JavaAgent : BaseAddon {
          */
         fun setArgFor(name: String, arg: String?) {
             val ja = config.game.javaagents
-            ja[name] = arg
+            if (!ja.containsKey(name)) {
+                ja[name] = JavaagentConfiguration(arg)
+            } else {
+                ja[name]?.arg = arg
+            }
         }
 
-        private fun findAgentArg(name: String): String {
+        private fun findAgentConfig(name: String): JavaagentConfiguration {
             val ja = config.game.javaagents
             if (!ja.containsKey(name)) {
                 // create config for the agent
-                ja[name] = "" // leave empty
+                ja[name] = JavaagentConfiguration() // leave empty
             }
-            return ja[name] ?: ""
+            return ja[name] ?: JavaagentConfiguration()
         }
 
 
@@ -176,10 +200,9 @@ class JavaAgent : BaseAddon {
          * @param old name of the old agent
          * @param n3w name of the new agent
          */
-
         fun migrate(old: String, n3w: String) {
             val ja = config.game.javaagents
-            val arg = if (ja[old] == null) "" else ja[old]
+            val arg = if (ja[old] == null) JavaagentConfiguration() else ja[old]
             ja[n3w] = arg // leave empty
             ja.remove(old)
         }

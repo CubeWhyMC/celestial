@@ -20,7 +20,6 @@ import org.cubewhy.celestial.game.addon.WeaveMod
 import org.cubewhy.celestial.game.addon.WeaveMod.Companion.add
 import org.cubewhy.celestial.gui.GuiLauncher
 import org.cubewhy.celestial.gui.layouts.VerticalFlowLayout
-import org.cubewhy.celestial.utils.OSEnum
 import org.cubewhy.celestial.utils.chooseFile
 import org.cubewhy.celestial.utils.createButtonOpenFolder
 import org.cubewhy.celestial.utils.currentJavaExec
@@ -49,6 +48,7 @@ class GuiAddonManager : JPanel() {
     private val toggleWeave = JMenuItem("toggle")
     private val toggleCN = JMenuItem("toggle")
     private val toggleAgent = JMenuItem("toggle")
+    private val toggleAgentClasspath = JMenuItem("toggle-classpath")
 
     private val log = LoggerFactory.getLogger(DownloadManager::class.java)
 
@@ -94,9 +94,16 @@ class GuiAddonManager : JPanel() {
             loadAgents()
         }
 
+        toggleAgentClasspath.addActionListener {
+            jListAgents.selectedValue.toggleClasspath()
+            agentList.removeAllElements()
+            loadAgents()
+        }
+
         // menus
         val agentMenu = JPopupMenu()
         agentMenu.add(toggleAgent)
+        agentMenu.add(toggleAgentClasspath)
         val manageArg = JMenuItem(f.getString("gui.addon.agents.arg"))
         val removeAgent = JMenuItem(f.getString("gui.addon.agents.remove"))
         val renameAgent = JMenuItem(f.getString("gui.addon.rename"))
@@ -574,6 +581,13 @@ class GuiAddonManager : JPanel() {
                         toggleAgent.text = f.getString("gui.addon.toggle.enable")
                         toggleCN.text = f.getString("gui.addon.toggle.enable")
                     }
+                    if (current is JavaAgent) {
+                        if (current.classpath) {
+                            toggleAgentClasspath.text = f.getString("gui.addon.agents.cp.disable")
+                        } else {
+                            toggleAgentClasspath.text = f.getString("gui.addon.agents.cp.enable")
+                        }
+                    }
                     menu.show(list, e.x, e.y)
                 }
             }
@@ -620,7 +634,7 @@ class GuiAddonManager : JPanel() {
     }
 }
 
-class PatchDialog(panel: JPanel, private val patch: File): JDialog(SwingUtilities.getWindowAncestor(panel) as JFrame) {
+class PatchDialog(panel: JPanel, private val patch: File) : JDialog(SwingUtilities.getWindowAncestor(panel) as JFrame) {
 
     init {
         this.title = f.getString("gui.addons.patch.title")
@@ -653,7 +667,8 @@ class PatchDialog(panel: JPanel, private val patch: File): JDialog(SwingUtilitie
                 source.isEnabled = false
                 Thread {
                     val code = doPatch(lunarJar).start().waitFor()
-                    source.text = if (code == 0) f.getString("gui.addons.patch.done") else f.getString("gui.addons.patch.fail")
+                    source.text =
+                        if (code == 0) f.getString("gui.addons.patch.done") else f.getString("gui.addons.patch.fail")
                 }.start()
             }
         })

@@ -98,10 +98,11 @@ private fun LaunchCommandJson.complete(): LaunchCommand {
     val javaAgents = JavaAgent.findEnabled()
     if (config.addon.weave.state) {
         log.info("Weave is enabled!")
-        javaAgents.add(JavaAgent(config.addon.weave.installationDir))
+        javaAgents.add(JavaAgent(path = config.addon.weave.installationDir, classpath = false))
     }
     if (config.addon.lunarcn.state) {
         log.info("LunarCN is enabled!")
+        log.warn("LunarCN Loader is deprecated.")
         javaAgents.add(JavaAgent(config.addon.lunarcn.installationDir))
     }
     if (config.addon.lcqt.state) {
