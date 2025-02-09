@@ -7,8 +7,10 @@ package org.cubewhy.celestial.utils
 
 import com.sun.management.OperatingSystemMXBean
 import com.sun.tools.attach.VirtualMachine
+import org.cubewhy.celestial.gui.Language
 import java.io.File
 import java.lang.management.ManagementFactory
+import java.util.Locale
 
 
 fun findJava(mainClass: String?): VirtualMachine? {
@@ -46,3 +48,14 @@ val arch = when (System.getProperty("os.arch", "unknown")) {
     else -> throw IllegalStateException("Unsupported CPU Arch: ${System.getProperty("os.arch")}")
 }
 
+fun getLanguage(): Language {
+    val locale = Locale.getDefault();
+    return when (locale.language) {
+        "en" -> Language.ENGLISH
+        "zh" -> Language.CHINESE
+        "ja" -> Language.JAPANESE
+        "ko" -> Language.KOREAN
+        "es" -> Language.SPANISH
+        else -> Language.ENGLISH
+    }
+}

@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 import org.cubewhy.celestial.game.LauncherFeatureFlags
 import org.cubewhy.celestial.gui.Language
 import org.cubewhy.celestial.gui.pages.*
+import org.cubewhy.celestial.utils.getLanguage
 import org.cubewhy.celestial.utils.totalMem
 import java.io.File
 import java.net.InetSocketAddress
@@ -96,7 +97,7 @@ data class AddonConfiguration(
 data class BasicConfig(
     var api: APIConfig = APIConfig(),
     var jre: String = "", // // leave empty if you want to use the default one
-    var language: Language = Language.ENGLISH,
+    var language: Language = getLanguage(),
     var theme: String = "dark",
     var dataSharing: Boolean = true,
     @SerialName("installation-dir")
