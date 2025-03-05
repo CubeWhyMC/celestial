@@ -7,24 +7,9 @@
 
 Let's Make LunarClient Great Again
 
-[//]: # (## We need capture the LC API again)
+## Archived
 
-[//]: # ()
-[//]: # (Since January 2025, Lunar has updated its API again.)
-
-[//]: # ()
-[//]: # (Currently, Celestial always downloads an outdated version.)
-
-[//]: # ()
-[//]: # (To address this, we need to capture the new Lunar API and implement the necessary updates in Celestial.)
-
-[//]: # ()
-[//]: # (However, I'm unsure if I have enough time to complete this work.)
-
-[//]: # ()
-[//]: # (Thank you all for your understanding and support.)
-
-[//]: # (![version outdated]&#40;/docs/images/version-outdated-en.png&#41;)
+The code in this repository has become difficult to maintain, and we are trying to rewrite Celestial, which will introduce many powerful new features, such as fully local version control and a more user-friendly interface!
 
 ## Requirements
 
