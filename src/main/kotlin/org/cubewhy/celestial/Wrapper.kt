@@ -24,7 +24,9 @@ import org.cubewhy.celestial.utils.currentJavaExec
 import org.slf4j.LoggerFactory
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 import javax.swing.JOptionPane
 import kotlin.system.exitProcess
@@ -181,10 +183,16 @@ fun launch(cmd: LaunchCommand): Process {
     log.debug(commandList.joinToString(" "))
     log.info("Executing command...")
     val pb = ProcessBuilder(commandList)
-        .inheritIO()
+        .redirectErrorStream(true)
         .directory(cmd.installation)
     val process = pb.start()
     val pid = process.pid()
+    Thread {
+        // redirect logs
+        BufferedReader(InputStreamReader(process.inputStream)).use { reader ->
+            reader.lines().forEach { line -> log.info(line) }
+        }
+    }.start()
     Thread.sleep(3000) // wait 3s
     log.info("Game is running! (PID: $pid)")
     GameStartEvent(pid).call()
