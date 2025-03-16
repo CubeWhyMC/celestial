@@ -63,8 +63,8 @@ data class LaunchCommand(
         // add javaagents to classpath
         tempClasspath.addAll(
             javaAgents
-            .filter { it.classpath }
-            .map { it.file }.toList()
+                .filter { it.classpath }
+                .map { it.file }.toList()
         )
         commands.add("-cp")
         if (OSEnum.Windows.isCurrent) {
@@ -117,9 +117,9 @@ data class LaunchCommand(
         }
         // ichor
         commands.add("--ichorClassPath")
-        commands.add(classpath.joinToString(","))
+        commands.add(classpath.joinToString(",") { it.name })
         commands.add("--ichorExternalFiles")
-        commands.add(ichorpath.joinToString(","))
+        commands.add(ichorpath.joinToString(",") { it.name })
         commands.add("--webosrDir")
         commands.add(installation.resolve("natives").path)
         // custom args
