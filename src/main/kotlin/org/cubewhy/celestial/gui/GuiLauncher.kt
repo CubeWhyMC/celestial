@@ -19,10 +19,7 @@ import org.cubewhy.celestial.utils.findJava
 import org.cubewhy.celestial.utils.lunar.LauncherData.Companion.getMainClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.awt.BorderLayout
-import java.awt.CardLayout
-import java.awt.Panel
-import java.awt.Toolkit
+import java.awt.*
 import java.awt.datatransfer.StringSelection
 import java.io.IOException
 import java.net.URI
@@ -60,6 +57,7 @@ class GuiLauncher : JFrame() {
         // Celestial is an opensource launcher, please donate to let us go further (All money will be used for development)
         val btnDonate = JButton(f.getString("gui.donate"))
         val btnHelp = JButton(f.getString("gui.help"))
+        val btnDiscord = JButton(f.getString("gui.discord"))
         btnDonate.addActionListener {
             try {
                 URI.create("https://lunarclient.top/donate").open()
@@ -69,11 +67,20 @@ class GuiLauncher : JFrame() {
         btnHelp.addActionListener {
             HelpDialog().isVisible = true
         }
+        btnDiscord.addActionListener {
+            try {
+                Desktop.getDesktop().browse(URI("https://discord.gg/4EXXDUWHcR"))
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
 
         menu.add(btnPrevious)
         menu.add(btnNext)
         menu.add(btnDonate)
         menu.add(btnHelp)
+        menu.add(btnDiscord)
+
         menu.setSize(100, 20)
 
         this.add(menu, BorderLayout.NORTH)
