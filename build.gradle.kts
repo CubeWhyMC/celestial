@@ -51,7 +51,7 @@ dependencies {
     implementation("com.google.protobuf:protobuf-kotlin:4.30.2")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 }
 
 tasks.shadowJar {
