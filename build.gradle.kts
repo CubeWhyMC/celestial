@@ -6,7 +6,7 @@ plugins {
     kotlin("plugin.serialization") version "2.1.20"
     id("com.github.johnrengelman.shadow") version "8.+"
     id ("com.gorylenko.gradle-git-properties") version "2.4.1"
-    id("com.google.protobuf") version "0.9.4"
+    id("com.google.protobuf") version "0.9.5"
 }
 
 group = "org.cubewhy.celestial"
@@ -46,12 +46,12 @@ dependencies {
     implementation("com.google.code.gson:gson:2.12.1")
     implementation("com.formdev:flatlaf:3.5.4")
     implementation("commons-io:commons-io:2.18.0")
-    implementation("cn.hutool:hutool-crypto:5.8.36")
+    implementation("cn.hutool:hutool-crypto:5.8.37")
     implementation("org.java-websocket:Java-WebSocket:1.6.0")
     implementation("com.google.protobuf:protobuf-kotlin:4.30.2")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 }
 
 tasks.shadowJar {
