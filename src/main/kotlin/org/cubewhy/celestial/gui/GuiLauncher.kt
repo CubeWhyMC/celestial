@@ -69,7 +69,7 @@ class GuiLauncher : JFrame() {
         }
         btnDiscord.addActionListener {
             try {
-                Desktop.getDesktop().browse(URI("https://discord.gg/4EXXDUWHcR"))
+                Desktop.getDesktop().browse(URI("https://discord.lunarclient.top"))
             } catch (e: IOException) {
                 e.printStackTrace()
             }
