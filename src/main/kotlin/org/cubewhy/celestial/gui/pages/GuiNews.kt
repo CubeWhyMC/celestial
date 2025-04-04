@@ -25,7 +25,7 @@ import javax.swing.JPanel
 import javax.swing.JScrollPane
 import javax.swing.border.TitledBorder
 import kotlin.math.abs
-
+import java.awt.GridLayout
 
 class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED) {
     private lateinit var blogPosts: List<Blogpost>
@@ -40,15 +40,13 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
             null,
             Color.orange
         )
-        panel.layout = BoxLayout(panel, BoxLayout.Y_AXIS)
+        panel.layout = GridLayout(0, 3, 10, 10)
         getVerticalScrollBar().unitIncrement = 30
     }
-
 
     private fun calcBirthday(): Int {
         val birthday = LocalDate.of(LocalDate.now().year, 7, 29)
         val today = LocalDate.now()
-
         return ChronoUnit.DAYS.between(today, birthday).toInt()
     }
 
@@ -79,9 +77,10 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
         if (abs(birthday) <= 10) {
             panel.add(LauncherBirthday(birthday))
         }
+
         if (blogPosts.isEmpty()) {
             log.error("Failed to load blog posts")
-            this.add("Failed to load news (blogPosts is empty)".toJLabel())
+            panel.add("Failed to load news (blogPosts is empty)".toJLabel())
         } else {
             for (blogPost in blogPosts) {
                 // cache the image if the image of the news doesn't exist
