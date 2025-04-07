@@ -185,6 +185,13 @@ fun launch(cmd: LaunchCommand): Process {
     val pb = ProcessBuilder(commandList)
         .redirectErrorStream(true)
         .directory(cmd.installation)
+    if (OSEnum.Linux.isCurrent) {
+        // check is Wayland+Nvidia env
+        if (System.getenv("XDG_SESSION_TYPE") == "wayland" && File("/usr/bin/nvidia-smi").exists()) {
+            log.info("Nvidia+Wayland detected, disabled GL_THREADED_OPTIMIZATIONS flag")
+            pb.environment()["__GL_THREADED_OPTIMIZATIONS"] = "0"
+        }
+    }
     val process = pb.start()
     val pid = process.pid()
     Thread {

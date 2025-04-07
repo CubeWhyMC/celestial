@@ -37,6 +37,7 @@ Star us on GitHub!
 * Weave support (*Experimental*)
 * Dump version json into local
 * Offline launch
+* Nvidia+Wayland support (game *EXPERIMENTAL*)
 
 ## Get celestial
 

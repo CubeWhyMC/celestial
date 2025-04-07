@@ -54,6 +54,7 @@
 * 支持[CelePatch](https://github.com/CubeWhyMC/celepatch) (半成品)
 * 将版本Json的响应保存在本地
 * 离线启动
+* Nvidia+Wayland 支持 (游戏 *实验性*)
 
 ## 获取Celestial
 
