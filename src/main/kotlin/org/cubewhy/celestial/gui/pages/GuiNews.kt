@@ -40,7 +40,7 @@ class GuiNews : JScrollPane(panel, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCRO
             null,
             Color.orange
         )
-        panel.layout = GridLayout(0, 3, 10, 10)
+        panel.layout = GridLayout(0, 2, 10, 10)
         getVerticalScrollBar().unitIncrement = 30
     }
 
