@@ -60,7 +60,7 @@ class GuiLauncher : JFrame() {
         val btnDiscord = JButton(f.getString("gui.discord"))
         btnDonate.addActionListener {
             try {
-                URI.create("https://lunarclient.top/donate").open()
+                URI.create("https://lunarclient.top/#/sponsor").open()
             } catch (ignored: IOException) {
             }
         }
