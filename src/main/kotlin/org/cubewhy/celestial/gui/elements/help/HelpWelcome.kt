@@ -21,7 +21,7 @@ class HelpWelcome : HelpPage("Welcome") {
 
         val online = JButton(f.getString("gui.help.document"))
         online.addActionListener {
-            URI.create("https://lunarclient.top/help").open()
+            URI.create("https://github.com/earthsworth/celestial/wiki").open()
         }
         this.add(online)
     }
