@@ -40,7 +40,7 @@ val DEFAULT_LAUNCHER_FEATURE_FLAGS = mutableListOf(
     "ServerRecommendedModpack",
     "EmbeddedBrowserOpens",
 //    "MissionControl",
-//    "Radio",
+    "Radio",
 //    "RadioPremium",
 )
 
